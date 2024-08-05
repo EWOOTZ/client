@@ -21,11 +21,6 @@ div {
   border-bottom: 1px solid grey;
 }
 
-@font-face {
-  font-family: 'HJ';
-  src: url('C:\Users\kwonh\Downloads\DungGeunMo WebFont\DungGeunMo.eot') format('truetype')
-}
-
 .backg {
   background-color: #C2E9B5;
   height: 100%;
