@@ -7,6 +7,11 @@ html, body {
   height: 100%;
 }
 
+@font-face {
+  font-family: "HJ";
+  font-weight: normal;
+  src: url("C:\Users\kwonh\OneDrive\바탕 화면\리액트\client\src\fonts\DungGeunMo.ttf") format("truetype");
+}
 
 .App {
   text-align: center;
@@ -38,6 +43,7 @@ div {
   background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='10' ry='10' stroke='white' stroke-width='5' stroke-dasharray='6%2c 14' stroke-dashoffset='42' stroke-linecap='square'/%3e%3c/svg%3e");
   border-radius: 10px;
   font-family: 'HJ';
+  white-space: pre-wrap;
 }
 
 .black-nav{  /*black-nav라는 클래스 정의한 것*/
