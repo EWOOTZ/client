@@ -1,13 +1,63 @@
-*{
-  margin : 0;
+html, body {
+  margin: 0;
+  height: 100%;
 }
+
+#root {
+  height: 100%;
+}
+
 
 .App {
-  background: #C2E9B5;
+  text-align: center;
 }
 
-body{
+div {
+  box-sizing: border-box;
+}
+.list {
+  padding-left: 20px;
+  text-align: left;
+  border-bottom: 1px solid grey;
+}
+
+@font-face {
+  font-family: 'HJ';
+  src: url('C:\Users\kwonh\Downloads\DungGeunMo WebFont\DungGeunMo.eot') format('truetype')
+}
+
+.backg {
   background-color: #C2E9B5;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.white-line {
+  width: 95%;
+  height: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='10' ry='10' stroke='white' stroke-width='5' stroke-dasharray='6%2c 14' stroke-dashoffset='42' stroke-linecap='square'/%3e%3c/svg%3e");
+  border-radius: 10px;
+  font-family: 'HJ';
+}
+
+.black-nav{  /*black-nav라는 클래스 정의한 것*/
+  display: flex;
+  background: black;
+  width: 100%;
+  color: white;
+  padding-left: 20px;
+}
+
+.modal {
+  margin-top: 20px;
+  padding: 20px;
+  background: #eee;
+  text-align: left;
 }
 
 .App-logo {
@@ -24,7 +74,7 @@ body{
 
 
 .App-header {
-  background-color: #C2E9B5;
+  background-color: #282c34;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
