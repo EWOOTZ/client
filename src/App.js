@@ -15,6 +15,7 @@ import { useState } from 'react';
 function App() {
 
 
+  const title = '<당신>의\n마이홈피'
   var post = '강남 우동 맛집';  // 변수 하나 선언 사용할땐 {post} 이런식으로
   let [a1, b1] = useState(['여자 코트 추천', '강남 우동 맛집', '파이썬독학']);
   let [like, like2] = useState(0);
@@ -53,7 +54,12 @@ function App() {
 
     // </div>
     <div className='backg'>
-      <div className='white-line'>안녕하세요</div>
+      <button>광장</button>
+      <div className='white-line'>
+        <p style={{color : '#00DAC0', fontSize:48} }>
+          {title}
+        </p>
+      </div>
     </div>
   );
 }
