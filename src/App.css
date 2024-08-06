@@ -140,17 +140,6 @@ div {
   font-size: 24px; 
 }
 
-.login-gray {
-  color: black;
-  text-decoration: none; /* 밑줄 없애기 */
-  text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3); /* 흐림 정도 조정 */
-  background-color: transparent;
-  outline: none;
-  border: none;
-  cursor: pointer;
-  font-family: 'HJ';
-}
-
 .login-gray:active {
   transform: scale(0.9); /* 클릭 시 크기를 줄임 */
 }
@@ -235,8 +224,6 @@ div {
   
 }
 		
-
-
 .popup-content {
   position: relative;
   background-color: #FFF8EF; 
@@ -367,6 +354,16 @@ div {
   margin: 0.5px 0; /* 요소들 간의 간격을 조절합니다 */
 }
 
+.hang2 {
+  flex-direction: row;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+.hang2 p {
+  margin: 20px 0; /* 요소들 간의 간격을 조절합니다 */
+}
+
 .input-name {
   font-size: 20px;
   font-family: "HJ";
@@ -379,5 +376,20 @@ div {
   padding-left: 10px;
   position: relative;
   background-color: white;
+}
+
+.hi{
+
+}
+
+.login-gray {
+  color: black;
+  text-decoration: none; /* 밑줄 없애기 */
+  text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3); /* 흐림 정도 조정 */
+  background-color: transparent;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'HJ';
 }
 

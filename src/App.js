@@ -6,6 +6,8 @@ import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import Ground from './ground';
 import Join from './join';
 import RouteTest from './Route';
+import Main from './main';
+import Mypage from './mypage';
 
 const Home = () => {
   let title = '<당신>의\n';
@@ -43,9 +45,9 @@ const Home = () => {
             <input className='input-name' type='text' placeholder='패스워드를 입력하세요...' />
           </div>
           <div style={{ height: '10vh' }}></div>
-          <button className="login-gray" style={{ fontSize: "30px" }} onClick={() => navigate("/join")}>로그인!</button>
+          <button className="login-gray" style={{ fontSize: "30px" }} onClick={() => navigate("/main")}>로그인!</button>
           <div style={{ height: '20vh' }}></div>
-          <button className="login-gray" style={{ fontSize: "15px" }}>&lt;당신&gt;의 마이홈피가 처음이라면?</button>
+          <button className="login-gray" style={{ fontSize: "15px" }} onClick={() => navigate("/join")}>&lt;당신&gt;의 마이홈피가 처음이라면?</button>
         </div>
       </div>
     </div>
@@ -60,6 +62,8 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/ground" element={<Ground />} />
           <Route path="/join" element={<Join />} />
+          <Route path="/main" element={<Main />} />
+          <Route path="/mypage" element={<Mypage />} />
         </Routes>
       </BrowserRouter>
     </div>
