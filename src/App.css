@@ -39,6 +39,8 @@ div {
   width: 95%;
   height: 90%;
   display: flex;
+  flex-direction: column;
+  gap: 1px;
   justify-content: center;
   align-items: center;
   background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='10' ry='10' stroke='white' stroke-width='5' stroke-dasharray='6%2c 14' stroke-dashoffset='42' stroke-linecap='square'/%3e%3c/svg%3e");
@@ -46,6 +48,21 @@ div {
   font-family: 'HJ';
   white-space: pre-line;
 }
+.white-line p {
+  margin: 5px 0; /* 요소들 간의 간격을 조절합니다 */
+}
+
+.grey-box{
+  width: 725px;
+  height: 373px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ECECEC;
+  border-radius: 10px;
+}
+
+
 
 .black-nav{  /*black-nav라는 클래스 정의한 것*/
   display: flex;

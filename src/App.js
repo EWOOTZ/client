@@ -3,6 +3,7 @@
 import logo from './logo.svg';
 import './App.css';
 import { useState } from 'react';
+import pictureHome from './images/house.svg';
 
 // <div></div>는 박스 넣기
 // <p></p>는 글자 넣기
@@ -15,7 +16,8 @@ import { useState } from 'react';
 function App() {
 
 
-  const title = '<당신>의\n마이홈피'
+  let title = '<당신>의\n';
+  let title2 = '마이홈피';
   var post = '강남 우동 맛집';  // 변수 하나 선언 사용할땐 {post} 이런식으로
   let [a1, b1] = useState(['여자 코트 추천', '강남 우동 맛집', '파이썬독학']);
   let [like, like2] = useState(0);
@@ -56,9 +58,16 @@ function App() {
     <div className='backg'>
       <button>광장</button>
       <div className='white-line'>
+        <div>
+          <img src = {pictureHome} width='30px' height='30px' style={{color:"white"}}/>
+        </div>
         <p style={{color : '#00DAC0', fontSize:48} }>
           {title}
         </p>
+        <p style={{color : 'black', fontSize : 48}}>
+          {title2}
+        </p>
+        <div className='grey-box'></div>
       </div>
     </div>
   );
