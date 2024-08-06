@@ -28,12 +28,129 @@ div {
 }
 
 .backg {
+  
   background-color: #C2E9B5;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
+
+
+.white-line2 {
+  width: 1320px;
+  height: 700px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='10' ry='10' stroke='white' stroke-width='5' stroke-dasharray='6%2c 14' stroke-dashoffset='42' stroke-linecap='square'/%3e%3c/svg%3e");
+  border-radius: 10px;
+  font-family: HJ;
+  white-space: pre-line;
+  position: relative;
+  overflow: visible;
+}
+
+.backimage-style {
+  width: 95%;
+  height: auto;
+  max-width: 100%;
+  max-height: 95%;
+  margin: 0 auto;
+}
+
+.letter-case-style {
+  position: absolute;
+  top: 175px;
+  left: 200px;
+  width: 280px;
+  height: auto;
+  object-fit: contain;
+}
+
+.tree-style {
+  position: absolute;
+  top: 55px;
+  left: 700px;
+  width: 470px;
+  height: auto;
+  object-fit: contain;
+}
+
+
+/*소원 텍스트박스 style*/
+.text-box-style {
+  position: absolute;
+  top: 520px; 
+  left: 700px;
+  width: 490px;
+  min-height: 100px; 
+  max-height: 100px; /* 최대 높이 설정 (5줄의 높이) */
+  padding: 12px;
+  background-color: rgba(255, 255, 255, 0.8); /* 반투명 흰색 배경 */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 */
+  font-size: 16px;
+  line-height: 1.5;
+
+  overflow: auto; /* 내용이 많을 때 스크롤바 추가 */
+  white-space: pre-line; /* 줄바꿈 유지 */
+  cursor: text; /* 텍스트 입력 커서 */
+}
+
+
+.text-box-style:empty:before {
+  content: "소원을 작성하세요.";
+  color: #888; 
+}
+
+
+/*소원 전송 보내기 버튼 style*/
+.send-button {
+  position: absolute;
+  top: 633px; 
+  left: 1150px;
+  bottom: 28px; 
+  padding: 10px 20px;
+  background-color: #888;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+
+}
+
+/*소원 전송 버튼 커서 갖다대면 색 변함*/
+.send-button:hover {
+  background-color: #ffa7c4;
+}
+
+
+/* 소원 내용 없으면 버튼 누르는 거 불가능하게 */
+.send-button:disabled {
+  background-color: #cccccc; /* 비활성화 상태에서의 배경색 */
+  cursor: not-allowed; 
+}
+
+
+.link-gray {
+  color: gray;
+  text-decoration: none; /* 밑줄 없애기 */
+  text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3); /* 흐림 정도 조정 */
+  font-size: 24px; 
+}
+
+
+/*광장가기 위치 조절*/
+.top-right {
+  position: absolute;
+  top: 20px;
+  right: 25px;
+}
+
 
 .white-line {
   width: 95%;
@@ -45,6 +162,7 @@ div {
   border-radius: 10px;
   font-family: 'HJ';
   white-space: pre-line;
+  position: relative;
 }
 
 .black-nav{  /*black-nav라는 클래스 정의한 것*/
