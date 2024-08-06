@@ -39,7 +39,7 @@ function Ground() {
 
     return (
         <div className='backg'>
-            <div className='white-line2'>
+            <div className='white-line'>
                 <img src={backimage} alt="Background" className='backimage-style' />
                 <img src={letter_case} alt="Letter Case" className='letter-case-style' />
                 <img src={tree} alt="Tree" className='tree-style' />
