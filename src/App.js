@@ -5,6 +5,10 @@ import './App.css';
 import { useState } from 'react';
 import pictureHome from './images/house.svg';
 
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Ground from './ground';
+import RouteTest from './Route';
+
 // <div></div>는 박스 넣기
 // <p></p>는 글자 넣기
 // <img></img>는 이미지 넣기
@@ -55,10 +59,16 @@ function App() {
     //   <Modal/>
 
     // </div>
+  
     <div className='backg'>
-      <button>광장</button>
-      <div className='white-line'>
+
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={
+          <div className='white-line'>
+             <div className='white-line'>
         <div>
+          <div className='top-right'>               <RouteTest />             </div>
           <img src = {pictureHome} width='30px' height='30px' style={{color:"white"}}/>
         </div>
         <p style={{color : '#00DAC0', fontSize:48} }>
@@ -69,8 +79,13 @@ function App() {
         </p>
         <div className='grey-box'></div>
       </div>
-    </div>
-  );
+          </div>
+        } />
+        <Route path="/ground" element={<Ground />} />
+      </Routes>
+    </BrowserRouter>
+  </div>
+);
 }
 
 function Modal() {
