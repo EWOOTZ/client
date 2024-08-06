@@ -28,7 +28,7 @@ const Home = () => {
       <p style={{ color: '#8A8A8A', fontSize: 48 }}>
         {title2}
       </p>
-      <div style={{height : "1vw"}}></div>
+      <div style={{ height: "1vw" }}></div>
       <div className='grey-box'>
         <div className='yellow-box'>
           <div className='hang'>
@@ -43,9 +43,9 @@ const Home = () => {
             <input className='input-name' type='text' placeholder='패스워드를 입력하세요...' />
           </div>
           <div style={{ height: '10vh' }}></div>
-          <button className="login-gray" style={{fontSize:"30px"}} onClick={ () => navigate("/join") }>로그인!</button>
-          <div style={{ height: '25vh' }}></div>
-          <button className="login-gray" style={{fontSize:"15px"}}>&lt;당신&gt;의 마이홈피가 처음이라면?</button>
+          <button className="login-gray" style={{ fontSize: "30px" }} onClick={() => navigate("/join")}>로그인!</button>
+          <div style={{ height: '20vh' }}></div>
+          <button className="login-gray" style={{ fontSize: "15px" }}>&lt;당신&gt;의 마이홈피가 처음이라면?</button>
         </div>
       </div>
     </div>
