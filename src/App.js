@@ -17,7 +17,6 @@ const Home = () => {
   let title2 = '마이홈피';
   const navigate = useNavigate();
 
-  
 
   const [id, setId] = useState('');
   const [pw, setPw] = useState('');
@@ -31,12 +30,12 @@ const Home = () => {
     setPw(event.target.value);
     console.log(event.target.value);
   };
+  
+  const formData = new FormData();
+  formData.append('username', id);
+  formData.append('password', pw);
 
-  var body = {
-    username: id,
-    password:pw
-  }
-
+  
   return (
     <div className='white-line'>
       <div>
@@ -66,8 +65,13 @@ const Home = () => {
           </div>
           <div style={{ height: '10vh' }}></div>
           <button className="login-gray" style={{ fontSize: "30px" }} onClick={() => {
-            navigate("/main"), console.log(id), console.log(pw), axios({method:'post',url:'/auth/token',data:body}
+            navigate("/main"),
+              axios({method:'post', 
+              url:'/auth/token',
+              data: formData,
+              headers: { "Content-Type":'application/x-www-form-urlencoded',}},
               ).then((response) => {
+                console.log(axios.AxiosHeaders);
                 console.log(response.data);
                 if (response.status == 200) { console.log("로그인 성공"); }
               }).catch((error) => console.log(error.response));
