@@ -5,7 +5,6 @@ import pictureHome from './images/Oak Tree.png';
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import Ground from './ground';
 import Join from './join';
-import RouteTest from './Route';
 
 import Letter from './Letter';
 
@@ -21,9 +20,6 @@ const Home = () => {
   return (
     <div className='white-line'>
       <div>
-        <div className='top-right'>
-          <RouteTest />
-        </div>
         <img src={pictureHome} width='30vw' height='30vh' style={{ color: "white" }} />
         <img src={pictureHome} width='30vw' height='30vh' style={{ color: "white" }} />
         <img src={pictureHome} width='30vw' height='30vh' style={{ color: "white" }} />
