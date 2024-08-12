@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import './Letter.css';
 import backimage from './assets/backg_image.png';
 import letter_case from './assets/letter_case.png';
 import tree from './assets/tree.png';
