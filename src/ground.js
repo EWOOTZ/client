@@ -3,6 +3,8 @@ import './App.css';
 import backimage from './assets/backg_image.png';
 import letter_case from './assets/letter_case.png';
 import tree from './assets/tree.png';
+import { useNavigate } from 'react-router-dom';
+
 
 const maxWishes = 20;
 
@@ -12,7 +14,9 @@ function Ground() {
     const [wishes, setWishes] = useState([]);
     const [currentWishIndex, setCurrentWishIndex] = useState(0);
     const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const navigate = useNavigate(); // useNavigate 훅 생성
 
+    
     useEffect(() => {
         const initialWishes = Array.from({ length: maxWishes }, (_, i) => ({
             title: `사용자${i + 1}`,
@@ -66,26 +70,33 @@ function Ground() {
         setCurrentWishIndex((prevIndex) => (prevIndex - 1 + wishes.length) % wishes.length);
     };
 
+     const handleLetterCaseClick = () => {
+    navigate('/letter'); // Letter 페이지로 이동
+  };
+
+
     return (
         <div className={`backg ${isPopupVisible ? 'blur-background' : ''}`} onClick={handlePopupClose}>
             <div className='white-line'>
                 <img src={backimage} alt="Background" className='backimage-style' />
-                <img src={letter_case} alt="Letter Case" className='letter-case-style' />
+                <img src={letter_case} alt="Letter Case" 
+                className='letter-case-style'
+                onClick={handleLetterCaseClick} />
+            
                 <img 
                     src={tree} 
                     alt="Tree" 
                     className='tree-style' 
                     onClick={handleTreeClick} 
-                />
-                <div className='text-box-wrapper'>
-                    <input 
-                        type='text' 
-                        value={text}
-                        onChange={handleInputChange}
-                        onFocus={handleFocus}
-                        onBlur={handleBlur}
-                        className='text-box-style'
-                    />
+                />   <textarea
+                value={text}
+                onChange={handleInputChange}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                className='text-box-style'
+                
+            />
+            
                     <button 
                         className='send-button' 
                         onClick={handleSendClick}
@@ -93,7 +104,7 @@ function Ground() {
                     >
                         소원 전송
                     </button>
-                </div>
+
             </div>
             {isPopupVisible && (
                 <>
