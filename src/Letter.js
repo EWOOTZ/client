@@ -32,13 +32,13 @@ function Letter() {
 
   return (
     <div className='white-line'>
-      <div className='grey-box'>
-        <div className='yellow-box'>
+      <div className='gray'>
+        <div className='yellow'>
           <div className='hang'>
             <p style={{ color: "black", fontSize: '20px' }}>제목</p>
             <div style={{ width: '1vw' }}></div>
             <input
-              className='input-name'
+              className='input-title'
               type='text'
               placeholder='제목을 적으세요.'
               value={title}
@@ -46,11 +46,11 @@ function Letter() {
             />
           </div>
           <div style={{ height: '4vh' }}></div>
-          <div className='hang'>
+          <div className='hangs'>
             <p style={{ color: "black", fontSize: '20px' }}>받는 사람</p>
             <div style={{ width: '1vw' }}></div>
             <input
-              className='input-name'
+              className='input-title'
               type='text'
               placeholder='받는 사람의 이메일을 입력하세요.'
               value={recipient}
@@ -58,11 +58,11 @@ function Letter() {
             />
           </div>
           <div style={{ height: '4vh' }}></div>
-          <div className='hang'>
+          <div className='hangs'>
             <p style={{ color: "black", fontSize: '20px' }}>보내는 사람</p>
             <div style={{ width: '1vw' }}></div>
             <input
-              className='input-name'
+              className='input-title'
               type='text'
               placeholder='보내는 사람을 입력하세요.'
               value={sender}
@@ -70,7 +70,7 @@ function Letter() {
             />
           </div>
           <div style={{ height: '4vh' }}></div>
-          <div className='hang'>
+          <div className='hangs'>
             <p style={{ color: "black", fontSize: '20px' }}>날짜</p>
             <div style={{ width: '1vw' }}></div>
             <DatePicker
@@ -81,7 +81,7 @@ function Letter() {
             />
           </div>
           <div style={{ height: '4vh' }}></div>
-          <div className='hang'>
+          <div className='hangs'>
             <p style={{ color: "black", fontSize: '20px' }}>내용</p>
             <div style={{ width: '1vw' }}></div>
             <textarea
