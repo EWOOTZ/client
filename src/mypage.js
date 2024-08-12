@@ -25,13 +25,13 @@ function Mypage() {
                     <div style={{width : "20vw"}}></div>
                     <div className='hang3'>
                         <p style={{ color: "black", fontSize: '20px' }}>닉네임</p>
-                        <div style={{ width: '6.7vw' }}></div>
+                        <div style={{ width: '0.5vw' }}></div>
                         <input className='input-2' type='text' placeholder='닉네임을 입력하세요...' />
                     </div>
                     <div style={{ height: '5vh' }}></div>
                     <div className='hang'>
                         <p style={{ color: "black", fontSize: '20px' }}>프로필 뮤직</p>
-                        <div style={{ width: '3.3vw' }}></div>
+                        <div style={{ width: '0.5vw' }}></div>
                         <input className='input-2' type='text' placeholder='프로필 뮤직을 설정하세요...' />
                         <div style={{width:"0.5vw"}}></div>
                         <button className="login-gray" style={{ fontSize: "15px" }} onClick={() => navigate()}>검색</button>
@@ -39,7 +39,7 @@ function Mypage() {
                     <div style={{ height: '5vh' }}></div>
                     <div className='hang'>
                         <p style={{ color: "black", fontSize: '20px' }}>한줄 소개</p>
-                        <div style={{ width: '4.6vw' }}></div>
+                        <div style={{ width: '0.5vw' }}></div>
                         <input className='input-2' type='text' placeholder='한줄 소개를 입력하세요...' />
                     </div>
                     <div style={{ height: '5vh' }}></div>
