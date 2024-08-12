@@ -73,34 +73,56 @@ div {
 
 /*소원 텍스트박스 style*/
 .text-box-style {
+
   position: absolute;
-  top: 65vh; 
+  top: 64vh; 
   right : 0;
   width: 37vw;
   min-height: 10vh; 
   max-height: 5vh; /* 최대 높이 설정 (5줄의 높이) */
   margin-right: 12vw; /* 오른쪽 여백 20px */
   height: 20vh;
-  padding: 1vh;
+  padding: 1.2vh;
   background-color: rgba(255, 255, 255, 0.8); /* 반투명 흰색 배경 */
   border: 1px solid #ccc;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 */
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.5;
   font-family: 'HJ';
-  overflow: auto; /* 내용이 많을 때 스크롤바 추가 */
-  white-space: pre-line; /* 줄바꿈 유지 */
-  cursor: text; /* 텍스트 입력 커서 */
+  overflow-y: auto;
+  cursor: text;
+  box-sizing: border-box;
+  text-decoration: none; 
+
 }
 
 
 .text-box-style:empty:before {
   content: "소원을 작성하세요.";
   font-family: 'HJ';
-
   color: #888; 
 }
+
+.text-box-style::-webkit-scrollbar {
+  width: 8px; /* 스크롤바의 너비 */
+}
+
+.text-box-style::-webkit-scrollbar-track {
+  color:rgba(255, 255, 255, 0.9); 
+  border-radius: 10px;
+}
+
+.text-box-style::-webkit-scrollbar-thumb {
+  background-color: #888; /* 스크롤바의 색상 */
+  border-radius: 10px;
+
+}
+
+.text-box-style::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* 스크롤바에 커서가 올라갔을 때 색상 */
+}
+
 
 
 /*소원 전송 보내기 버튼 style*/
@@ -108,7 +130,6 @@ div {
   position: absolute;
   top: 78vh;
   right: 0;
-
   background-color: #888;
   width: 7vw;
   height: 5vh;
@@ -174,32 +195,16 @@ div {
   top: 20px;
   right: 25px;
 }
-/*스크롤바 커스텀*/
 
 /* Scrollbar 전체 영역 */
 .popup-content::-webkit-scrollbar {
-  width: 10px; /* 스크롤바 너비 */
-  height: 10px; /* 가로 스크롤바의 높이 (필요시) */
+  width: 10px; 
+  height: 10px; 
 }
 
-/* Scrollbar 트랙 */
 .popup-content::-webkit-scrollbar-track {
-  background: #FFF8EF; /* 트랙의 배경색 */
-  border-radius: 10px; /* 트랙의 둥근 모서리 */
+  border-radius: 10px; 
 }
-
-/* Scrollbar 드래그 가능한 요소 */
-.popup-content::-webkit-scrollbar-thumb {
-  background: #888; /* 스크롤바 색상 */
-  border-radius: 10px; /* 둥근 모서리 */
-  border: 2px solid #FFF8EF; /* 스크롤바의 안쪽 여백 색상 */
-}
-
-/* Scrollbar 드래그 시 색상 */
-.popup-content::-webkit-scrollbar-thumb:hover {
-  background: #555; /* 드래그 시 색상 */
-}
-
 
 /* 쉐도우 효과*/
 .shadow {
