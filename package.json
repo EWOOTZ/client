@@ -2,7 +2,7 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  
+
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -44,5 +44,6 @@
   },
   "devDependencies": {
     "@types/react-datepicker": "^7.0.0"
-  }
+  },
+  "proxy": "http://43.202.212.132"
 }

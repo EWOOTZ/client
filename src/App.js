@@ -16,7 +16,8 @@ const Home = () => {
   let title = '<당신>의\n';
   let title2 = '마이홈피';
   const navigate = useNavigate();
-  const URL = "http://43.202.212.132:80/auth/token";
+
+  
 
   const [id, setId] = useState('');
   const [pw, setPw] = useState('');
@@ -30,6 +31,11 @@ const Home = () => {
     setPw(event.target.value);
     console.log(event.target.value);
   };
+
+  var body = {
+    username: id,
+    password:pw
+  }
 
   return (
     <div className='white-line'>
@@ -59,19 +65,13 @@ const Home = () => {
             <input className='input-name' type='text' placeholder='패스워드를 입력하세요...' value={pw} onChange={saveUserPw} />
           </div>
           <div style={{ height: '10vh' }}></div>
-          <button className="login-gray" style={{ fontSize: "30px" }} onClick={() =>{navigate("/main"), console.log(id), console.log(pw), axios.post(URL,
-          {headers: {
-            'Access-Control-Allow-Origin':'http://localhost:3000',
-            'Access-Control-Allow-Credentials': 'true',
-            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Origin, Content-Type, Accept'
-          }},
-          {
-            username:id,
-            password:pw,
-          }).then((response)=>{console.log(response.data);
-            if(response.status == 201){console.log("로그인 성공");}
-          }).catch((error)=>console.log(error.response));} }>로그인!</button>
+          <button className="login-gray" style={{ fontSize: "30px" }} onClick={() => {
+            navigate("/main"), console.log(id), console.log(pw), axios({method:'post',url:'/auth/token',data:body}
+              ).then((response) => {
+                console.log(response.data);
+                if (response.status == 200) { console.log("로그인 성공"); }
+              }).catch((error) => console.log(error.response));
+          }}>로그인!</button>
           <div style={{ height: '20vh' }}></div>
           <button className="login-gray" style={{ fontSize: "15px" }} onClick={() => navigate("/join")}>&lt;당신&gt;의 마이홈피가 처음이라면?</button>
         </div>
