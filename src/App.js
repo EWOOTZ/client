@@ -6,8 +6,12 @@ import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import Ground from './ground';
 import Join from './join';
 import RouteTest from './Route';
+
+import Letter from './Letter';
+
 import Main from './main';
 import Mypage from './mypage';
+
 
 const Home = () => {
   let title = '<당신>의\n';
@@ -62,6 +66,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/ground" element={<Ground />} />
           <Route path="/join" element={<Join />} />
+          <Route path="/letter" element={<Letter />} />
           <Route path="/main" element={<Main />} />
           <Route path="/mypage" element={<Mypage />} />
         </Routes>
