@@ -52,7 +52,7 @@ function Join(){
           </div>
           <div style={{ height: '25vh' }}></div>
           <div className='hang'>
-          <button className="login-gray" style={{ fontSize: "20px" }} onClick={() => navigate(-1)}>가입하기!</button>
+          <button className="login-gray" style={{ fontSize: "20px" }} onClick={() => navigate("/mypage")}>가입하기!</button>
         </div>
         </div>
       </div>

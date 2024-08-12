@@ -13,6 +13,8 @@ function Main() {
         <div className='backg'>
             <div className='white-line'>
                 <button className="login-gray" style={{ fontSize: "20px" }} onClick={() => navigate("/mypage")}>마이페이지</button>
+                <button className="login-gray" style={{ fontSize: "20px" }} onClick={() => navigate("/ground")}>광장가기</button>
+
 
             </div>
         </div>
