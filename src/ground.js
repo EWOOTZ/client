@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios'; 
+import { useNavigate } from 'react-router-dom';
 import './Letter.css';
 import backimage from './assets/backg_image.png';
 import letter_case from './assets/letter_case.png';
 import tree from './assets/tree.png';
-import { useNavigate } from 'react-router-dom';
-
-
-const maxWishes = 20;
 
 function Ground() {
     const [text, setText] = useState('소원을 적어주세요');
@@ -14,15 +12,53 @@ function Ground() {
     const [wishes, setWishes] = useState([]);
     const [currentWishIndex, setCurrentWishIndex] = useState(0);
     const [isPopupVisible, setIsPopupVisible] = useState(false);
-    const navigate = useNavigate(); // useNavigate 훅 생성
-
+    const [username, setUsername] = useState('');
     
+    const navigate = useNavigate();
+
+
+    const fetchData = () => {
+        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdWppbiIsImV4cCI6MTA3MjM1NDI1NDJ9.IDrlIHuDSNGH38g2pZT9qEdhuoyERDMPRMjku-8UDeY';
+
+        axios.get('/users/me', {
+            headers: {
+                'accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then((response) => {
+            if (response.status === 200) { 
+                console.log('서버 응답:', response.data);
+                setUsername(response.data.fullname); 
+            }
+        })
+        .catch((error) => {
+            console.error('username 데이터를 가져오는 중 오류 발생:', error);
+        });
+    };
+
+    const fetchWishes = () => {
+        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdWppbiIsImV4cCI6MTA3MjM1NDI1NDJ9.IDrlIHuDSNGH38g2pZT9qEdhuoyERDMPRMjku-8UDeY';
+
+        axios.get('/wish/', {
+            headers: {
+                'accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then((response) => {
+            if (response.status === 200) { 
+                console.log('서버 응답:', response.data);
+                setWishes(response.data);
+            }
+        })
+        .catch((error) => {
+            console.error('소원을 가져오는 중 오류 발생:', error);
+        });
+    };
+
     useEffect(() => {
-        const initialWishes = Array.from({ length: maxWishes }, (_, i) => ({
-            title: `사용자${i + 1}`,
-            content: `소원.... 내용 이런거?zzzzzzzzzzzzzzzzzzzㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋddddddddddlkmlfal;fnaosdlmafds'p,f;vlmkfwsmvkjowssaskndnadkbdksbakbakbdskbsksbksbkasbdkqhwih    o   lDBSKBskhSALKNDSLdknksabdkasdNKNDSK/Nkmsvjqwpnsoapcvj mkndcㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎ`,
-        }));
-        setWishes(initialWishes);
+        fetchData(); 
     }, []);
 
     const handleFocus = () => {
@@ -45,15 +81,36 @@ function Ground() {
 
     const handleSendClick = () => {
         if (text !== '소원을 적어주세요' && text.trim() !== '') {
-            alert('소원이 전송되었습니다!');
-            setText('소원을 적어주세요');
+            const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdWppbiIsImV4cCI6MTA3MjM1NDI1NDJ9.IDrlIHuDSNGH38g2pZT9qEdhuoyERDMPRMjku-8UDeY';
+            
+            const postData = {
+                username: username, 
+                contents: text
+            };
+
+            axios.post('/wish/', postData, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then((response) => {
+                if (response.status === 201) { 
+                    console.log('서버 응답:', response.data);
+                    alert('소원이 전송되었습니다!');
+                    setText('소원을 적어주세요');
+                }
+            })
+            .catch((error) => {
+                console.error('소원을 전송하는 중 오류 발생:', error);
+            });
         }
     };
 
     const handleTreeClick = (e) => {
         e.stopPropagation();
+        fetchWishes();
         setIsPopupVisible(true);
-    
     };
 
     const handlePopupClose = () => {
@@ -70,10 +127,9 @@ function Ground() {
         setCurrentWishIndex((prevIndex) => (prevIndex - 1 + wishes.length) % wishes.length);
     };
 
-     const handleLetterCaseClick = () => {
-    navigate('/letter'); 
-  };
-
+    const handleLetterCaseClick = () => {
+        navigate('/letter'); 
+    };
 
     return (
         <div className={`backg ${isPopupVisible ? 'blur-background' : ''}`} onClick={handlePopupClose}>
@@ -88,22 +144,21 @@ function Ground() {
                     alt="Tree" 
                     className='tree-style' 
                     onClick={handleTreeClick} 
-                />   <textarea
-                value={text}
-                onChange={handleInputChange}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-                className='text-box-style'
-                
-            />
-                    <button 
-                        className='send-button' 
-                        onClick={handleSendClick}
-                        disabled={text === '소원을 적어주세요' || text.trim() === ''}
-                    >
-                        소원 전송
-                    </button>
-
+                />   
+                <textarea
+                    value={text}
+                    onChange={handleInputChange}
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                    className='text-box-style'
+                />
+                <button 
+                    className='send-button' 
+                    onClick={handleSendClick}
+                    disabled={text === '소원을 적어주세요' || text.trim() === ''}
+                >
+                    소원 전송
+                </button>
             </div>
             {isPopupVisible && (
                 <>
@@ -114,11 +169,11 @@ function Ground() {
                             <button className='nav-button left' onClick={handlePrevWish}>&#8249;</button>
                             <div className='wish-container'>
                                 <div className='popup-title'>
-                                    <span style={{ color: '#C2E9B5' }}>{wishes[currentWishIndex].title}</span>
+                                    <span style={{ color: '#C2E9B5' }}>{wishes[currentWishIndex]?.username}</span>
                                     <span style={{ color: 'black' }}> 님의 소원</span>
                                 </div>
                                 <div className='popup-body'>
-                                    <div className='popup-content-body'>{wishes[currentWishIndex].content}</div>
+                                    <div className='popup-content-body'>{wishes[currentWishIndex]?.contents}</div>
                                 </div>
                             </div>
                             <button className='nav-button right' onClick={handleNextWish}>&#8250;</button>
