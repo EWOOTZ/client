@@ -17,18 +17,11 @@ html, body {
   text-align: center;
 }
 
-
 div {
   box-sizing: border-box;
 }
-.list {
-  padding-left: 20px;
-  text-align: left;
-  border-bottom: 1px solid grey;
-}
 
-.backg {
-  
+.backg {  
   background-color: #C2E9B5;
   height: 100vh;
   width: 100vw;
@@ -90,7 +83,6 @@ div {
   flex-direction: column;
   padding-top: 5vh;
   padding-bottom: 3vh;
-  
 }
 
 .hang {
