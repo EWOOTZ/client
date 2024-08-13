@@ -59,13 +59,8 @@ function Join() {
       if (response.status == 200) {
         alert("사용가능한 아이디입니다.");
       }
-      else {
-        alert("오류.");
-      }
     }).catch((error) => {
-     
-        alert("이미있는 아이디입니다.");
-    
+      alert("이미 있는 아이디입니다.");
     });
   }
 
@@ -85,9 +80,12 @@ function Join() {
         console.log(axios.AxiosHeaders);
         console.log(response.data);
         if (response.status == 201) {
-          alert("회원가입 성공!");
-          navigate("/mypage");
+          //localStorage.setItem("access_token", response.data[0]);
+          alert("회원가입 성공! 로그인 해주세요!");
+          navigate("/");
           console.log("회원가입 성공");
+          console.log(response.data[0]);
+
         }
         else {
           alert("회원가입 실패");

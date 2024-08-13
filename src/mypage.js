@@ -3,6 +3,7 @@ import './App.css';
 import { useState } from 'react';
 import pictureHome from './images/Oak Tree.png';
 import pictureapple from './images/apple.png';
+import picturebasic from './images/basicProfile.png';
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 
 
@@ -40,7 +41,7 @@ function Mypage() {
                         {uploadImgUrl ? (
                             <img src={uploadImgUrl} alt="Profile" style={{ width: '100px', height: '100px' }} />
                         ) : (
-                            <img src={pictureapple} alt="Default" style={{ width: '100px', height: '100px' }} />
+                            <img src={picturebasic} alt="Default" style={{ width: '100px', height: '100px' }} />
                         )}
                         <div style={{width : "5vw"}}></div>
                         <label htmlFor="file-upload" className="login-gray">
@@ -83,7 +84,7 @@ function Mypage() {
                         <div style={{ width: '0.5vw' }}></div>
                         <input className='input-2' type='text' placeholder='http://minihomep.com/haejin0221' />
                         <div style={{ width: "0.5vw" }}></div>
-                        <button className="login-gray" style={{ fontSize: "2.2vh" }} onClick={() => console.log(uploadFile)}>복사</button>
+                        <button className="login-gray" style={{ fontSize: "2.2vh" }} onClick={() => console.log(localStorage.getItem("access_token"))}>복사</button>
                     </div>
                 </div>
                 <div style={{ height: "1vh" }}></div>
