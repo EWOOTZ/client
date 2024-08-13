@@ -4,6 +4,7 @@ import 'react-datepicker/dist/react-datepicker.css'; // 기본 스타일 임포�
 import './Letter.css';
 import pictureapple from './images/apple.png';
 import axios from 'axios';
+import Swal from 'sweetalert2'
 
 
 function Letter() {
@@ -22,7 +23,12 @@ function Letter() {
 
   const handleSubmit = () => {
     if (!title || !recipient || !sender || !content) {
-      alert('모든 칸을 채워주세요!');
+      Swal.fire({
+        icon: "warning",
+        title: "보내기 실패",
+        text: "모든 항목을 추가해주세요!",
+    });
+
       return;
     }
 
@@ -47,7 +53,11 @@ function Letter() {
     .then((response) => {
       if (response.status === 201) {
         console.log('서버 응답:', response.data);
-        alert('소원이 전송되었습니다!');
+        Swal.fire({
+          icon: "success",
+          title: "보내기 완료",
+          text: "편지가 전송되었습니다!",
+      });
         setIsPopupVisible(false);
 
         setTitle('');

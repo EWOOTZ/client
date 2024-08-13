@@ -9,6 +9,7 @@ import Letter from './Letter';
 import Main from './main';
 import Mypage from './mypage';
 import axios from 'axios';
+import Swal from 'sweetalert2'
 
 const Home = () => {
   let title = '<당신>의\n';
@@ -49,12 +50,19 @@ const Home = () => {
         console.log("로그인 성공");
       }
       else {
-        alert("로그인 실패");
+        Swal.fire({
+          icon: "error",
+          title: "로그인 실패",
+          text: "아이디나 패스워드를 다시 확인해주세요!",
+      });
       }
     }).catch((error) => {
       console.log(error.response);
-      alert("로그인 실패");
-    });
+      Swal.fire({
+        icon: "error",
+        title: "로그인 실패",
+        text: "아이디나 패스워드를 다시 확인해주세요!",
+    });  });
   }
 
   return (
