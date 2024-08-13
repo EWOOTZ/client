@@ -4,9 +4,8 @@ import backimage from './assets/backg_image.png';
 import letter_case from './assets/letter_case.png';
 import tree from './assets/tree.png';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios'; 
 
-
-const maxWishes = 20;
 
 function Ground() {
     const [text, setText] = useState('소원을 적어주세요');
@@ -14,9 +13,34 @@ function Ground() {
     const [wishes, setWishes] = useState([]);
     const [currentWishIndex, setCurrentWishIndex] = useState(0);
     const [isPopupVisible, setIsPopupVisible] = useState(false);
-    const navigate = useNavigate(); // useNavigate 훅 생성
-
+   
     
+    const navigate = useNavigate();
+    
+  
+  
+    useEffect(() => {
+
+
+        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhc…UxMn0.aw-vGnLErMBy20Tmp4DWQ3Ewf1OeGVpFRh_f_Fw2-GQ';
+
+        axios.get('/wish/', {
+            headers: {
+
+                'Authorization': `Bearer ${token}`            }
+        })
+        .then((response) => {
+            console.log('서버 응답:', response.data);
+            setWishes(response.data);
+        })
+        .catch((error) => {
+            console.error('소원을 가져오는 중 오류 발생:', error);
+
+
+        });
+    }, []);
+    
+    /*
     useEffect(() => {
         const initialWishes = Array.from({ length: maxWishes }, (_, i) => ({
             title: `사용자${i + 1}`,
@@ -24,7 +48,7 @@ function Ground() {
         }));
         setWishes(initialWishes);
     }, []);
-
+*/
     const handleFocus = () => {
         if (!isEditing) {
             setText('');
@@ -53,7 +77,6 @@ function Ground() {
     const handleTreeClick = (e) => {
         e.stopPropagation();
         setIsPopupVisible(true);
-    
     };
 
     const handlePopupClose = () => {
@@ -70,10 +93,9 @@ function Ground() {
         setCurrentWishIndex((prevIndex) => (prevIndex - 1 + wishes.length) % wishes.length);
     };
 
-     const handleLetterCaseClick = () => {
-    navigate('/letter'); 
-  };
-
+    const handleLetterCaseClick = () => {
+        navigate('/letter'); 
+    };
 
     return (
         <div className={`backg ${isPopupVisible ? 'blur-background' : ''}`} onClick={handlePopupClose}>
@@ -88,22 +110,21 @@ function Ground() {
                     alt="Tree" 
                     className='tree-style' 
                     onClick={handleTreeClick} 
-                />   <textarea
-                value={text}
-                onChange={handleInputChange}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-                className='text-box-style'
-                
-            />
-                    <button 
-                        className='send-button' 
-                        onClick={handleSendClick}
-                        disabled={text === '소원을 적어주세요' || text.trim() === ''}
-                    >
-                        소원 전송
-                    </button>
-
+                />   
+                <textarea
+                    value={text}
+                    onChange={handleInputChange}
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                    className='text-box-style'
+                />
+                <button 
+                    className='send-button' 
+                    onClick={handleSendClick}
+                    disabled={text === '소원을 적어주세요' || text.trim() === ''}
+                >
+                    소원 전송
+                </button>
             </div>
             {isPopupVisible && (
                 <>
@@ -114,11 +135,11 @@ function Ground() {
                             <button className='nav-button left' onClick={handlePrevWish}>&#8249;</button>
                             <div className='wish-container'>
                                 <div className='popup-title'>
-                                    <span style={{ color: '#C2E9B5' }}>{wishes[currentWishIndex].title}</span>
+                                    <span style={{ color: '#C2E9B5' }}>{wishes[currentWishIndex]?.title }</span>
                                     <span style={{ color: 'black' }}> 님의 소원</span>
                                 </div>
                                 <div className='popup-body'>
-                                    <div className='popup-content-body'>{wishes[currentWishIndex].content}</div>
+                                    <div className='popup-content-body'>{wishes[currentWishIndex]?.content}</div>
                                 </div>
                             </div>
                             <button className='nav-button right' onClick={handleNextWish}>&#8250;</button>
