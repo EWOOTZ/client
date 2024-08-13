@@ -45,6 +45,7 @@ const Home = () => {
       if (response.status == 200) {
         navigate("/main");
         console.log("로그인 성공");
+        console.log(response.data)
       }
       else {
         alert("로그인 실패");
