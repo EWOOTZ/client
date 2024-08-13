@@ -20,23 +20,20 @@ function Ground() {
   
   
     useEffect(() => {
-
-
-        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhc…UxMn0.aw-vGnLErMBy20Tmp4DWQ3Ewf1OeGVpFRh_f_Fw2-GQ';
+        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhc2RmIiwiZXhwIjoxMDcyMzU0MDM1Nn0.p0NbE47hI-OQKi1RanOESsC5FgsEI506ABcaR_8BDxo'
 
         axios.get('/wish/', {
             headers: {
-
-                'Authorization': `Bearer ${token}`            }
+                "accept" : "application/json",
+                'Authorization': `Bearer ${token}`   
+            }
         })
         .then((response) => {
             console.log('서버 응답:', response.data);
             setWishes(response.data);
         })
         .catch((error) => {
-            console.error('소원을 가져오는 중 오류 발생:', error);
-
-
+            console.error('소원을 가져오는 중 오류 발생:');
         });
     }, []);
     
