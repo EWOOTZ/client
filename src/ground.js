@@ -16,7 +16,6 @@ function Ground() {
     
     const navigate = useNavigate();
 
-
     const fetchData = () => {
         axios.get('/users/me', {
             headers: {
@@ -35,6 +34,7 @@ function Ground() {
         });
     };
 
+
     const fetchWishes = () => {    
         axios.get('/wish/', {
             headers: {
@@ -45,12 +45,24 @@ function Ground() {
         .then((response) => {
             if (response.status === 200) { 
                 console.log('서버 응답:', response.data);
-                setWishes(response.data);
+                // 랜덤으로 섞기
+                const shuffledWishes = shuffleArray(response.data);
+                setWishes(shuffledWishes);
+                setCurrentWishIndex(0); // 첫 번째 소원으로 초기화
             }
         })
         .catch((error) => {
             console.error('소원을 가져오는 중 오류 발생:', error);
         });
+    };
+
+    const shuffleArray = (array) => {
+        let shuffledArray = [...array];
+        for (let i = shuffledArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+        }
+        return shuffledArray;
     };
 
     useEffect(() => {
@@ -103,7 +115,7 @@ function Ground() {
 
     const handleTreeClick = (e) => {
         e.stopPropagation();
-        fetchWishes();
+        fetchWishes(); 
         setIsPopupVisible(true);
     };
 
