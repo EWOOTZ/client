@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import './App.css';
 import './Letter.css';
 import backimage from './assets/backg_image.png';
 import letter_case from './assets/letter_case.png';
@@ -72,7 +71,7 @@ function Ground() {
     };
 
      const handleLetterCaseClick = () => {
-    navigate('/letter'); // Letter 페이지로 이동
+    navigate('/letter'); 
   };
 
 
@@ -97,7 +96,6 @@ function Ground() {
                 className='text-box-style'
                 
             />
-            
                     <button 
                         className='send-button' 
                         onClick={handleSendClick}
@@ -111,7 +109,7 @@ function Ground() {
                 <>
                     <div className='shadow' onClick={handlePopupClose}></div>
                     <div className='popup' onClick={(e) => e.stopPropagation()}>
-                        <div className='popup-content'>
+                        <div className='tree-popup-content'>
                             <button className='close-button' onClick={handlePopupClose}>×</button>
                             <button className='nav-button left' onClick={handlePrevWish}>&#8249;</button>
                             <div className='wish-container'>
