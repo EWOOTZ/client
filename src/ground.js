@@ -5,6 +5,8 @@ import './Letter.css';
 import backimage from './assets/backg_image.png';
 import letter_case from './assets/letter_case.png';
 import tree from './assets/tree.png';
+import Swal from 'sweetalert2'
+
 
 function Ground() {
     const [text, setText] = useState('소원을 적어주세요');
@@ -103,7 +105,11 @@ function Ground() {
             .then((response) => {
                 if (response.status === 201) { 
                     console.log('서버 응답:', response.data);
-                    alert('소원이 전송되었습니다!');
+                    Swal.fire({
+                        icon: "success",
+                        title: "보내기 완료",
+                        text: "소원이 전송되었습니다!",
+                    });
                     setText('소원을 적어주세요');
                 }
             })
