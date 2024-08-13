@@ -1,6 +1,6 @@
 /* eslint-disable */
 import './App.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import pictureHome from './images/Oak Tree.png';
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import Ground from './ground';
@@ -32,7 +32,7 @@ const Home = () => {
   formData.append('username', id);
   formData.append('password', pw);
 
-  function Login(){
+  function Login() {
     axios({
       method: 'post',
       url: '/auth/token',
@@ -43,15 +43,16 @@ const Home = () => {
       console.log(axios.AxiosHeaders);
       console.log(response.data);
       if (response.status == 200) {
+        localStorage.setItem("access_token", response.data.access_token);
+        console.log(localStorage.getItem("access_token"));
         navigate("/main");
         console.log("로그인 성공");
-        console.log(response.data)
       }
       else {
         alert("로그인 실패");
       }
     }).catch((error) => {
-      console.log(error.response); 
+      console.log(error.response);
       alert("로그인 실패");
     });
   }
