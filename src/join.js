@@ -5,6 +5,7 @@ import pictureHome from './images/Oak Tree.png';
 import pictureapple from './images/apple.png';
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Swal from 'sweetalert2'
 
 function Join() {
   let title = '<당신>의\n';
@@ -57,18 +58,38 @@ function Join() {
       console.log(axios.AxiosHeaders);
       console.log(response.data);
       if (response.status == 200) {
-        alert("사용가능한 아이디입니다.");
+     
+        Swal.fire({
+          icon: "success",
+          text: "사용가능한 아이디입니다!",
+      });
       }
     }).catch((error) => {
-      alert("이미 있는 아이디입니다.");
+      Swal.fire({
+        icon: "warning",
+        title: "이미 존재하는 아이디입니다.",
+        text: "다른 아이디를 입력하세요!",
+    });
+     
     });
   }
 
   function Signup() {
     if (!id || !pw || !repw || !name) {
-      alert("모든 항목을 입력해주세요.");
+      Swal.fire({
+        icon: "error",
+        title: "회원가입 실패",
+        text: "모든 항목을 입력해주세요!",
+    });
+      
+   
     } else if (pw !== repw) {
-      alert("비밀번호가 일치하지 않습니다.");
+      Swal.fire({
+        icon: "warning",
+        title: "회원가입 실패",
+        text: "비밀번호가 일치하지 않습니다.",
+    });
+
     } else {
       axios.post(
         '/users/signup',
@@ -81,14 +102,22 @@ function Join() {
         console.log(response.data);
         if (response.status == 201) {
           //localStorage.setItem("access_token", response.data[0]);
-          alert("회원가입 성공! 로그인 해주세요!");
+          Swal.fire({
+            icon: "success",
+            title: "회원가입 성공!",
+            text: "로그인 해주세요!",
+        });
+          
           navigate("/");
           console.log("회원가입 성공");
           console.log(response.data[0]);
 
         }
         else {
-          alert("회원가입 실패");
+          Swal.fire({
+            icon: "warning",
+            title: "회원가입 실패",
+        });
           console.log(id);
           console.log(pw);
           console.log(name);
@@ -98,7 +127,10 @@ function Join() {
         console.log(id);
         console.log(pw);
         console.log(name);
-        alert("회원가입 실패");
+        Swal.fire({
+          icon: "warning",
+          title: "회원가입 실패",
+      });
       });
     }
 
