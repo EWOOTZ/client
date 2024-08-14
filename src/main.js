@@ -2,12 +2,12 @@
 import './App.css';
 import './Letter.css';
 import { useState } from 'react';
+import { useEffect } from 'react';
 import picturetrash from './assets/trash.png';
 import pictureHome from './images/Oak Tree.png';
 import pictureapple from './images/apple.png';
-import { useNavigate } from 'react-router-dom';
-
-
+import axios from 'axios';
+import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 
 function formatDate() {
     const today = new Date();
@@ -23,13 +23,56 @@ function formatDate() {
     return `${year % 100}.${month}.${day}(${dayOfWeek})`;
 }
 
+
+function getMypage() {
+    axios.get(
+        '/users/me',
+        {
+            'headers': {
+                'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+                'Content-Type': 'application/json'
+            }
+        }
+    ).then((response) => {
+        console.log(axios.AxiosHeaders);
+        console.log(response.data);
+        console.log(response.status);
+        if (response.status === 200) {
+            localStorage.setItem("fullname", response.data.fullname);
+            localStorage.setItem("statusM", response.data.status_message);
+            console.log(localStorage.getItem("fullname"));
+
+            console.log(localStorage.getItem("statusM"));
+
+            console.log("마이페이지 가져오기 성공");
+            
+        }
+    }).catch((error) => {
+        console.log(error.response);
+        
+    });
+}
+
 function Main() {
+    getMypage();
     const [isExiting, setIsExiting] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
     const [text, setText] = useState("");
 
-    let title = '토비의\n';
-    let title2 = '마이홈피';
+
+    useEffect(() => {
+        const handlePopState = (event) => {
+          window.history.pushState(null, null, window.location.pathname); // 현재 URL 유지
+        };
+      
+        window.history.pushState(null, null, window.location.pathname); // 현재 상태를 pushState로 추가
+        window.addEventListener('popstate', handlePopState);
+      
+        return () => {
+          window.removeEventListener('popstate', handlePopState);
+        };
+      }, []);
+      
 
     const handleTrashClick = () => {
         setText("");
@@ -48,11 +91,17 @@ function Main() {
         setText(event.target.value);
     };
 
+
+    let title = `<${localStorage.getItem("id")}>의\n`;
+    let title2 = '마이홈피';
+
+
     const navigate = useNavigate();
 
     return (
         <div className='backg'>
             <div className='white-line'>
+
             <button className="go-ground-gray" style={{ fontSize: "25px" }} onClick={() => navigate(`/ground/${localStorage.getItem("id")}`)}>광장가기</button>
             <div className='container'>
                     <h1 className='date-text'>{formatDate()}</h1>
@@ -77,24 +126,25 @@ function Main() {
                 <img src={picturetrash} className='trash-image' alt="trash" onClick={handleTrashClick} style={{ cursor: 'pointer' }} />                </div>
                 </div>
 
+
             </div>
 
 
             {showPopup && (
                 <div className={`letter-popup ${isExiting ? 'exiting' : ''}`}>
                     <div className="letter-popup-content">
-                         <div className='hangs'>
-                         <img src={picturetrash} width='50vw' height='50vh' alt="trash" onClick={handleTrashClick}  /> 
-            <p className='trash-popup-message' > 감정 쓰레기통에 감정을 버려보세요!</p>
-          </div>
-          <textarea
+                        <div className='hangs'>
+                            <img src={picturetrash} width='50vw' height='50vh' alt="trash" onClick={handleTrashClick} />
+                            <p className='trash-popup-message' > 감정 쓰레기통에 감정을 버려보세요!</p>
+                        </div>
+                        <textarea
                             className="trash-popup-textarea"
                             value={text}
                             onChange={handleChange}
-                            placeholder="감정을 적어보세요.." 
+                            placeholder="감정을 적어보세요.."
                         />
                         <button className='trash-button' onClick={handleDiscard} >버리기!</button>
-                       
+
                     </div>
                 </div>
             )}
