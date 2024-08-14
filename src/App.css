@@ -30,6 +30,8 @@ div {
   align-items: center;
 }
 
+
+
 .white-line {
   width: 95vw;
   height: 90vh;
@@ -152,6 +154,20 @@ div {
   background-color: white;
 }
 
+.input-4 {
+  font-size: 15px;
+  font-family: "HJ";
+  color: #8A8A8A;
+  width: 20vw;
+  height: 5vh;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  padding-left: 10px;
+  position: relative;
+  background-color: #D9D9D9;
+}
+
 .login-gray {
   color: black;
   text-decoration: none; /* 밑줄 없애기 */
@@ -160,6 +176,20 @@ div {
   outline: none;
   border: none;
   cursor: pointer;
+  font-family: 'HJ';
+}
+
+.music-popup-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: left; 
+  width: 60vw;
+  height: 60vh;
+  outline: no6e;
+  box-shadow: 5px 5px 50px rgba(0, 0, 0, 0.4); 
+  backdrop-filter: blur(50px);
+  animation: fadeIn 0.1s ease-in;
   font-family: 'HJ';
 }
 
