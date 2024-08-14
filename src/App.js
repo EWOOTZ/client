@@ -8,6 +8,7 @@ import Join from './join';
 import Letter from './Letter';
 import Main from './main';
 import Mypage from './mypage';
+import Friend from './friend';
 import axios from 'axios';
 import Swal from 'sweetalert2'
 
@@ -115,6 +116,7 @@ const App = () => {
           <Route path="/letter/:id" element={<Letter />} />
           <Route path="/main/:id" element={<Main />} />
           <Route path="/mypage/:id" element={<Mypage />} />
+          <Route path="/friend/:id" element={<Friend />} />
         </Routes>
       </BrowserRouter>
     </div>
