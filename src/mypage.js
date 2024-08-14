@@ -5,6 +5,7 @@ import pictureHome from './images/Oak Tree.png';
 import pictureapple from './images/apple.png';
 import picturebasic from './images/basicProfile.png';
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function Mypage() {
     const navigate = useNavigate();
@@ -45,9 +46,14 @@ function Mypage() {
         }, 500);
     };
 
+
+    const formData = new FormData();
+
+
     const handleFileChange = (event) => {
         if (event.target.files.length > 0) {
             const uploadFile = event.target.files[0];
+            
             setFileName(uploadFile.name);
 
             const reader = new FileReader();
@@ -56,7 +62,24 @@ function Mypage() {
                 setUploadImgUrl(reader.result);
             };
             console.log(uploadFile);
+            formData.append('file', uploadFile);
 
+            axios({
+                method: 'post',
+                url: '/file/upload',
+                data: formData,
+                headers: { "Content-Type": "multipart/form-data", }
+              },
+              ).then((response) => {
+                console.log(axios.AxiosHeaders);
+                console.log(response.data);
+                if (response.status == 200) {
+                  console.log("success upload profile image");
+                }
+                else {
+                  alert("오류.");
+                }
+              })
         }
     };
 
