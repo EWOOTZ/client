@@ -6,9 +6,40 @@ import { useEffect } from 'react';
 import picturetrash from './assets/trash.png';
 import pictureHome from './images/Oak Tree.png';
 import pictureapple from './images/apple.png';
+import axios from 'axios';
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 
+function getMypage() {
+    axios.get(
+        '/users/me',
+        {
+            'headers': {
+                'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+                'Content-Type': 'application/json'
+            }
+        }
+    ).then((response) => {
+        console.log(axios.AxiosHeaders);
+        console.log(response.data);
+        console.log(response.status);
+        if (response.status === 200) {
+            localStorage.setItem("fullname", response.data.fullname);
+            localStorage.setItem("statusM", response.data.status_message);
+            console.log(localStorage.getItem("fullname"));
+
+            console.log(localStorage.getItem("statusM"));
+
+            console.log("마이페이지 가져오기 성공");
+            
+        }
+    }).catch((error) => {
+        console.log(error.response);
+        
+    });
+}
+
 function Main() {
+    getMypage();
     const [isExiting, setIsExiting] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
     const [text, setText] = useState("");
