@@ -184,8 +184,8 @@
   width: 24vw;
   text-align: center;
    max-height: 80%;
-   overflow-y: auto; /* 세로 스크롤만 허용 */
-   overflow-x: hidden; /* 가로 스크롤 비활성화 */
+   overflow-y: auto;
+   overflow-x: hidden; 
 }
 
 /* Scrollbar 전체 영역 */
@@ -201,7 +201,7 @@
   background: none;
   border: none;
   font-size: 24px;
-
+  z-index: 101;
 }
 
 .nav-button.left {
@@ -232,13 +232,22 @@
 }
 
 .popup-body {
-  font-size: 16px;
+  font-size: 18px;
   margin-bottom: 6vw;
   margin-left: 2vw;
   margin-right: 2vw;
   word-break: break-word; 
-
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* 텍스트가 중앙에 위치 */
+ 
 }
+
+/* 스크롤이 가능할 때 상단에 고정 */
+.scrollable .popup-body {
+  justify-content: flex-start; /* 텍스트를 상단에 위치 */
+}
+
 
 .close-button {
   position: absolute;
