@@ -4,8 +4,8 @@ import 'react-datepicker/dist/react-datepicker.css'; // 기본 스타일 임포�
 import './Letter.css';
 import pictureapple from './images/apple.png';
 import axios from 'axios';
-import Swal from 'sweetalert2'
-
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom'; // useNavigate 임포트 추가
 
 function Letter() {
   const [startDate, setStartDate] = useState(new Date()); // 현재 날짜로 초기화
@@ -15,11 +15,12 @@ function Letter() {
   const [content, setContent] = useState('');
   const [isPopupVisible, setIsPopupVisible] = useState(false);
 
+  const navigate = useNavigate(); // useNavigate 훅 선언
+
   // 현재 날짜와 6개월 뒤 날짜를 계산
   const today = new Date();
   const maxDate = new Date();
   maxDate.setMonth(today.getMonth() + 6);
-
 
   const handleSubmit = () => {
     if (!title || !recipient || !sender || !content) {
@@ -27,8 +28,7 @@ function Letter() {
         icon: "warning",
         title: "보내기 실패",
         text: "모든 항목을 추가해주세요!",
-    });
-
+      });
       return;
     }
 
@@ -41,7 +41,7 @@ function Letter() {
       recipient,
       sender,
       content,
-      date: startDate.toISOString().split('T')[0] // 날짜를 ISO 형식으로 변환
+      date: startDate.toISOString().split('T')[0]
     };
 
     axios.post('/mailbox/', postData, {
@@ -57,13 +57,15 @@ function Letter() {
           icon: "success",
           title: "보내기 완료",
           text: "편지가 전송되었습니다!",
-      });
+        });
         setIsPopupVisible(false);
 
         setTitle('');
         setRecipient('');
         setSender('');
         setContent('');
+
+        navigate(`/ground/${localStorage.getItem("id")}`); 
       }
     })
     .catch((error) => {
@@ -71,7 +73,6 @@ function Letter() {
       alert('편지 전송 중 오류가 발생했습니다.');
     });
   };
-
 
   const cancelSubmission = () => {
     setIsPopupVisible(false);
@@ -82,7 +83,7 @@ function Letter() {
       <div className='gray'>
         <div className='yellow'>
           <div className='hangs'>
-            <p style={{ color: "black", fontSize: '20px'}}>제목</p>
+            <p style={{ color: "black", fontSize: '20px' }}>제목</p>
             <div style={{ width: '1vw' }}></div>
             <input
               className='input-title'

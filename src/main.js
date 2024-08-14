@@ -9,6 +9,21 @@ import pictureapple from './images/apple.png';
 import axios from 'axios';
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 
+function formatDate() {
+    const today = new Date();
+    
+
+    const day = today.getDate(); 
+    const month = today.getMonth() + 1; 
+    const year = today.getFullYear(); 
+    
+    const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
+    const dayOfWeek = daysOfWeek[today.getDay()]; // 요일
+
+    return `${year % 100}.${month}.${day}(${dayOfWeek})`;
+}
+
+
 function getMypage() {
     axios.get(
         '/users/me',
@@ -44,6 +59,7 @@ function Main() {
     const [showPopup, setShowPopup] = useState(false);
     const [text, setText] = useState("");
 
+
     useEffect(() => {
         const handlePopState = (event) => {
           window.history.pushState(null, null, window.location.pathname); // 현재 URL 유지
@@ -75,18 +91,45 @@ function Main() {
         setText(event.target.value);
     };
 
+
     let title = `<${localStorage.getItem("id")}>의\n`;
     let title2 = '마이홈피';
 
+
     const navigate = useNavigate();
+
     return (
         <div className='backg'>
             <div className='white-line'>
-                <button className="login-gray" style={{ fontSize: "20px" }} onClick={() => navigate(`/mypage/${localStorage.getItem("id")}`)}>마이페이지</button>
-                <button className="login-gray" style={{ fontSize: "20px" }} onClick={() => navigate(`/ground/${localStorage.getItem("id")}`)}>광장가기</button>
-                <button className="login-gray" style={{ fontSize: "20px" }} onClick={() => navigate(`/friend/${localStorage.getItem("id")}`)}>친구추가화면</button>
-                <img src={picturetrash} width='80vw' height='70vh' alt="trash" onClick={handleTrashClick} style={{ cursor: 'pointer' }} />
+
+            <button className="go-ground-gray" style={{ fontSize: "25px" }} onClick={() => navigate(`/ground/${localStorage.getItem("id")}`)}>광장가기</button>
+            <div className='container'>
+                    <h1 className='date-text'>{formatDate()}</h1>
+                    <div className='title-text'>
+                    <p style={{ color: '#00DAC0'}}>
+          {title}
+        </p>
+        <p style={{ color: '#8A8A8A'}}>
+          {title2}
+        </p>
+                    </div>
+                </div> <div className='container'>
+                <div className='main-white-box'>
+                    <button className="login-gray" style={{ fontSize: "20px" }} onClick={() => navigate(`/mypage/${localStorage.getItem("id")}`)}>마이페이지</button>
+                </div>
+                <div className='main-gray-box'>
+                </div>
+                <div className='column-container'>
+                <div className='main-transparent-box'>
+                </div>
+                <div className='trash-image-container'>
+                <img src={picturetrash} className='trash-image' alt="trash" onClick={handleTrashClick} style={{ cursor: 'pointer' }} />                </div>
+                </div>
+
+
             </div>
+
+
             {showPopup && (
                 <div className={`letter-popup ${isExiting ? 'exiting' : ''}`}>
                     <div className="letter-popup-content">
@@ -105,6 +148,7 @@ function Main() {
                     </div>
                 </div>
             )}
+             </div>
         </div>
     );
 }

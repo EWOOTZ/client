@@ -1,6 +1,6 @@
 /* eslint-disable */
 import './App.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import pictureHome from './images/Oak Tree.png';
 import pictureapple from './images/apple.png';
 import picturebasic from './images/basicProfile.png';
@@ -103,6 +103,29 @@ function Mypage() {
         }
     };
 
+
+    function fetchData() {
+        axios.get(`/youtube/search?search=${search}}`, {
+            headers: {
+                'accept': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem("access_token")}`
+            }
+        })
+        .then((response) => {
+            if (response.status === 200) { 
+                console.log('서버 응답:', response.data);
+                //setUsername(response.data.fullname); 
+            }
+        })
+        .catch((error) => {
+            console.error('youtubeapi 데이터를 가져오는 중 오류 발생:', error);
+        });
+    };
+
+    useEffect(() => {
+        fetchData(); 
+    }, []);
+
     function sendMypage() {
         axios.put(
             '/users/update',
@@ -149,6 +172,7 @@ function Mypage() {
             
         });
     }
+
 
 
     return (
@@ -231,7 +255,7 @@ function Mypage() {
                         <div className='hang'>
                             <input className='input-4' style={{ width: "45vw" }} type='text' placeholder='가수와 노래를 검색하세요.' value={search} onChange={saveSearch} />
                             <div style={{ width: '0.5vw' }}></div>
-                            <button className="login-gray" style={{ fontSize: "2.7vh" }} onClick={() => navigate()}>검색</button>
+                            <button className="login-gray" style={{ fontSize: "2.7vh" }} onClick={() => fetchData()}>검색</button>
                         </div>
                         {searchResults.length > 0 && (
                             <div className="results-list">

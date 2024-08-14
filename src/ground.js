@@ -5,8 +5,7 @@ import './Letter.css';
 import backimage from './assets/backg_image.png';
 import letter_case from './assets/letter_case.png';
 import tree from './assets/tree.png';
-import Swal from 'sweetalert2'
-
+import Swal from 'sweetalert2';
 
 function Ground() {
     const [text, setText] = useState('소원을 적어주세요');
@@ -15,7 +14,7 @@ function Ground() {
     const [currentWishIndex, setCurrentWishIndex] = useState(0);
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const [username, setUsername] = useState('');
-    
+
     const navigate = useNavigate();
 
     const fetchData = () => {
@@ -36,7 +35,6 @@ function Ground() {
         });
     };
 
-
     const fetchWishes = () => {    
         axios.get('/wish/', {
             headers: {
@@ -47,10 +45,9 @@ function Ground() {
         .then((response) => {
             if (response.status === 200) { 
                 console.log('서버 응답:', response.data);
-                // 랜덤으로 섞기
                 const shuffledWishes = shuffleArray(response.data);
                 setWishes(shuffledWishes);
-                setCurrentWishIndex(0); // 첫 번째 소원으로 초기화
+                setCurrentWishIndex(0); 
             }
         })
         .catch((error) => {
@@ -86,7 +83,11 @@ function Ground() {
     };
 
     const handleInputChange = (e) => {
-        setText(e.target.value);
+        const input = e.target.value;
+        const inputWithoutSpaces = input.replace(/\s+/g, ''); // Remove spaces
+        if (inputWithoutSpaces.length <= 230) {
+            setText(input);
+        }
     };
 
     const handleSendClick = () => {
