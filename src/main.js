@@ -37,8 +37,8 @@ function Main() {
     return (
         <div className='backg'>
             <div className='white-line'>
-                <button className="login-gray" style={{ fontSize: "20px" }} onClick={() => navigate("/mypage")}>마이페이지</button>
-                <button className="login-gray" style={{ fontSize: "20px" }} onClick={() => navigate("/ground")}>광장가기</button>
+                <button className="login-gray" style={{ fontSize: "20px" }} onClick={() => navigate(`/mypage/${localStorage.getItem("id")}`)}>마이페이지</button>
+                <button className="login-gray" style={{ fontSize: "20px" }} onClick={() => navigate(`/ground/${localStorage.getItem("id")}`)}>광장가기</button>
                 <img src={picturetrash} width='80vw' height='70vh' alt="trash" onClick={handleTrashClick} style={{ cursor: 'pointer' }} /> 
             </div>
             {showPopup && (

@@ -137,7 +137,7 @@ function Ground() {
     };
 
     const handleLetterCaseClick = () => {
-        navigate('/letter'); 
+        navigate(`/letter/${localStorage.getItem("id")}`); 
     };
 
     return (
