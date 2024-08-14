@@ -2,7 +2,7 @@
 import './App.css';
 import { useEffect, useState } from 'react';
 import pictureHome from './images/Oak Tree.png';
-import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import Ground from './ground';
 import Join from './join';
 import Letter from './Letter';
@@ -18,6 +18,7 @@ const Home = () => {
 
   const [id, setId] = useState('');
   const [pw, setPw] = useState('');
+  
 
   const saveUserId = event => {
     setId(event.target.value);
@@ -44,9 +45,10 @@ const Home = () => {
       console.log(axios.AxiosHeaders);
       console.log(response.data);
       if (response.status == 200) {
+        localStorage.setItem("id", id);
         localStorage.setItem("access_token", response.data.access_token);
         console.log(localStorage.getItem("access_token"));
-        navigate("/main");
+        navigate(`/main/${id}`);
         console.log("로그인 성공");
       }
       else {
@@ -108,11 +110,11 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/ground" element={<Ground />} />
+          <Route path="/ground/:id" element={<Ground />} />
           <Route path="/join" element={<Join />} />
-          <Route path="/letter" element={<Letter />} />
-          <Route path="/main" element={<Main />} />
-          <Route path="/mypage" element={<Mypage />} />
+          <Route path="/letter/:id" element={<Letter />} />
+          <Route path="/main/:id" element={<Main />} />
+          <Route path="/mypage/:id" element={<Mypage />} />
         </Routes>
       </BrowserRouter>
     </div>

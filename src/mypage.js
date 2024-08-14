@@ -90,7 +90,7 @@ function Mypage() {
                 <div style={{ height: "1vh" }}></div>
                 <div className='hang'>
                     <div style={{ width: "55vw" }}></div>
-                    <button className="login-gray" style={{ fontSize: "3vh" }} onClick={() => navigate("/main")}>수정하기</button>
+                    <button className="login-gray" style={{ fontSize: "3vh" }} onClick={() => navigate(`/main/${localStorage.getItem("id")}`)}>수정하기</button>
                 </div>
             </div>
         </div>
