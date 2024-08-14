@@ -3,6 +3,9 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css'; // 기본 스타일 임포트
 import './Letter.css';
 import pictureapple from './images/apple.png';
+import axios from 'axios';
+import Swal from 'sweetalert2'
+
 
 function Letter() {
   const [startDate, setStartDate] = useState(new Date()); // 현재 날짜로 초기화
@@ -17,9 +20,15 @@ function Letter() {
   const maxDate = new Date();
   maxDate.setMonth(today.getMonth() + 6);
 
+
   const handleSubmit = () => {
     if (!title || !recipient || !sender || !content) {
-      alert('모든 칸을 채워주세요!');
+      Swal.fire({
+        icon: "warning",
+        title: "보내기 실패",
+        text: "모든 항목을 추가해주세요!",
+    });
+
       return;
     }
 
@@ -27,9 +36,42 @@ function Letter() {
   };
 
   const confirmSubmission = () => {
-    alert('보내기 완료!');
-    setIsPopupVisible(false);
+    const postData = {
+      title,
+      recipient,
+      sender,
+      content,
+      date: startDate.toISOString().split('T')[0] // 날짜를 ISO 형식으로 변환
+    };
+
+    axios.post('/mailbox/', postData, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    .then((response) => {
+      if (response.status === 201) {
+        console.log('서버 응답:', response.data);
+        Swal.fire({
+          icon: "success",
+          title: "보내기 완료",
+          text: "편지가 전송되었습니다!",
+      });
+        setIsPopupVisible(false);
+
+        setTitle('');
+        setRecipient('');
+        setSender('');
+        setContent('');
+      }
+    })
+    .catch((error) => {
+      console.error('편지를 전송하는 중 오류 발생:', error);
+      alert('편지 전송 중 오류가 발생했습니다.');
+    });
   };
+
 
   const cancelSubmission = () => {
     setIsPopupVisible(false);

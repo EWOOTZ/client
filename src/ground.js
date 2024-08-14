@@ -5,6 +5,8 @@ import './Letter.css';
 import backimage from './assets/backg_image.png';
 import letter_case from './assets/letter_case.png';
 import tree from './assets/tree.png';
+import Swal from 'sweetalert2'
+
 
 function Ground() {
     const [text, setText] = useState('소원을 적어주세요');
@@ -17,12 +19,10 @@ function Ground() {
     const navigate = useNavigate();
 
     const fetchData = () => {
-        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdWppbiIsImV4cCI6MTA3MjM1NDI1NDJ9.IDrlIHuDSNGH38g2pZT9qEdhuoyERDMPRMjku-8UDeY';
-
         axios.get('/users/me', {
             headers: {
                 'accept': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${localStorage.getItem("access_token")}`
             }
         })
         .then((response) => {
@@ -36,14 +36,12 @@ function Ground() {
         });
     };
 
-    // 소원 목록을 랜덤하게 섞어 가져오는 함수
-    const fetchWishes = () => {
-        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdWppbiIsImV4cCI6MTA3MjM1NDI1NDJ9.IDrlIHuDSNGH38g2pZT9qEdhuoyERDMPRMjku-8UDeY';
 
+    const fetchWishes = () => {    
         axios.get('/wish/', {
             headers: {
                 'accept': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${localStorage.getItem("access_token")}`
             }
         })
         .then((response) => {
@@ -92,9 +90,7 @@ function Ground() {
     };
 
     const handleSendClick = () => {
-        if (text !== '소원을 적어주세요' && text.trim() !== '') {
-            const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdWppbiIsImV4cCI6MTA3MjM1NDI1NDJ9.IDrlIHuDSNGH38g2pZT9qEdhuoyERDMPRMjku-8UDeY';
-            
+        if (text !== '소원을 적어주세요' && text.trim() !== '') {            
             const postData = {
                 username: username, 
                 contents: text
@@ -102,14 +98,18 @@ function Ground() {
 
             axios.post('/wish/', postData, {
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+                    'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
                     'Content-Type': 'application/json'
                 }
             })
             .then((response) => {
                 if (response.status === 201) { 
                     console.log('서버 응답:', response.data);
-                    alert('소원이 전송되었습니다!');
+                    Swal.fire({
+                        icon: "success",
+                        title: "보내기 완료",
+                        text: "소원이 전송되었습니다!",
+                    });
                     setText('소원을 적어주세요');
                 }
             })
@@ -140,7 +140,7 @@ function Ground() {
     };
 
     const handleLetterCaseClick = () => {
-        navigate('/letter'); 
+        navigate(`/letter/${localStorage.getItem("id")}`); 
     };
 
     return (

@@ -1,14 +1,16 @@
 /* eslint-disable */
 import './App.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import pictureHome from './images/Oak Tree.png';
-import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import Ground from './ground';
 import Join from './join';
 import Letter from './Letter';
 import Main from './main';
 import Mypage from './mypage';
+import Friend from './friend';
 import axios from 'axios';
+import Swal from 'sweetalert2'
 
 const Home = () => {
   let title = '<당신>의\n';
@@ -17,6 +19,7 @@ const Home = () => {
 
   const [id, setId] = useState('');
   const [pw, setPw] = useState('');
+  
 
   const saveUserId = event => {
     setId(event.target.value);
@@ -32,7 +35,7 @@ const Home = () => {
   formData.append('username', id);
   formData.append('password', pw);
 
-  function Login(){
+  function Login() {
     axios({
       method: 'post',
       url: '/auth/token',
@@ -43,17 +46,26 @@ const Home = () => {
       console.log(axios.AxiosHeaders);
       console.log(response.data);
       if (response.status == 200) {
-        navigate("/main");
+        localStorage.setItem("id", id);
+        localStorage.setItem("access_token", response.data.access_token);
+        console.log(localStorage.getItem("access_token"));
+        navigate(`/main/${id}`);
         console.log("로그인 성공");
-        console.log(response.data)
       }
       else {
-        alert("로그인 실패");
+        Swal.fire({
+          icon: "error",
+          title: "로그인 실패",
+          text: "아이디나 패스워드를 다시 확인해주세요!",
+      });
       }
     }).catch((error) => {
-      console.log(error.response); 
-      alert("로그인 실패");
-    });
+      console.log(error.response);
+      Swal.fire({
+        icon: "error",
+        title: "로그인 실패",
+        text: "아이디나 패스워드를 다시 확인해주세요!",
+    });  });
   }
 
   return (
@@ -99,11 +111,12 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/ground" element={<Ground />} />
+          <Route path="/ground/:id" element={<Ground />} />
           <Route path="/join" element={<Join />} />
-          <Route path="/letter" element={<Letter />} />
-          <Route path="/main" element={<Main />} />
-          <Route path="/mypage" element={<Mypage />} />
+          <Route path="/letter/:id" element={<Letter />} />
+          <Route path="/main/:id" element={<Main />} />
+          <Route path="/mypage/:id" element={<Mypage />} />
+          <Route path="/friend/:id" element={<Friend />} />
         </Routes>
       </BrowserRouter>
     </div>
