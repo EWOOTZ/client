@@ -14,7 +14,7 @@ function Ground() {
     const [currentWishIndex, setCurrentWishIndex] = useState(0);
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const [username, setUsername] = useState('');
-    
+
     const navigate = useNavigate();
 
     const fetchData = () => {
@@ -47,7 +47,7 @@ function Ground() {
                 console.log('서버 응답:', response.data);
                 const shuffledWishes = shuffleArray(response.data);
                 setWishes(shuffledWishes);
-                setCurrentWishIndex(0); // 첫 번째 소원으로 초기화
+                setCurrentWishIndex(0); 
             }
         })
         .catch((error) => {
@@ -83,7 +83,11 @@ function Ground() {
     };
 
     const handleInputChange = (e) => {
-        setText(e.target.value);
+        const input = e.target.value;
+        const inputWithoutSpaces = input.replace(/\s+/g, ''); // Remove spaces
+        if (inputWithoutSpaces.length <= 230) {
+            setText(input);
+        }
     };
 
     const handleSendClick = () => {
@@ -175,27 +179,17 @@ function Ground() {
                     <div className='popup' onClick={(e) => e.stopPropagation()}>
                         <div className='tree-popup-content'>
                             <button className='close-button' onClick={handlePopupClose}>×</button>
-                            {wishes.length === 0 ? (
-                                <div className='wish-container'>
-                                    <div className='popup-body'>
-                                        <div className='popup-content-body'>아무 사용자가 소원을 달지 않았습니다</div>
-                                    </div>
+                            <button className='nav-button left' onClick={handlePrevWish}>&#8249;</button>
+                            <div className='wish-container'>
+                                <div className='popup-title'>
+                                    <span style={{ color: '#C2E9B5' }}>{wishes[currentWishIndex]?.username}</span>
+                                    <span style={{ color: 'black' }}> 님의 소원</span>
                                 </div>
-                            ) : (
-                                <>
-                                    <button className='nav-button left' onClick={handlePrevWish}>&#8249;</button>
-                                    <div className='wish-container'>
-                                        <div className='popup-title'>
-                                            <span style={{ color: '#C2E9B5' }}>{wishes[currentWishIndex]?.username}</span>
-                                            <span style={{ color: 'black' }}> 님의 소원</span>
-                                        </div>
-                                        <div className='popup-body'>
-                                            <div className='popup-content-body'>{wishes[currentWishIndex]?.contents}</div>
-                                        </div>
-                                    </div>
-                                    <button className='nav-button right' onClick={handleNextWish}>&#8250;</button>
-                                </>
-                            )}
+                                <div className='popup-body'>
+                                    <div className='popup-content-body'>{wishes[currentWishIndex]?.contents}</div>
+                                </div>
+                            </div>
+                            <button className='nav-button right' onClick={handleNextWish}>&#8250;</button>
                         </div>
                     </div>
                 </>
