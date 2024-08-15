@@ -9,8 +9,8 @@
   cursor: pointer;
   font-family: 'HJ';
  align-self: flex-end;
-padding-bottom: 15px;
- padding-right: 20px;
+  padding-right: 10px;
+  margin-top: -15px !important;
 } 
 
 .column-container {
@@ -31,46 +31,49 @@ padding-bottom: 15px;
 .main-white-box {
   background-color: white;
   border: none;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
   padding: 20px;
   border-radius: 14px;
   width: 18vw; 
-  height: 80vh;
+  height: 75vh;
   display: flex;
   flex-direction: column;
 }
 
 .main-gray-box {
   background-color: #ECECEC;
-  padding: 20px;
-  height: 80vh;
+  padding: 10px;
+  height: 75vh;
   width: 55vw;
   flex: 1;
   margin: 0 15px; 
   border-radius: 4px;
   flex-direction: column;
-
+  align-items: center;
   text-align: center;
+  display: flex;
+  justify-content: center;
 }
 
 .main-transparent-box {
   background-color: rgba(255, 255, 255, 0.5);
   width: 13vw; 
-  height: 67vh;
+  height: 65vh;
   position: relative;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
   flex-direction: column;
   border-radius: 10px;
   overflow: hidden; 
 }
 
-.trash-image {
-  width: 6vw; 
-  height: 9.5vh; 
-}
 .trash-image-container {
   display: flex;
-  justify-content: end;
-  padding-top: 30px;
+  justify-content: flex-end;
+  align-items: flex-end;
+  padding-top: 20px;
+  
 }
 
 /*감정쓰레기통*/
@@ -126,15 +129,13 @@ margin-right: 8px;
 }
 
 .date-text {
-  font-size: 24px; /* 원하는 폰트 사이즈로 조정 */
+  font-size: 18px; /* 원하는 폰트 사이즈로 조정 */
   font-family: 'HJ'; 
-
   text-align: start;
-
 }
 
 .title-text {
-  font-size: 30px;
+  font-size: 27px;
   font-family: 'HJ'; /* 원하는 폰트 패밀리로 설정 */
   text-align: start;
   margin-top: 10px;
