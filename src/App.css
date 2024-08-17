@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
   margin: 0;
   height: 100%;
 }
@@ -21,7 +22,7 @@ div {
   box-sizing: border-box;
 }
 
-.backg {  
+.backg {
   background-color: #C2E9B5;
   height: 100vh;
   width: 100vw;
@@ -46,11 +47,13 @@ div {
   white-space: pre-line;
   position: relative;
 }
+
 .white-line p {
-  margin: 0.5px 0; /* 요소들 간의 간격을 조절합니다 */
+  margin: 0.5px 0;
+  /* 요소들 간의 간격을 조절합니다 */
 }
 
-.grey-box{
+.grey-box {
   width: 45vw;
   height: 45vh;
   display: flex;
@@ -61,7 +64,7 @@ div {
   flex-direction: column;
 }
 
-.grey-box2{
+.grey-box2 {
   width: 45vw;
   height: 45vh;
   display: flex;
@@ -74,7 +77,7 @@ div {
   padding-left: 3vw;
 }
 
-.yellow-box{
+.yellow-box {
   width: 43vw;
   height: 40vh;
   display: flex;
@@ -87,14 +90,65 @@ div {
   padding-bottom: 3vh;
 }
 
+.yellow-box-scroll {
+  width: 43vw;
+  height: 40vh;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  text-align: left;
+  background-color: #FFF8EF;
+  border-radius: 10px;
+  flex-direction: column;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.yellow-box-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.yellow-box-scroll::-webkit-scrollbar-thumb {
+  background-color: #D8DED5;
+  /* 스크롤바의 색상 */
+  border-radius: 10px;
+}
+
+.sky-box-inner {
+  width: 50vw;
+  height: 50vh;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 10px;
+  flex-direction: column;
+  padding: 10px;
+}
+
+
+.sky-box {
+  width: 43vw;
+  height: 40vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #FFF8EF;
+  border-radius: 10px;
+  flex-direction: column;
+  padding: 20px;
+}
+
 .hang {
   flex-direction: row;
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 .hang p {
-  margin: 0.5px 0; /* 요소들 간의 간격을 조절합니다 */
+  margin: 0.5px 0;
+  /* 요소들 간의 간격을 조절합니다 */
 }
 
 .hang2 {
@@ -110,6 +164,14 @@ div {
   justify-content: center;
   text-align: start;
   align-items: center;
+}
+
+.hang4 {
+  flex-direction: row;
+  display: flex;
+  justify-content: flex-start;
+  text-align: start;
+  align-items: flex-start;
 }
 
 .input-name {
@@ -167,11 +229,20 @@ div {
   position: relative;
   background-color: #D9D9D9;
 }
+.input-5 {
+  font-family: "HJ";
+  border: none;
+  outline: none;
+  position: relative;
+  background-color: transparent;
+}
 
 .login-gray {
   color: black;
-  text-decoration: none; /* 밑줄 없애기 */
-  text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3); /* 흐림 정도 조정 */
+  text-decoration: none;
+  /* 밑줄 없애기 */
+  text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+  /* 흐림 정도 조정 */
   background-color: transparent;
   outline: none;
   border: none;
@@ -183,13 +254,12 @@ div {
   background: white;
   padding: 20px;
   border-radius: 10px;
-  text-align: left; 
+  text-align: left;
   width: 60vw;
   height: 60vh;
   outline: no6e;
-  box-shadow: 5px 5px 50px rgba(0, 0, 0, 0.4); 
+  box-shadow: 5px 5px 50px rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(50px);
   animation: fadeIn 0.1s ease-in;
   font-family: 'HJ';
 }
-
