@@ -37,6 +37,8 @@
   width: 18vw; 
   height: 75vh;
   display: flex;
+  align-items: center;
+  justify-content: center;
   flex-direction: column;
 }
 
@@ -129,7 +131,7 @@ margin-right: 8px;
 }
 
 .date-text {
-  font-size: 18px; /* 원하는 폰트 사이즈로 조정 */
+  font-size: 20px; /* 원하는 폰트 사이즈로 조정 */
   font-family: 'HJ'; 
   text-align: start;
 }
