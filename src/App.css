@@ -140,12 +140,15 @@ div {
   flex-direction: column;
   padding: 10px;
  
-  
+
 }
 
 .scroll2{
   overflow-y: auto;
   max-height: 29vh;
+
+
+  
 }
 .scroll2::-webkit-scrollbar {
   width: 5px;

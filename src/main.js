@@ -14,6 +14,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import AWS from 'aws-sdk';
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
+import React, {useRef} from 'react';
 
 function formatDate() {
     const today = new Date();
@@ -136,6 +137,7 @@ function Main() {
             });
             if (response.status === 200) {
                 setVisitview(response.data);
+                setTimeout(scrollToBottom, 100); 
                 console.log("방명록 가져오기 성공", response.data);
             }
         } catch (error) {
@@ -164,6 +166,7 @@ function Main() {
             }
         ).then((response) => {
             console.log(axios.AxiosHeaders);
+            
             console.log(response.data);
             console.log(response.status);
             if (response.status === 201) {
@@ -174,6 +177,7 @@ function Main() {
                 setVisitname('');
                 setvisitContent('');
                 getVisit();
+                scrollToBottom(); 
                 console.log("방명록 전송 성공");
             }
         }).catch((error) => {
@@ -201,6 +205,13 @@ function Main() {
     const [a9, seta9] = useState('');
     const [a10, seta10] = useState('');
 
+    const scrollToBottom = () => {
+        const element = document.querySelector('.scroll2');
+        if (element) {
+            element.scrollTop = element.scrollHeight;
+        }
+    };
+    
     const savea1 = event => {
         seta1(event.target.value);
         console.log(event.target.value);
@@ -290,6 +301,11 @@ function Main() {
         getVisit();
     }, []);
 
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [visitView]); // visitView가 변경될 때마다 호출
+    
     useEffect(() => {
         if (visitContent === '') {
             // 상태 업데이트 후에 로그를 확인해 비워졌는지 확인
