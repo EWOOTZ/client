@@ -7,7 +7,7 @@ import picturebasic from './images/basicProfile.png';
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-
+import YouTube from 'react-youtube';
 
 function Mypage() {
     const navigate = useNavigate();
@@ -21,7 +21,16 @@ function Mypage() {
     const [singer, setSinger] = useState('');
     const [title, setTitle] = useState('');
     const [search, setSearch] = useState('');
+    const [searchClicked, setSearchClicked] = useState(false); 
 
+    const opts = {
+        width: "250", 
+        height: "150", 
+        playerVars: {
+            autoplay: 0, // 자동 재생 여부
+        },
+    };
+    
     const saveSinger = event => {
         setSinger(event.target.value);
         console.log(event.target.value);
@@ -59,8 +68,6 @@ function Mypage() {
         console.log(event.target.value);
     };
 
-
-
     const formData = new FormData();
 
     const handleFileChange = (event) => {
@@ -86,23 +93,20 @@ function Mypage() {
                     'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
                     "Content-Type": "multipart/form-data",
                 }
-            },
-            ).then((response) => {
+            })
+            .then((response) => {
                 console.log(axios.AxiosHeaders);
                 console.log(response.data);
-                if (response.status == 200) {
+                if (response.status === 200) {
                     console.log("success upload profile image");
-                }
-                else {
+                } else {
                     alert("오류.");
                 }
-            })
+            });
         }
     };
 
-
     async function fetchData() {
-        console.log("anjksnkjvnajknvkndkjnvkndk");
         console.log(localStorage.getItem("access_token"));
         axios({
             method: 'post',
@@ -112,12 +116,11 @@ function Mypage() {
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
                 'Content-Type': 'application/json'
             },
-          },
-        )
+          })
             .then((response) => {
                 if (response.status === 200) {
-                    console.log('서버 응답:', response);
-
+                    console.log('youtube 서버 응답:', response);
+                    setSearchResults(response.data.items.slice(0, 10));
                 }
             })
             .catch((error) => {
@@ -150,7 +153,6 @@ function Mypage() {
             }
         }).catch((error) => {
             console.log(error.response);
-
         });
     }
 
@@ -175,11 +177,14 @@ function Mypage() {
             }
         }).catch((error) => {
             console.log(error.response);
-
         });
     }
 
-
+    // 검색 버튼 클릭 핸들러
+    const handleSearchClick = () => {
+        setSearchClicked(true);
+        fetchData();
+    };
 
     return (
         <div className='backg'>
@@ -206,7 +211,6 @@ function Mypage() {
                         onChange={handleFileChange}
                         style={{ display: "none" }}
                     />
-
                 </div>
                 <div style={{ height: "3vh" }}></div>
                 <div className='grey-box2'>
@@ -261,13 +265,16 @@ function Mypage() {
                         <div className='hang'>
                             <input className='input-4' style={{ width: "45vw" }} type='text' placeholder='가수와 노래를 검색하세요.' value={search} onChange={saveSearch} />
                             <div style={{ width: '0.5vw' }}></div>
-                            <button className="login-gray" style={{ fontSize: "2.7vh" }} onClick={() => fetchData()}>검색</button>
+                            <button className="login-gray" style={{ fontSize: "2.7vh" }} onClick={handleSearchClick}>검색</button>
                         </div>
-                        {searchResults.length > 0 && (
+                        {searchClicked && searchResults.length > 0 && (
                             <div className="results-list">
                                 <ul>
                                     {searchResults.map((result, index) => (
-                                        <li key={index}>{result}</li>
+                                        <li key={index}>
+                                            <YouTube videoId={result.videoId} opts={opts} />
+                                            <div>{result.title ? result.title.replace(/&quot;/gi, '"') : '제목 없음'}</div>
+                                        </li>
                                     ))}
                                 </ul>
                             </div>
@@ -280,4 +287,3 @@ function Mypage() {
 }
 
 export default Mypage;
-

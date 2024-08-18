@@ -129,6 +129,7 @@ div {
 }
 
 .sky-box-inner {
+  position: relative; 
   width: 50vw;
   height: 50vh;
   display: flex;
@@ -138,6 +139,7 @@ div {
   border-radius: 10px;
   flex-direction: column;
   padding: 10px;
+ 
   
 }
 

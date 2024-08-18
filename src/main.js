@@ -424,11 +424,13 @@ function Main() {
                                             </div>
                                         ))}
                                     </div>
+                                    <div className="fix">
                                     <div className="hang" style={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-end", height: "20%", width: "100%" }}>
                                         <input className='input-name' style={{ width: "10vw" }} type='text' placeholder='이름' value={visitname} onChange={saveVisitname} />
                                         <div style={{ width: "1vh" }}></div>
                                         <input className='input-name' style={{ width: "32vw" }} type='text' placeholder='방명록을 작성하세요.' value={visitContent} onChange={savecontent} />
                                         <button className="login-gray" style={{ fontSize: "20px", display: "flex", paddingBottom: "8px" }} onClick={() => sendVisit()}>전송</button>
+                                        </div>
 
                                     </div>
                                 </div>

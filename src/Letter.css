@@ -146,8 +146,44 @@ margin-right: 8px;
 .title-text div {
   margin: 0;
 }
+.results-list {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #692828;
+  border-radius: 5px;
+  max-height: 300px; /* 리스트의 최대 높이 */
+  overflow-y: auto; /* 리스트가 길어지면 스크롤 생기도록 설정 */
+}
+
+.results-list ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.results-list li {
+  background-color: #f0f0f0;
+  padding: 10px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.results-list li:hover {
+  background-color: #e0e0e0;
+}
 
 
+.fix {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 1000; 
+  padding: 15px;
+  padding-left: -15px;
+}
 
 /*배경&화이트라인*/ 
 .backg {
