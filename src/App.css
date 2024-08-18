@@ -53,6 +53,20 @@ div {
   /* 요소들 간의 간격을 조절합니다 */
 }
 
+.black-line {
+  width: 15vw;
+  height: 18vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%23333' stroke-width='3' stroke-dasharray='3%2c 10' stroke-dashoffset='23' stroke-linecap='square'/%3e%3c/svg%3e");
+  font-family: 'HJ';
+  white-space: pre-line;
+  position: relative;
+  padding: 10px;
+}
+
 .grey-box {
   width: 45vw;
   height: 45vh;
@@ -124,8 +138,33 @@ div {
   border-radius: 10px;
   flex-direction: column;
   padding: 10px;
+  
 }
 
+.scroll2{
+  overflow-y: auto;
+  max-height: 29vh;
+}
+.scroll2::-webkit-scrollbar {
+  width: 5px;
+}
+
+.scroll2::-webkit-scrollbar-thumb {
+  background-color: #D8DED5;
+  /* 스크롤바의 색상 */
+  border-radius: 10px;
+}
+
+.green-box {
+  width: 15vw;
+  height: 10vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #EEF9EB;
+  border-radius: 10px;
+  flex-direction: column;
+}
 
 .sky-box {
   width: 43vw;

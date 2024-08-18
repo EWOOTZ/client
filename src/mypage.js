@@ -12,14 +12,12 @@ import Swal from 'sweetalert2';
 function Mypage() {
     const navigate = useNavigate();
     const [fileName, setFileName] = useState("");
-    const [uploadImgUrl, setUploadImgUrl] = useState("");
+    const [uploadImgUrl, setUploadImgUrl] = useState();
     const [showPopup, setShowPopup] = useState(false);
     const [isExiting, setIsExiting] = useState(false);
     const [searchResults, setSearchResults] = useState([]);
-
     const [fullname, setFullname] = useState('');
     const [intro, setIntro] = useState('');
-
     const [singer, setSinger] = useState('');
     const [title, setTitle] = useState('');
     const [search, setSearch] = useState('');
@@ -124,6 +122,7 @@ function Mypage() {
 
     useEffect(() => {
         fetchData(); 
+        getMypage();
     }, []);
 
     function sendMypage() {
@@ -164,8 +163,10 @@ function Mypage() {
             console.log(response.data);
             console.log(response.status);
             if (response.status === 200) {
+                setFullname(response.data.fullname);
+                setIntro(response.data.status_message);
+                setUploadImgUrl(response.data.profile_image);
                 console.log("마이페이지 가져오기 성공");
-
             }
         }).catch((error) => {
             console.log(error.response);
@@ -214,7 +215,7 @@ function Mypage() {
                     <div className='hang'>
                         <p style={{ color: "black", fontSize: '2.7vh' }}>프로필 뮤직</p>
                         <div style={{ width: '0.5vw' }}></div>
-                        <input className='input-2' type='text' placeholder='프로필 뮤직을 설정하세요...' />
+                        <input className='input-2' type='text' placeholder='프로필 뮤직을 설정하세요...' value={`${singer} - ${title}`}/>
                         <div style={{ width: "0.5vw" }}></div>
                         <button className="login-gray" style={{ fontSize: "2.2vh" }} onClick={handleTrashClick}>검색</button>
                     </div>
