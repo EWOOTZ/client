@@ -107,7 +107,7 @@ function Mypage() {
         axios({
             method: 'post',
             url: '/youtube/?search=',
-            params: search,
+            params: { search },
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
                 'Content-Type': 'application/json'
