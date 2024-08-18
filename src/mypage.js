@@ -52,17 +52,16 @@ function Mypage() {
     const saveUserFullname = event => {
         setFullname(event.target.value);
         console.log(event.target.value);
-      };
-    
-      const saveUserIntro = event => {
+    };
+
+    const saveUserIntro = event => {
         setIntro(event.target.value);
         console.log(event.target.value);
-      };
-    
+    };
+
 
 
     const formData = new FormData();
-    console.log(localStorage.getItem("access_token"));
 
     const handleFileChange = (event) => {
         console.log(localStorage.getItem("access_token"));
@@ -102,26 +101,32 @@ function Mypage() {
     };
 
 
-    function fetchData() {
-        axios.get(`/youtube/search?search=${search}}`, {
+    async function fetchData() {
+        console.log("anjksnkjvnajknvkndkjnvkndk");
+        console.log(localStorage.getItem("access_token"));
+        axios({
+            method: 'post',
+            url: '/youtube/?search=',
+            params: search,
             headers: {
-                'accept': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem("access_token")}`
-            }
-        })
-        .then((response) => {
-            if (response.status === 200) { 
-                console.log('서버 응답:', response.data);
-                //setUsername(response.data.fullname); 
-            }
-        })
-        .catch((error) => {
-            console.error('youtubeapi 데이터를 가져오는 중 오류 발생:', error);
-        });
+                'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+                'Content-Type': 'application/json'
+            },
+          },
+        )
+            .then((response) => {
+                if (response.status === 200) {
+                    console.log('서버 응답:', response);
+
+                }
+            })
+            .catch((error) => {
+                console.error('youtubeapi 데이터를 가져오는 중 오류 발생:', error);
+            });
     };
 
     useEffect(() => {
-        fetchData(); 
+        fetchData();
         getMypage();
     }, []);
 
@@ -145,7 +150,7 @@ function Mypage() {
             }
         }).catch((error) => {
             console.log(error.response);
-            
+
         });
     }
 
@@ -170,7 +175,7 @@ function Mypage() {
             }
         }).catch((error) => {
             console.log(error.response);
-            
+
         });
     }
 
@@ -209,13 +214,13 @@ function Mypage() {
                     <div className='hang3'>
                         <p style={{ color: "black", fontSize: '2.7vh' }}>닉네임</p>
                         <div style={{ width: '0.5vw' }}></div>
-                        <input className='input-2' type='text' placeholder='닉네임을 입력하세요...' value={fullname} onChange={saveUserFullname}/>
+                        <input className='input-2' type='text' placeholder='닉네임을 입력하세요...' value={fullname} onChange={saveUserFullname} />
                     </div>
                     <div style={{ height: '5vh' }}></div>
                     <div className='hang'>
                         <p style={{ color: "black", fontSize: '2.7vh' }}>프로필 뮤직</p>
                         <div style={{ width: '0.5vw' }}></div>
-                        <input className='input-2' type='text' placeholder='프로필 뮤직을 설정하세요...' value={`${singer} - ${title}`}/>
+                        <input className='input-2' type='text' placeholder='프로필 뮤직을 설정하세요...' value={`${singer} - ${title}`} />
                         <div style={{ width: "0.5vw" }}></div>
                         <button className="login-gray" style={{ fontSize: "2.2vh" }} onClick={handleTrashClick}>검색</button>
                     </div>
@@ -223,13 +228,13 @@ function Mypage() {
                     <div className='hang'>
                         <p style={{ color: "black", fontSize: '2.7vh' }}>한줄 소개</p>
                         <div style={{ width: '0.5vw' }}></div>
-                        <input className='input-2' type='text' placeholder='한줄 소개를 입력하세요...' value={intro} onChange={saveUserIntro}/>
+                        <input className='input-2' type='text' placeholder='한줄 소개를 입력하세요...' value={intro} onChange={saveUserIntro} />
                     </div>
                     <div style={{ height: '5vh' }}></div>
                     <div className='hang'>
                         <p style={{ color: "black", fontSize: '2.7vh' }}>내 미니홈피 URL</p>
                         <div style={{ width: '0.5vw' }}></div>
-                        <input className='input-2' type='text' placeholder={`localhost:3000/main/${localStorage.getItem("id")}`}/>
+                        <input className='input-2' type='text' placeholder={`localhost:3000/main/${localStorage.getItem("id")}`} />
                         <div style={{ width: "0.5vw" }}></div>
                         <button className="login-gray" style={{ fontSize: "2.2vh" }} onClick={() => console.log(localStorage.getItem("access_token"))}>복사</button>
                     </div>
