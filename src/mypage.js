@@ -12,7 +12,7 @@ import Swal from 'sweetalert2';
 function Mypage() {
     const navigate = useNavigate();
     const [fileName, setFileName] = useState("");
-    const [uploadImgUrl, setUploadImgUrl] = useState("");
+    const [uploadImgUrl, setUploadImgUrl] = useState();
     const [showPopup, setShowPopup] = useState(false);
     const [isExiting, setIsExiting] = useState(false);
     const [searchResults, setSearchResults] = useState([]);
@@ -165,6 +165,7 @@ function Mypage() {
             if (response.status === 200) {
                 setFullname(response.data.fullname);
                 setIntro(response.data.status_message);
+                setUploadImgUrl(response.data.profile_image);
                 console.log("마이페이지 가져오기 성공");
             }
         }).catch((error) => {

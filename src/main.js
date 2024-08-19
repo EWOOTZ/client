@@ -45,6 +45,7 @@ function Main() {
                 localStorage.setItem("fullname", response.data.fullname);
                 setFullname(response.data.fullname);
                 localStorage.setItem("profile_image", response.data.profile_image);
+                setProfileImg(response.data.profile_image);
                 localStorage.setItem("id", response.data.id);
                 localStorage.setItem("statusM", response.data.status_message);
                 setStatus(response.data.status_message);
@@ -187,6 +188,7 @@ function Main() {
     const [fullname, setFullname] = useState("");
     const [visitname, setVisitname] = useState("");
     const [visitContent, setvisitContent] = useState("");
+    const [profile_image, setProfileImg] = useState("");
     const [visitView, setVisitview] = useState([]);
     const [a1, seta1] = useState('');
     const [a2, seta2] = useState('');
@@ -309,7 +311,7 @@ function Main() {
                     <div>
                         <p className='date-text' style={{ padding: "6px" }}>{formatDate()}</p>
                         <div className='main-white-box'>
-                            <img src={picturebasic} alt="Default" style={{ width: '100px', height: '100px', padding: "10px" }} />
+                            <img src={profile_image} alt="Default" style={{ width: '100px', height: '100px', padding: "10px" }} />
                             <div style={{ height: "2vh" }}></div>
                             <p style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-start", textAlign: "left", width: "15vw", paddingLeft: "1vh", fontSize: "20px" }}>
                                 {fullname}
