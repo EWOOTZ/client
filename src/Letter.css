@@ -138,7 +138,7 @@ margin-right: 8px;
 
 .title-text {
   font-size: 27px;
-  font-family: 'HJ'; /* 원하는 폰트 패밀리로 설정 */
+  font-family: 'HJ';
   text-align: start;
   margin-top: 10px;
 }
@@ -146,8 +146,47 @@ margin-right: 8px;
 .title-text div {
   margin: 0;
 }
+.results-list {
+  margin-top: 20px;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  max-height: 300px; 
+  overflow-y: auto;
+}
+
+.results-list ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+}
+
+.results-list li {
+  background-color: #f0f0f0;
+  padding: 10px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.results-list li:hover {
+  background-color: #e0e0e0;
+}
 
 
+.fix {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 1000; 
+  padding: 15px;
+}
 
 /*배경&화이트라인*/ 
 .backg {
