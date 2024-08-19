@@ -120,6 +120,7 @@ function Mypage() {
             .then((response) => {
                 if (response.status === 200) {
                     console.log('youtube 서버 응답:', response);
+                    console.log('검색 결과:', response.data.items);
                     setSearchResults(response.data.items.slice(0, 10));
                 }
             })
@@ -272,9 +273,9 @@ function Mypage() {
                                 <ul>
                                     {searchResults.map((result, index) => (
                                         <li key={index}>
-                                            <YouTube videoId={result.videoId} opts={opts} />
-                                            <div>{result.title ? result.title.replace(/&quot;/gi, '"') : '제목 없음'}</div>
-                                        </li>
+                                            <YouTube videoId={result.id.videoId} opts={opts} />
+                                            {result.snippet && result.snippet.title ? result.snippet.title.replace(/&quot;/gi, '"') : '제목 없음'}
+                                            </li>
                                     ))}
                                 </ul>
                             </div>
