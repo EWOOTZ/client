@@ -452,52 +452,53 @@ function Main() {
                         <div className='main-gray-box'>
                             <div className='yellow-box-scroll' style={{ width: "53vw", height: "27vh", paddingLeft: "5vh" }}>
                                 <p style={{ fontSize: "10px", color: "black", textAlign: "right", width: "100%" }}>답변 칸을 클릭해 입력하고 ENTER를 누르면 저장돼요!</p>
-                                <p className='title-text' style={{ color: "black", fontSize: "25px" }}>Q. 나의 MBTI는?</p>
+                                <p className='title-text' style={{ color: "black", fontSize: "25px" }}>Q.인생 영화 or 인생 책 한 가지</p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "25px" }}>A: </p>
                                     <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "25px" }} type='text' value={a1} onChange={savea1} onKeyDown={handleEnterKey}></input>
                                 </div>
-                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "25px" }}>Q. </p>
+                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "25px" }}>Q.갖고 싶은 초능력은? </p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "25px" }}>A: </p>
                                     <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "25px" }} type='text' value={a2} onChange={savea2} onKeyDown={handleEnterKey}></input>
                                 </div>
-                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "25px" }}>Q. </p>
+                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "25px" }}>Q.과거로 돌아갈 수 있다면 언제로?
+                                </p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "25px" }}>A: </p>
                                     <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "25px" }} type='text' value={a3} onChange={savea3} onKeyDown={handleEnterKey}></input>
                                 </div>
-                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "25px" }}>Q. </p>
+                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "25px" }}>Q.기억에 남는 여행지는? </p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "25px" }}>A: </p>
                                     <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "25px" }} type='text' value={a4} onChange={savea4} onKeyDown={handleEnterKey}></input>
                                 </div>
-                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "25px" }}>Q. </p>
+                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "25px" }}>Q.죽기전에 먹고싶은 음식은? </p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "25px" }}>A: </p>
                                     <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "25px" }} type='text' value={a5} onChange={savea5} onKeyDown={handleEnterKey}></input>
                                 </div>
-                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "25px" }}>Q. </p>
+                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "25px" }}>Q.외출할 때 하나만 챙긴다면? </p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "25px" }}>A: </p>
                                     <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "25px" }} type='text' value={a6} onChange={savea6} onKeyDown={handleEnterKey}></input>
                                 </div>
-                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "25px" }}>Q. </p>
+                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "25px" }}>Q.내 버킷리스트 속 1번 </p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "25px" }}>A: </p>
                                     <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "25px" }} type='text' value={a7} onChange={savea7} onKeyDown={handleEnterKey}></input>
                                 </div>
-                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "25px" }}>Q. </p>
+                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "25px" }}>Q.무생물과 대화하기 vs 모든 생물과 대화하기  </p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "25px" }}>A: </p>
                                     <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "25px" }} type='text' value={a8} onChange={savea8} onKeyDown={handleEnterKey}></input>
                                 </div>
-                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "25px" }}>Q. </p>
+                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "25px" }}>Q.못씻기 vs 못먹기 </p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "25px" }}>A: </p>
                                     <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "25px" }} type='text' value={a9} onChange={savea9} onKeyDown={handleEnterKey}></input>
                                 </div>
-                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "25px" }}>Q. </p>
+                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "25px" }}>Q.주말을 해적과 함께 보내기 vs 주말을 닌자와 함께 보내기</p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "25px" }}>A: </p>
                                     <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "25px" }} type='text' value={a10} onChange={savea10} onKeyDown={handleEnterKey}></input>
