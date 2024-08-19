@@ -12,11 +12,12 @@ import picturebasic from './images/basicProfile.png';
 import pictureCD from './images/CD.png';
 import picturePlay from './images/Play.png';
 import picturePause from './images/Pause.png';
+import picturePlus from './images/plus.png';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import AWS from 'aws-sdk';
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
-import React, {useRef} from 'react';
+import React, { useRef } from 'react';
 
 function formatDate() {
     const today = new Date();
@@ -46,16 +47,17 @@ function Main() {
                 console.log(response.data);
                 console.log(response.status);
                 localStorage.setItem("fullname", response.data.fullname);
+                localStorage.setItem("username", response.data.username);
                 setFullname(response.data.fullname);
                 localStorage.setItem("profile_image", response.data.profile_image);
                 setProfileImg(response.data.profile_image);
-                localStorage.setItem("id", response.data.id);
+                localStorage.setItem("ID", response.data.id);
                 localStorage.setItem("statusM", response.data.status_message);
                 setStatus(response.data.status_message);
                 localStorage.setItem("music_info", response.data.music_info);
                 console.log(localStorage.getItem("fullname"));
                 console.log(localStorage.getItem("statusM"));
-                console.log(localStorage.getItem("id"));
+                console.log(localStorage.getItem("ID"));
                 console.log(localStorage.getItem("profile_image"));
                 console.log(localStorage.getItem("music_info"));
                 console.log("마이페이지 가져오기 성공");
@@ -193,7 +195,7 @@ function Main() {
             });
             if (response.status === 200) {
                 setVisitview(response.data);
-                setTimeout(scrollToBottom, 100); 
+                setTimeout(scrollToBottom, 100);
                 console.log("방명록 가져오기 성공", response.data);
             }
         } catch (error) {
@@ -213,7 +215,7 @@ function Main() {
         axios.post(
             '/dialog/',
             {
-                "user_id": localStorage.getItem("id"),
+                "user_id": localStorage.getItem("ID"),
                 "visitor": visitname,
                 "contents": visitContent,
             },
@@ -222,7 +224,7 @@ function Main() {
             }
         ).then((response) => {
             console.log(axios.AxiosHeaders);
-            
+
             console.log(response.data);
             console.log(response.status);
             if (response.status === 201) {
@@ -233,7 +235,7 @@ function Main() {
                 setVisitname('');
                 setvisitContent('');
                 getVisit();
-                scrollToBottom(); 
+                scrollToBottom();
                 console.log("방명록 전송 성공");
             }
         }).catch((error) => {
@@ -242,9 +244,8 @@ function Main() {
     }
 
     const [isExiting, setIsExiting] = useState(false);
+    const [isFlwListExiting, setIsFlwListExiting] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
-    const [isFlwExiting, setFlwIsExiting] = useState(false);
-    const [showFlwPopup, setFlwShowPopup] = useState(false);
     const [showFlwListPopup, setFlwListShowPopup] = useState(false);
     const [text, setText] = useState("");
     const [status, setStatus] = useState("");
@@ -253,6 +254,7 @@ function Main() {
     const [visitContent, setvisitContent] = useState("");
     const [profile_image, setProfileImg] = useState("");
     const [visitView, setVisitview] = useState([]);
+    const [usernames, setUsernames] = useState([]); // 상태 추가    
     const [a1, seta1] = useState('');
     const [a2, seta2] = useState('');
     const [a3, seta3] = useState('');
@@ -263,6 +265,28 @@ function Main() {
     const [a8, seta8] = useState('');
     const [a9, seta9] = useState('');
     const [a10, seta10] = useState('');
+    const [search_user, setSearchUser] = useState('');
+
+    async function getSearch() {
+        axios.get('/search/?', {
+            params: { search_user },
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+                'Content-Type': 'application/json'
+            }
+        })
+            .then((response) => {
+                console.log(response.status);
+                if (response.status === 200) {
+                    const extractedUsernames = response.data.map(user => user.username);
+                    setUsernames(extractedUsernames);
+                    console.log('유저 검색 결과:', usernames);
+                }
+            })
+            .catch((error) => {
+                console.error('서치 목록 가져오기 실패:', error);
+            });
+    };
 
     const scrollToBottom = () => {
         const element = document.querySelector('.scroll2');
@@ -270,7 +294,7 @@ function Main() {
             element.scrollTop = element.scrollHeight;
         }
     };
-    
+
     const savea1 = event => {
         seta1(event.target.value);
         console.log(event.target.value);
@@ -312,6 +336,11 @@ function Main() {
         setVisitname(event.target.value);
         console.log(event.target.value);
     };
+    const saveSearchuser = event => {
+        setSearchUser(event.target.value);
+        console.log(event.target.value);
+    };
+
     const handleEnterKey = (event) => {
         if (event.key === 'Enter') {
             event.preventDefault(); // 엔터 키의 기본 동작을 방지 (폼 제출 등)
@@ -321,6 +350,16 @@ function Main() {
     const specificFunction = () => {
         sendQna();
     };
+    const handleEnterKey2 = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // 엔터 키의 기본 동작을 방지 (폼 제출 등)
+            specificFunction2(); // 엔터를 눌렀을 때 실행할 함수
+        }
+    };
+    const specificFunction2 = () => {
+        getSearch();
+    };
+
 
     useEffect(() => {
         const handlePopState = (event) => {
@@ -339,14 +378,6 @@ function Main() {
     const handleTrashClick = () => {
         setText("");
         setShowPopup(true);
-    };
-
-    const handleFollowClick = () => {
-        setFlwShowPopup(true);
-    };
-
-    const handleFollowDiscard = () => {
-        setFlwShowPopup(false);
     };
 
     const handleFollowListClick = () => {
@@ -380,7 +411,7 @@ function Main() {
     useEffect(() => {
         scrollToBottom();
     }, [visitView]); // visitView가 변경될 때마다 호출
-    
+
     useEffect(() => {
         if (visitContent === '') {
             // 상태 업데이트 후에 로그를 확인해 비워졌는지 확인
@@ -399,19 +430,19 @@ function Main() {
     return (
         <div className='backg'>
             <div className='white-line' style={{ padding: "10px" }}>
-                <button className="go-ground-gray" style={{ fontSize: "23px" }} onClick={() => navigate(`/ground/${localStorage.getItem("id")}`)}>광장가기</button>
+                <button className="go-ground-gray" style={{ fontSize: "23px" }} onClick={() => navigate(`/ground/${localStorage.getItem("username")}`)}>광장가기</button>
                 <div className='hang'>
                     <div>
                         <p className='date-text' style={{ padding: "6px" }}>{formatDate()}</p>
                         <div className='main-white-box'>
-                        {profile_image ? (
-                        <img src={profile_image} alt="Profile" style={{ width: '100px', height: '100px' }} />
-                    ) : (
-                        <img src={picturebasic} alt="Default" style={{ width: '100px', height: '100px' }} />
-                    )}                            <div style={{ height: "2vh" }}></div>
-                                <p style={{ paddingLeft: "1vh", fontSize: "20px", width:"32vh", display:"flex", alignItems:"flex-start", justifyContent:"flex-start" }}>
-                                    {fullname}
-                                </p>
+                            {profile_image ? (
+                                <img src={profile_image} alt="Profile" style={{ width: '100px', height: '100px' }} />
+                            ) : (
+                                <img src={picturebasic} alt="Default" style={{ width: '100px', height: '100px' }} />
+                            )}                            <div style={{ height: "2vh" }}></div>
+                            <p style={{ paddingLeft: "1vh", fontSize: "20px", width: "32vh", display: "flex", alignItems: "flex-start", justifyContent: "flex-start" }}>
+                                {fullname}
+                            </p>
                             <div style={{ height: "1vh" }}></div>
                             <div className='black-line'>
                                 <p style={{ fontSize: "15px" }}>한줄 소개</p>
@@ -434,7 +465,7 @@ function Main() {
                             </div>
                             <div style={{ height: "18vh" }}></div>
                             <div className='hang'>
-                                <button className="login-gray" style={{ fontSize: "15px" }} onClick={() => navigate(`/mypage/${localStorage.getItem("id")}`)}>마이페이지</button>
+                                <button className="login-gray" style={{ fontSize: "15px" }} onClick={() => navigate(`/mypage/${localStorage.getItem("username")}`)}>마이페이지</button>
                                 <div style={{ width: "4vh" }}></div>
                                 <button className="login-gray" style={{ fontSize: "15px" }} onClick={() => navigate('/')}>로그아웃</button>
                             </div>
@@ -521,14 +552,11 @@ function Main() {
                                             </div>
                                         ))}
                                     </div>
-                                    <div className="fix">
                                     <div className="hang" style={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-end", height: "20%", width: "100%" }}>
                                         <input className='input-name' style={{ width: "10vw" }} type='text' placeholder='이름' value={visitname} onChange={saveVisitname} />
                                         <div style={{ width: "1vh" }}></div>
                                         <input className='input-name' style={{ width: "32vw" }} type='text' placeholder='방명록을 작성하세요.' value={visitContent} onChange={savecontent} />
                                         <button className="login-gray" style={{ fontSize: "20px", display: "flex", paddingBottom: "8px" }} onClick={() => sendVisit()}>전송</button>
-                                        </div>
-
                                     </div>
                                 </div>
                             </div>
@@ -536,14 +564,18 @@ function Main() {
                     </div>
                     <div>
                         <div style={{ height: "5vh" }}></div>
-                        <div className='main-transparent-box' style={{height:"37vh"}}>
-                            <p style={{ paddingTop: "10px", fontSize: "17px" }}>내 이웃들</p>
+                        <div className='main-transparent-box' style={{ height: "37vh" }}>
+                            <div className='hang' style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                <p style={{ paddingTop: "10px", fontSize: "17px" }}>내 이웃들</p>
+                                <div style={{ width: "0.5vw" }}></div>
+                                <img src={picturePlus} width='15vw' height='15vh' onClick={handleFollowListClick} style={{ paddingTop: "10px" }} />
+                            </div>
                             <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
                             <div style={{ height: "78%" }}></div>
                         </div>
                         <div style={{ height: "1vh" }}></div>
 
-                        <div className='main-transparent-box' style={{height:"28vh"}}>
+                        <div className='main-transparent-box' style={{ height: "28vh" }}>
                             <p style={{ paddingTop: "10px", fontSize: "17px" }}>산성비 랭킹</p>
                             <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
                             <div style={{ height: "83%" }}></div>
@@ -571,60 +603,34 @@ function Main() {
                         </div>
                     </div>
                 )}
-                <div className={`shadow ${showFlwPopup ? 'active' : ''}`} style={{ display: showFlwPopup ? 'block' : 'none' }}></div>
-                {showFlwPopup && (
-                    <div className={`letter-popup ${isFlwExiting ? 'exiting' : ''}`}>
-                        <div className='follow-popup-content' style={{ backgroundImage: 'url(' + picturefriend + ')' }}>
-                            <div>
-                                <img src={pictureHome} width='30vw' height='30vh' style={{ color: "white" }} />
-                                <img src={pictureHome} width='30vw' height='30vh' style={{ color: "white" }} />
-                                <img src={pictureHome} width='30vw' height='30vh' style={{ color: "white" }} />
-                            </div>
-                            <p style={{ color: '#00DAC0', fontSize: 37 }}>
-                                {title3}
-                            </p>
-                            <p style={{ color: '#8A8A8A', fontSize: 37 }}>
-                                마이홈피
-                            </p>
-                            <div style={{ height: "1vw" }}></div>
-                            <div className='yellow-box' style={{ width: "35vw", height: "35vh" }}>
-                                <img src={picturebasic} width='80vw' height='80vh'></img>
-                                <div style={{ height: "2vh" }}></div>
-                                <div className='hang'>
-                                    <p style={{ color: '#00DAC0', fontSize: 25 }}>
-                                        {fullname}
-                                    </p>
-                                    <div style={{ width: '2vw' }}></div>
-                                    <p style={{ color: 'black', fontSize: 25 }}>
-                                        님에게
-                                    </p>
-                                </div>
-                                <p style={{ color: 'black', fontSize: 25 }}>
-                                    일촌 맺기를 신청하시겠습니까?
-                                </p>
-                                <div style={{ height: "2vh" }}></div>
-                                <div className='hang'>
-                                    <button className="login-gray" style={{ fontSize: "22px" }} onClick={() => navigate()}>네!</button>
-                                    <div style={{ width: "5vh" }}></div>
-                                    <button className="login-gray" style={{ fontSize: "22px" }} onClick={handleFollowDiscard}>아니요.</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
                 <div className={`shadow ${showFlwListPopup ? 'active' : ''}`} style={{ display: showFlwListPopup ? 'block' : 'none' }}></div>
                 {showFlwListPopup && (
-                    <div className={`letter-popup ${isFlwExiting ? 'exiting' : ''}`}>
-                        <div className='follow-popup-content' style={{ backgroundColor: "#C2E9B5" , width:"40vw"}}>
+                    <div className={`letter-popup ${isFlwListExiting ? 'exiting' : ''}`}>
+                        <div className='follow-popup-content' style={{ backgroundColor: "#C2E9B5", width: "40vw", padding: "20px" }}>
                             <div className='hang'>
                                 <img src={pictureApple} style={{ width: '50px', height: '40px', }} />
-                                <p style={{ fontSize: "25px" }}>이웃 요청 목록</p>
+                                <p style={{ fontSize: "25px" }}>이웃 검색</p>
                             </div>
-                            <div style={{height:"1vh"}}></div>
-                            <div className='yellow-box' style={{ height: "50vh", width: "25vw" }}>
+                            <div style={{ height: "5vh" }}></div>
+                            <input className='input-name' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "20px", height: "10vh", width: "30vw" }} type='text' value={search_user} onChange={saveSearchuser} onKeyDown={handleEnterKey2}></input>
+                            <div style={{ height: "60%"}}>
+                            <div style={{ height: "2vh" }}></div>
 
+                                <div>
+                                    {usernames.map((username) => (
+                                        <div key={username.id}>
+                                            <div className='hang'>
+                                                    <p style={{ fontSize: "22px", width:"12vw" }}>{username}</p>
+                                                <hr style={{width: "15vw",borderStyle:"dashed"}}></hr>
+                                                <button className="login-gray" style={{ fontSize: "15px", width:"10vw"}}>팔로우</button>
+                                            </div>
+
+                                                <div style={{ height: "2vh" }}></div>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                            <button className="login-gray" style={{ fontSize: "22px", display:"flex", alignItems:"flex-end", justifyContent:"flex-end", width:"100%", paddingRight:"20px", paddingTop:"25px"}} onClick={handleFollowListDiscard}>나가기</button>
+                            <button className="login-gray" style={{ fontSize: "22px", display: "flex", alignItems: "flex-end", justifyContent: "flex-end", width: "100%", height: "100%" }} onClick={handleFollowListDiscard}>나가기</button>
                         </div>
                     </div>
                 )}
