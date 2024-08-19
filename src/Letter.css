@@ -147,11 +147,11 @@ margin-right: 8px;
   margin: 0;
 }
 .results-list {
-  margin-top: 20px;
+  margin-top: 5px;
   padding: 10px;
   border: none;
   border-radius: 5px;
-  max-height: 300px; 
+  max-height: 290px; 
   overflow-y: auto;
 }
 
@@ -159,7 +159,6 @@ margin-right: 8px;
   list-style-type: none;
   padding: 0;
   margin: 0;
-  display: flex;
   flex-direction: column;
   align-items: center;
 
@@ -175,11 +174,6 @@ margin-right: 8px;
   transition: background-color 0.3s;
 }
 
-.results-list li:hover {
-  background-color: #e0e0e0;
-}
-
-
 .fix {
   position: absolute;
   bottom: 0;
@@ -187,6 +181,14 @@ margin-right: 8px;
   z-index: 1000; 
   padding: 15px;
 }
+
+
+.youtube-video {
+  width: 100%;
+  max-width: 640px; /* 비디오 크기 설정 */
+}
+
+
 
 /*배경&화이트라인*/ 
 .backg {
