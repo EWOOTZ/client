@@ -181,15 +181,27 @@ function Ground() {
                             <button className='close-button' onClick={handlePopupClose}>×</button>
                             <button className='nav-button left' onClick={handlePrevWish}>&#8249;</button>
                             <div className='wish-container'>
-                                <div className='popup-title'>
-                                    <span style={{ color: '#C2E9B5' }}>{wishes[currentWishIndex]?.username}</span>
-                                    <span style={{ color: 'black' }}> 님의 소원</span>
-                                </div>
-                                <div className='popup-body'>
-                                    <div className='popup-content-body'>{wishes[currentWishIndex]?.contents}</div>
-                                </div>
+                                {wishes.length === 0 ? (
+                                    <div className='popup-title'>
+                                        아무 소원이 없습니다
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className='popup-title'>
+                                            <span style={{ color: '#C2E9B5' }}>{wishes[currentWishIndex]?.username}</span>
+                                            <span style={{ color: 'black' }}> 님의 소원</span>
+                                        </div>
+                                        <div className='popup-body'>
+                                            <div className='popup-content-body'>{wishes[currentWishIndex]?.contents}</div>
+                                        </div>
+                                    </>
+                                )}
                             </div>
-                            <button className='nav-button right' onClick={handleNextWish}>&#8250;</button>
+                            {wishes.length > 0 && (
+                                <>
+                                    <button className='nav-button right' onClick={handleNextWish}>&#8250;</button>
+                                </>
+                            )}
                         </div>
                     </div>
                 </>
@@ -197,5 +209,4 @@ function Ground() {
         </div>
     );
 }
-
 export default Ground;

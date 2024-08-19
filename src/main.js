@@ -16,6 +16,8 @@ import Swal from 'sweetalert2';
 import AWS from 'aws-sdk';
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import React, {useRef} from 'react';
+import YouTube from 'react-youtube';
+
 
 function formatDate() {
     const today = new Date();
@@ -28,6 +30,45 @@ function formatDate() {
 }
 
 function Main() {
+    const videoStyle = {
+      margin:'10px',
+      };
+      
+      const opts = {
+        
+        height: '110',
+        width: '220',
+        playerVars: {
+          autoplay: 0
+        }
+      };
+    
+    const MusicFetch = () => {
+        axios.get('/youtube/mymusic_video', {
+            headers: {
+                'accept': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem("access_token")}`
+            }
+        })
+        .then((response) => {
+            if (response.status === 200) {
+                console.log('MusicFetch 서버 응답:', response.data);
+                            if (response.data && response.data.youtube_data && response.data.youtube_data.items && response.data.youtube_data.items.length > 0) {
+                    const videoId = response.data.youtube_data.items[0].id;
+                    localStorage.setItem("singer", response.data.singer ); 
+                    setSinger(response.data.singer); 
+                    localStorage.setItem("musicTitle", response.data.music_title);  
+                    setMusicTitle(response.data.music_title);  
+                    localStorage.setItem("videoId", videoId);
+                    setVideoId(videoId);
+                } 
+            } 
+        })
+        .catch((error) => {
+            console.error('MusicFetch 데이터를 가져오는 중 오류 발생:', error);
+        });
+    };
+
 
     const getMypage = async () => {
         try {
@@ -207,6 +248,11 @@ function Main() {
     const [a8, seta8] = useState('');
     const [a9, seta9] = useState('');
     const [a10, seta10] = useState('');
+    const [singer, setSinger] = useState('');
+    const [musicTitle, setMusicTitle] = useState('');
+
+    const [videoId, setVideoId] = useState(null);
+
 
     const scrollToBottom = () => {
         const element = document.querySelector('.scroll2');
@@ -305,6 +351,7 @@ function Main() {
         getMypage();
         getQna();
         getVisit();
+        MusicFetch();
     }, []);
 
 
@@ -355,15 +402,22 @@ function Main() {
                             <div className='green-box'>
                                 <div className='hang' style={{ paddingRight: "2vh" }}>
                                     <img src={pictureCD} width='40vw' height='20vh' />
-                                    <p style={{ fontSize: "18px" }}>&TEAM - FIREWORK</p>
-                                </div>
+                                    <p style={{ fontSize: "18px" }}>{`${singer} - ${musicTitle}`}</p>                                </div>
                                 <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
                                 <div className='hang'>
                                     <img src={picturePlay} width='17vw' height='23vh' />
                                     <img src={picturePause} width='17vw' height='23vh' />
                                 </div>
+       
+
                             </div>
-                            <div style={{ height: "18vh" }}></div>
+
+                            {
+        <div className="youtube-video" style={videoStyle}>
+          <YouTube videoId={videoId} opts={opts} />
+        </div>
+      }
+                           
                             <div className='hang'>
                                 <button className="login-gray" style={{ fontSize: "15px" }} onClick={() => navigate(`/mypage/${localStorage.getItem("id")}`)}>마이페이지</button>
                                 <div style={{ width: "4vh" }}></div>
@@ -451,7 +505,6 @@ function Main() {
                                             </div>
                                         ))}
                                     </div>
-                                    <div className="fix">
                                     <div className="hang" style={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-end", height: "20%", width: "100%" }}>
                                         <input className='input-name' style={{ width: "10vw" }} type='text' placeholder='이름' value={visitname} onChange={saveVisitname} />
                                         <div style={{ width: "1vh" }}></div>
@@ -459,7 +512,6 @@ function Main() {
                                         <button className="login-gray" style={{ fontSize: "20px", display: "flex", paddingBottom: "8px" }} onClick={() => sendVisit()}>전송</button>
                                         </div>
 
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -475,6 +527,8 @@ function Main() {
                         </div>
                     </div>
                 </div>
+                <div className={`shadow ${showPopup ? 'active' : ''}`} style={{ display: showPopup ? 'block' : 'none' }}></div>
+
                 {showPopup && (
                     <div className={`letter-popup ${isExiting ? 'exiting' : ''}`}>
                         <div className="letter-popup-content">

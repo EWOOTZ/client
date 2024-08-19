@@ -22,6 +22,9 @@ function Mypage() {
     const [title, setTitle] = useState('');
     const [search, setSearch] = useState('');
     const [searchClicked, setSearchClicked] = useState(false); 
+    const [isSearchEnabled, setIsSearchEnabled] = useState(false);
+
+
 
     const opts = {
         width: "250", 
@@ -37,16 +40,6 @@ function Mypage() {
 
     };
 
-    const handleEnterKey = (event) => {
-        if (event.key === 'Enter') {
-            event.preventDefault(); // 엔터 키의 기본 동작을 방지 (폼 제출 등)
-           // specificFunction(); // 엔터를 눌렀을 때 실행할 함수
-        }
-    };
-
-    const specificFunction = () => {
-        sendQna();
-    };
 
 
     const saveSinger = event => {
@@ -59,10 +52,15 @@ function Mypage() {
         console.log(event.target.value);
     };
 
-    const saveSearch = event => {
-        setSearch(event.target.value);
-        console.log(event.target.value);
+    const saveSearch = (event) => {
+        const value = event.target.value;
+        setSearch(value);
+        setIsSearchEnabled(value.trim() !== ''); // 검색 필드가 비어있지 않으면 true
     };
+    useEffect(() => {
+        setIsSearchEnabled(search.trim() !== '');
+    }, [search]);
+
 
     const handleTrashClick = () => {
         setShowPopup(true);
@@ -124,8 +122,6 @@ function Mypage() {
         }
     };
   
-   
-
     async function fetchData() {
         console.log(localStorage.getItem("access_token"));
         axios.get('/youtube/search?search=', {
@@ -149,7 +145,41 @@ function Mypage() {
 
     useEffect(() => {
         getMypage();
+        MusicFetch();
     }, []);
+
+    const handleVideoSelect = (videoId) => {
+
+        if (!singer || !title) {
+            Swal.fire({
+                icon: 'warning',
+                title: '실패',
+                text: '가수와 제목 모두 채워주세요!',
+            });
+            return; 
+        }
+        const postData = {
+            user_id: localStorage.getItem("id"), // getMypage에서 가져온 ID
+            singer: singer, // saveSinger에서 설정된 값
+            music_title: title, // saveTitle에서 설정된 값
+            music_info: videoId // result.id.videoId
+        };
+    
+        axios.put('/youtube/mymusic', postData, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => {
+            console.log(" YOUTUBE 선택 및 POST 성공:", response.data);
+            handlePopupClose(); 
+        })
+        .catch(error => {
+            console.error("YOUTUBE 선택 및 POST 실패:", error.response);
+        });
+    };
+    
 
     function sendMypage() {
         axios.put(
@@ -185,18 +215,46 @@ function Mypage() {
             }
         ).then((response) => {
             console.log(axios.AxiosHeaders);
-            console.log(response.data);
+            console.log('마이페이지 응답:', response);
             console.log(response.status);
             if (response.status === 200) {
                 setFullname(response.data.fullname);
                 setIntro(response.data.status_message);
                 setUploadImgUrl(response.data.profile_image);
+
+
                 console.log("마이페이지 가져오기 성공");
             }
         }).catch((error) => {
             console.log(error.response);
         });
     }
+
+        
+    const MusicFetch = () => {
+        axios.get('/youtube/mymusic_video', {
+            headers: {
+                'accept': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem("access_token")}`
+            }
+        })
+        .then((response) => {
+            if (response.status === 200) {
+                console.log('MusicFetch 서버 응답:', response.data);
+                     {
+                   
+                    localStorage.setItem("singer", response.data.singer ); 
+                    setSinger(response.data.singer); 
+                    localStorage.setItem("Title", response.data.music_title);  
+                    setTitle(response.data.music_title);  
+              
+                } 
+            } 
+        })
+        .catch((error) => {
+            console.error('MusicFetch 데이터를 가져오는 중 오류 발생:', error);
+        });
+    };
 
     // 검색 버튼 클릭 핸들러
     const handleSearchClick = () => {
@@ -274,36 +332,36 @@ function Mypage() {
                     <button className='close-button' style={{paddingRight: 5}} onClick={handlePopupClose}>×</button>
                     <div style={{ height: "1.5vh" }}></div>
 
-                    <p style={{fontSize:"11px", color:"black", textAlign:"right", width:"100%"}}>가수와 제목을 클릭해 입력하고 ENTER를 누르면 저장돼요!</p>
-                    <div style={{ height: "1.5vh" }}></div>
-
+                    <p style={{fontSize:"11px", color:"black", textAlign:"right", width:"100%"}}>가수와 제목을 모두 채워주세요!!</p>
+                
                         <div className='hang'>
                             <p style={{ color: "black", fontSize: '2.7vh' }}>가수</p>
                             <div style={{ width: '0.5vw' }}></div>
-                            <input className='input-4' type='text' placeholder='가수를 입력하세요.' value={singer} onChange={saveSinger}onKeyDown={handleEnterKey} />
+                            <input className='input-4' type='text' placeholder='가수를 입력하세요.' value={singer} onChange={saveSinger}/>
                             <div style={{ width: '2vw' }}></div>
                             <p style={{ color: "black", fontSize: '2.7vh' }}>제목</p>
                             <div style={{ width: '0.5vw' }}></div>
-                            <input className='input-4' type='text' placeholder='노래를 입력하세요.' value={title} onChange={saveTitle}onKeyDown={handleEnterKey} />
+                            <input className='input-4' type='text' placeholder='노래를 입력하세요.' value={title} onChange={saveTitle} />
                         </div>
-                        <div style={{ height: '1.5vw' }}></div>
+                        <div style={{ height: '1vw' }}></div>
                         <div className='hang'>
                             <input className='input-4' style={{ width: "45vw" }} type='text' placeholder='가수와 노래를 검색하세요.' value={search} onChange={saveSearch} />
                             <div style={{ width: '0.5vw' }}></div>
-                            <button className="login-gray" style={{ fontSize: "2.7vh" }} onClick={handleSearchClick}>검색</button>
+                            <button className="login-gray" style={{ fontSize: "2.7vh" }} onClick={handleSearchClick} disabled={!isSearchEnabled}>검색</button>
                         </div>
                         {searchClicked && searchResults.length > 0 && (
-                            <div className="results-list">
-                                <ul>
-                                    {searchResults.map((result, index) => (
-                                        <li key={index}>
-                                            <YouTube videoId={result.id.videoId} opts={opts} />
-                                            {result.snippet && result.snippet.title ? result.snippet.title.replace(/&quot;/gi, '"') : '제목 없음'}
-                                            </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
+    <div className="results-list">
+        <ul>
+            {searchResults.map((result, index) => (
+                <li key={index} onClick={() => handleVideoSelect(result.id.videoId)}>
+                    <YouTube videoId={result.id.videoId} opts={opts} />
+                    {result.snippet && result.snippet.title ? result.snippet.title.replace(/&quot;/gi, '"') : '제목 없음'}
+                </li>
+            ))}
+        </ul>
+    </div>
+)}
+
                     </div>
                 </div>
             )}
