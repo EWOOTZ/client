@@ -8,6 +8,7 @@ import Join from './join';
 import Letter from './Letter';
 import Main from './main';
 import Mypage from './mypage';
+import Game from './game';
 import axios from 'axios';
 import Swal from 'sweetalert2'
 
@@ -104,7 +105,7 @@ const Home = () => {
   );
 }
 
-const App = () => {
+const App= () => {
   return (
     <div className='backg'>
       <BrowserRouter>
@@ -115,6 +116,7 @@ const App = () => {
           <Route path="/letter/:id" element={<Letter />} />
           <Route path="/main/:id" element={<Main />} />
           <Route path="/mypage/:id" element={<Mypage />} />
+          <Route path="/game" element={<Game />} />
         </Routes>
       </BrowserRouter>
     </div>

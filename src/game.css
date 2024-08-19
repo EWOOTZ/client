@@ -1,0 +1,66 @@
+html, body{
+    height:100%;
+    margin: 0;
+    font-family: "HJ";
+}
+@font-face {
+    font-family: "HJ";
+    font-weight: normal;
+    src: url("./fonts/DungGeunMo.ttf") format("truetype");
+  }
+
+#frame{
+    width:600px;
+    height:700px;
+}
+#game-panel{
+    height:500px;
+    border-style: solid;
+    border-color: red;
+}
+
+#control-panel-frame{
+    height:30%;
+    border-style: solid;
+    border-color: blue;
+}
+
+#board{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(255, 228, 196, 0.658);
+}
+#end-score{
+    display:inline-block;
+    margin-top:20vh;
+    font-size:5rem;
+}
+#help-div{
+    margin-top:15vh;
+    font-size:2rem;
+}
+#help-div > #help-title{
+    display:block;
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: bold;
+    font-size:3rem;
+}
+#help-div b{
+    color: chocolate
+}
+#restart-btn, #help-btn, #start-btn{
+    font-size: 2rem;
+}
+
+.word{
+    position: absolute;
+    font-size: 15px;
+}
+
+.btn:hover{
+
+}

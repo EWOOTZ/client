@@ -607,7 +607,7 @@ function Main() {
 
                         <div className='hang'>
                             <div className='trash-image-container'>
-                                <img src={joyconImg} alt="trash" onClick={handleTrashClick} style={{
+                                <img src={joyconImg} alt="trash" onClick={() => navigate(`/game/}`)} style={{
                                     cursor: 'pointer',
                                     width: "8vw",
                                     height: "15vh",
