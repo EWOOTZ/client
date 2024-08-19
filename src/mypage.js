@@ -31,6 +31,24 @@ function Mypage() {
         },
     };
     
+    
+    const handlePopupClose = () => {
+        setShowPopup(false);
+
+    };
+
+    const handleEnterKey = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // 엔터 키의 기본 동작을 방지 (폼 제출 등)
+           // specificFunction(); // 엔터를 눌렀을 때 실행할 함수
+        }
+    };
+
+    const specificFunction = () => {
+        sendQna();
+    };
+
+
     const saveSinger = event => {
         setSinger(event.target.value);
         console.log(event.target.value);
@@ -105,16 +123,18 @@ function Mypage() {
             });
         }
     };
+  
+   
 
     async function fetchData() {
         console.log(localStorage.getItem("access_token"));
-            axios.get('/youtube/search?search=', {
-                params: {search},
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
-                    'Content-Type': 'application/json'
-                }
-            })
+        axios.get('/youtube/search?search=', {
+            params: {search},
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+                'Content-Type': 'application/json'
+            }
+        })
             .then((response) => {
                 if (response.status === 200) {
                     console.log('youtube 서버 응답:', response);
@@ -128,7 +148,6 @@ function Mypage() {
     };
 
     useEffect(() => {
-        fetchData();
         getMypage();
     }, []);
 
@@ -248,17 +267,24 @@ function Mypage() {
                     <button className="login-gray" style={{ fontSize: "3vh" }} onClick={() => sendMypage()}>수정하기</button>
                 </div>
             </div>
+            <div className={`shadow ${showPopup ? 'active' : ''}`} style={{ display: showPopup ? 'block' : 'none' }}></div>
             {showPopup && (
                 <div className={`letter-popup ${isExiting ? 'exiting' : ''}`}>
                     <div className="music-popup-content">
+                    <button className='close-button' style={{paddingRight: 5}} onClick={handlePopupClose}>×</button>
+                    <div style={{ height: "1.5vh" }}></div>
+
+                    <p style={{fontSize:"11px", color:"black", textAlign:"right", width:"100%"}}>가수와 제목을 클릭해 입력하고 ENTER를 누르면 저장돼요!</p>
+                    <div style={{ height: "1.5vh" }}></div>
+
                         <div className='hang'>
                             <p style={{ color: "black", fontSize: '2.7vh' }}>가수</p>
                             <div style={{ width: '0.5vw' }}></div>
-                            <input className='input-4' type='text' placeholder='가수를 입력하세요.' value={singer} onChange={saveSinger} />
+                            <input className='input-4' type='text' placeholder='가수를 입력하세요.' value={singer} onChange={saveSinger}onKeyDown={handleEnterKey} />
                             <div style={{ width: '2vw' }}></div>
                             <p style={{ color: "black", fontSize: '2.7vh' }}>제목</p>
                             <div style={{ width: '0.5vw' }}></div>
-                            <input className='input-4' type='text' placeholder='노래를 입력하세요.' value={title} onChange={saveTitle} />
+                            <input className='input-4' type='text' placeholder='노래를 입력하세요.' value={title} onChange={saveTitle}onKeyDown={handleEnterKey} />
                         </div>
                         <div style={{ height: '1.5vw' }}></div>
                         <div className='hang'>
