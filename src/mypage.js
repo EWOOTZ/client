@@ -108,15 +108,13 @@ function Mypage() {
 
     async function fetchData() {
         console.log(localStorage.getItem("access_token"));
-        axios({
-            method: 'post',
-            url: '/youtube/?search=',
-            params: { search },
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
-                'Content-Type': 'application/json'
-            },
-          })
+            axios.get('/youtube/search?search=', {
+                params: {search},
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+                    'Content-Type': 'application/json'
+                }
+            })
             .then((response) => {
                 if (response.status === 200) {
                     console.log('youtube 서버 응답:', response);
