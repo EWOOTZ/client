@@ -149,7 +149,7 @@ function Mypage() {
 
     useEffect(() => {
         getMypage();
-    }, []);
+    }, []); 
 
     function sendMypage() {
         axios.put(
@@ -234,29 +234,26 @@ function Mypage() {
                 <div className='grey-box2'>
                     <div style={{ width: "20vw" }}></div>
                     <div className='hang3'>
-                        <p style={{ color: "black", fontSize: '2.7vh' }}>닉네임</p>
-                        <div style={{ width: '0.5vw' }}></div>
-                        <input className='input-2' type='text' placeholder='닉네임을 입력하세요...' value={fullname} onChange={saveUserFullname} />
+                        <p style={{ color: "black", fontSize: '2.7vh', width:"23vh" }}>닉네임</p>
+                        <input className='input-2' type='text' placeholder='닉네임을 입력하세요...' value={fullname} onChange={saveUserFullname}/>
                     </div>
                     <div style={{ height: '5vh' }}></div>
                     <div className='hang'>
-                        <p style={{ color: "black", fontSize: '2.7vh' }}>프로필 뮤직</p>
-                        <div style={{ width: '0.5vw' }}></div>
-                        <input className='input-2' type='text' placeholder='프로필 뮤직을 설정하세요...' value={`${singer} - ${title}`} />
+                        <p style={{ color: "black", fontSize: '2.7vh', width:"23vh" }}>프로필 뮤직</p>
+                        <input className='input-2' type='text' placeholder='프로필 뮤직을 설정하세요...' value={`${singer} - ${title}`}/>
+
                         <div style={{ width: "0.5vw" }}></div>
                         <button className="login-gray" style={{ fontSize: "2.2vh" }} onClick={handleTrashClick}>검색</button>
                     </div>
                     <div style={{ height: '5vh' }}></div>
                     <div className='hang'>
-                        <p style={{ color: "black", fontSize: '2.7vh' }}>한줄 소개</p>
-                        <div style={{ width: '0.5vw' }}></div>
-                        <input className='input-2' type='text' placeholder='한줄 소개를 입력하세요...' value={intro} onChange={saveUserIntro} />
+                        <p style={{ color: "black", fontSize: '2.7vh', width:"23vh" }}>한줄 소개</p>
+                        <input className='input-2' type='text' placeholder='한줄 소개를 입력하세요...' value={intro} onChange={saveUserIntro}/>
                     </div>
                     <div style={{ height: '5vh' }}></div>
                     <div className='hang'>
-                        <p style={{ color: "black", fontSize: '2.7vh' }}>내 미니홈피 URL</p>
-                        <div style={{ width: '0.5vw' }}></div>
-                        <input className='input-2' type='text' placeholder={`localhost:3000/main/${localStorage.getItem("id")}`} />
+                        <p style={{ color: "black", fontSize: '2.7vh', width:"23vh" }}>내 미니홈피 URL</p>
+                        <input className='input-2' type='text' placeholder={`localhost:3000/main/${localStorage.getItem("id")}`}/>
                         <div style={{ width: "0.5vw" }}></div>
                         <button className="login-gray" style={{ fontSize: "2.2vh" }} onClick={() => console.log(localStorage.getItem("access_token"))}>복사</button>
                     </div>
