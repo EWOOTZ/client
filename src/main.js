@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import picturetrash from './assets/trash.png';
 import pictureHome from './images/Oak Tree.png';
 import picturesky from './images/sky4.png';
+import picturefriend from './images/friend7.png';
 import picturebasic from './images/basicProfile.png';
 import pictureCD from './images/CD.png';
 import picturePlay from './images/Play.png';
@@ -187,6 +188,8 @@ function Main() {
 
     const [isExiting, setIsExiting] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
+    const [isFlwExiting, setFlwIsExiting] = useState(false);
+    const [showFlwPopup, setFlwShowPopup] = useState(false);
     const [text, setText] = useState("");
     const [status, setStatus] = useState("");
     const [fullname, setFullname] = useState("");
@@ -259,7 +262,6 @@ function Main() {
             specificFunction(); // 엔터를 눌렀을 때 실행할 함수
         }
     };
-
     const specificFunction = () => {
         sendQna();
     };
@@ -281,6 +283,10 @@ function Main() {
     const handleTrashClick = () => {
         setText("");
         setShowPopup(true);
+    };
+
+    const handleFollowClick = () => {
+        setFlwShowPopup(true);
     };
 
     const handleDiscard = () => {
@@ -316,6 +322,8 @@ function Main() {
 
     let title = `${fullname || localStorage.getItem("fullname")}`;
     let title2 = '의 마이홈피';
+    let title3 = '<당신>의'
+
 
     const navigate = useNavigate();
 
@@ -329,9 +337,12 @@ function Main() {
                         <div className='main-white-box'>
                             <img src={profile_image} alt="Default" style={{ width: '100px', height: '100px', padding: "10px" }} />
                             <div style={{ height: "2vh" }}></div>
-                            <p style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-start", textAlign: "left", width: "15vw", paddingLeft: "1vh", fontSize: "20px" }}>
-                                {fullname}
-                            </p>
+                            <div className='hang' style={{ width: "15vw", display: "flex", alignItems: "flex-start", justifyContent: "flex-start", textAlign: "left" }}>
+                                <p style={{ paddingLeft: "1vh", fontSize: "20px" }}>
+                                    {fullname}
+                                </p>
+                                <button className="login-gray" style={{ fontSize: "11px" }} onClick={handleFollowClick}>팔로우</button>
+                            </div>
                             <div style={{ height: "1vh" }}></div>
                             <div className='black-line'>
                                 <p style={{ fontSize: "15px" }}>한줄 소개</p>
@@ -342,22 +353,22 @@ function Main() {
 
                             </div>
                             <div className='green-box'>
-                                <div className='hang' style={{paddingRight:"2vh"}}>
-                                <img src={pictureCD} width='40vw' height='20vh'/>
-                                <p style={{fontSize:"18px"}}>&TEAM - FIREWORK</p>
+                                <div className='hang' style={{ paddingRight: "2vh" }}>
+                                    <img src={pictureCD} width='40vw' height='20vh' />
+                                    <p style={{ fontSize: "18px" }}>&TEAM - FIREWORK</p>
                                 </div>
                                 <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
                                 <div className='hang'>
-                                <img src={picturePlay} width='17vw' height='23vh'/>
-                                <img src={picturePause} width='17vw' height='23vh'/>
+                                    <img src={picturePlay} width='17vw' height='23vh' />
+                                    <img src={picturePause} width='17vw' height='23vh' />
                                 </div>
                             </div>
-                            <div style={{height:"18vh"}}></div>
+                            <div style={{ height: "18vh" }}></div>
                             <div className='hang'>
-                            <button className="login-gray" style={{ fontSize: "15px" }} onClick={() => navigate(`/mypage/${localStorage.getItem("id")}`)}>마이페이지</button>                            
-                            <div style={{width:"4vh"}}></div>
-                            <button className="login-gray" style={{ fontSize: "15px" }} onClick={() => navigate('/')}>로그아웃</button>
-                        </div>
+                                <button className="login-gray" style={{ fontSize: "15px" }} onClick={() => navigate(`/mypage/${localStorage.getItem("id")}`)}>마이페이지</button>
+                                <div style={{ width: "4vh" }}></div>
+                                <button className="login-gray" style={{ fontSize: "15px" }} onClick={() => navigate('/')}>로그아웃</button>
+                            </div>
                         </div>
                     </div>
                     <div>
@@ -371,7 +382,7 @@ function Main() {
                         </div>
                         <div className='main-gray-box'>
                             <div className='yellow-box-scroll' style={{ width: "53vw", height: "27vh", paddingLeft: "5vh" }}>
-                                <p style={{fontSize:"10px", color:"black", textAlign:"right", width:"100%"}}>답변 칸을 클릭해 입력하고 ENTER를 누르면 저장돼요!</p>
+                                <p style={{ fontSize: "10px", color: "black", textAlign: "right", width: "100%" }}>답변 칸을 클릭해 입력하고 ENTER를 누르면 저장돼요!</p>
                                 <p className='title-text' style={{ color: "black", fontSize: "25px" }}>Q. 나의 MBTI는?</p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "25px" }}>A: </p>
@@ -425,7 +436,7 @@ function Main() {
                             <div style={{ height: "13px" }}></div>
                             <div className='sky-box' style={{ width: "53vw", height: "43vh", backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.5)), url(${picturesky})`, backgroundSize: "cover" }}>
                                 <div className='sky-box-inner'>
-                                    <div className='scroll2' style={{ padding: "1vh", width: "100%" }}>
+                                    <div className='scroll2' style={{ padding: "1vh", width: "100%", height:"90%" }}>
                                         {visitView.map((visit) => (
                                             <div key={visit.id} style={{ marginBottom: "2vh" }}>
                                                 <div className='hang'>
@@ -464,8 +475,6 @@ function Main() {
                         </div>
                     </div>
                 </div>
-
-
                 {showPopup && (
                     <div className={`letter-popup ${isExiting ? 'exiting' : ''}`}>
                         <div className="letter-popup-content">
@@ -481,6 +490,47 @@ function Main() {
                             />
                             <button className='trash-button' onClick={handleDiscard} >버리기!</button>
 
+                        </div>
+                    </div>
+                )}
+                <div className={`shadow ${showFlwPopup ? 'active' : ''}`} style={{ display: showFlwPopup ? 'block' : 'none' }}></div>
+                {showFlwPopup && (
+                    <div className={`letter-popup ${isFlwExiting ? 'exiting' : ''}`}>
+                        <div className='follow-popup-content' style={{ backgroundImage: 'url(' + picturefriend + ')'}}>
+                            <div>
+                                <img src={pictureHome} width='30vw' height='30vh' style={{ color: "white" }} />
+                                <img src={pictureHome} width='30vw' height='30vh' style={{ color: "white" }} />
+                                <img src={pictureHome} width='30vw' height='30vh' style={{ color: "white" }} />
+                            </div>
+                            <p style={{ color: '#00DAC0', fontSize: 37 }}>
+                                {title3}
+                            </p>
+                            <p style={{ color: '#8A8A8A', fontSize: 37 }}>
+                                마이홈피
+                            </p>
+                            <div style={{ height: "1vw" }}></div>
+                            <div className='yellow-box' style={{width:"35vw", height:"35vh"}}>
+                                <img src={picturebasic} width='80vw' height='80vh'></img>
+                                <div style={{ height: "2vh" }}></div>
+                                <div className='hang'>
+                                    <p style={{ color: '#00DAC0', fontSize: 25 }}>
+                                        {fullname}
+                                    </p>
+                                    <div style={{ width: '2vw' }}></div>
+                                    <p style={{ color: 'black', fontSize: 25 }}>
+                                        님에게
+                                    </p>
+                                </div>
+                                <p style={{ color: 'black', fontSize: 25 }}>
+                                    일촌 맺기를 신청하시겠습니까?
+                                </p>
+                                <div style={{ height: "2vh" }}></div>
+                                <div className='hang'>
+                                    <button className="login-gray" style={{ fontSize: "22px" }} onClick={() => navigate()}>네!</button>
+                                    <div style={{ width: "5vh" }}></div>
+                                    <button className="login-gray" style={{ fontSize: "22px" }} onClick={() => navigate("/")}>아니요.</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )}
