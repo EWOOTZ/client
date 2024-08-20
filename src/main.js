@@ -110,30 +110,26 @@ function Main() {
     };
 
 
-
-    const getFollower = async () => {
-        try {
-            const response = await axios.get(
-                '/follow/',
-                {
-                    'headers': {
-                        'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
-                        'Content-Type': 'application/json'
-                    }
-                }
-            );
-            if (response.status === 200) {
-
-
-                console.log("팔로워 가져오기 성공", response.data);
-
-
+    async function getFollower() {
+        axios.get('/follow/', {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+                'Content-Type': 'application/json'
             }
-        }
-        catch (error) {
-            console.log("팔로워 가져오기 실패", error.response);
-        }
+        }).then((response) => {
+            console.log(response.status);
+            if (response.status === 200) {
+                const myfollowee = response.data.map(user => user.followee);
+                setFollowee(myfollowee);
+
+                console.log('팔로워 검색 결과:', followee);
+            }
+        })
+            .catch((error) => {
+                console.error('팔로워 목록 가져오기 실패:', error);
+            });
     };
+
 
     const getQna = async () => {
         try {
@@ -292,6 +288,43 @@ function Main() {
         });
     }
 
+
+    function sendFollow(selectedUsername) {
+        axios.post(
+            '/follow/',
+            {
+                "follower": localStorage.getItem("username"),
+                "followee": selectedUsername,
+            },
+            {
+                'headers': {
+                    'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+                    'Content-Type': 'application/json'
+                }
+            }
+        ).then((response) => {
+            console.log(`follower : ${localStorage.getItem("username")}`);
+            console.log(`follwee : ${selectedUsername}`);
+            console.log(response.status);
+            if (response.status === 201) {
+                console.log("팔로우 보내기 성공");
+            }
+        }).catch((error) => {
+            console.log(`follower : ${localStorage.getItem("username")}`);
+            console.log(`follwee : ${selectedUsername}`);
+            console.log("팔로우 보내기 실패",error.response);
+        });
+    }
+   
+ 
+    const [selectedUsername, setSelectedUsername] = useState("");
+    const [followee, setFollowee] = useState([]);
+
+
+    const handleFolloweeClick = (name) => {
+        setSelectedFollowee(name);
+    };
+
     const [isExiting, setIsExiting] = useState(false);
     const [isFlwListExiting, setIsFlwListExiting] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
@@ -316,6 +349,8 @@ function Main() {
     const [a10, seta10] = useState('');
     const [search_user, setSearchUser] = useState('');
 
+
+
     async function getSearch() {
         axios.get('/search/?', {
             params: { search_user },
@@ -327,8 +362,12 @@ function Main() {
             .then((response) => {
                 console.log(response.status);
                 if (response.status === 200) {
+                    console.log(response.data);
                     const extractedUsernames = response.data.map(user => user.username);
                     setUsernames(extractedUsernames);
+
+                    console.log(response.data);
+
                     console.log('유저 검색 결과:', usernames);
                 }
             })
@@ -339,7 +378,7 @@ function Main() {
     const [singer, setSinger] = useState('');
     const [musicTitle, setMusicTitle] = useState('');
     const [videoId, setVideoId] = useState(null);
-    const [follewer, setfollower] = useState('');
+
 
 
 
@@ -459,7 +498,7 @@ function Main() {
         getMypage();
         getQna();
         getVisit();
-
+        getFollower();
         MusicFetch();
     }, []);
 
@@ -478,9 +517,7 @@ function Main() {
 
     let title = `${fullname || localStorage.getItem("fullname")}`;
     let title2 = '의 마이홈피';
-    let title3 = '<당신>의'
-
-
+    
     const navigate = useNavigate();
 
     return (
@@ -692,7 +729,7 @@ function Main() {
                                         <div className='hang'>
                                             <p style={{ fontSize: "22px", width: "12vw" }}>{username}</p>
                                             <hr style={{ width: "15vw", borderStyle: "dashed" }}></hr>
-                                            <button className="login-gray" style={{ fontSize: "15px", width: "10vw" }}>팔로우</button>
+                                            <button className="login-gray" style={{ fontSize: "15px", width: "10vw" }}onClick={() => sendFollow(username)}>팔로우</button>
                                         </div>
 
                                         <div style={{ height: "2vh" }}></div>
