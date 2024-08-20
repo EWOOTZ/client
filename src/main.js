@@ -17,7 +17,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import AWS from 'aws-sdk';
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
-import React, {useRef} from 'react';
+import React, { useRef } from 'react';
 import YouTube from 'react-youtube';
 
 function formatDate() {
@@ -32,18 +32,18 @@ function formatDate() {
 
 function Main() {
     const videoStyle = {
-      margin:'10px',
-      };
-      
-      const opts = {
-        
+        margin: '10px',
+    };
+
+    const opts = {
+
         height: '110',
         width: '220',
         playerVars: {
-          autoplay: 0
+            autoplay: 0
         }
-      };
-    
+    };
+
     const MusicFetch = () => {
         axios.get('/youtube/mymusic_video', {
             headers: {
@@ -51,23 +51,23 @@ function Main() {
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`
             }
         })
-        .then((response) => {
-            if (response.status === 200) {
-                console.log('MusicFetch 서버 응답:', response.data);
-                            if (response.data && response.data.youtube_data && response.data.youtube_data.items && response.data.youtube_data.items.length > 0) {
-                    const videoId = response.data.youtube_data.items[0].id;
-                    localStorage.setItem("singer", response.data.singer ); 
-                    setSinger(response.data.singer); 
-                    localStorage.setItem("musicTitle", response.data.music_title);  
-                    setMusicTitle(response.data.music_title);  
-                    localStorage.setItem("videoId", videoId);
-                    setVideoId(videoId);
-                } 
-            } 
-        })
-        .catch((error) => {
-            console.error('MusicFetch 데이터를 가져오는 중 오류 발생:', error);
-        });
+            .then((response) => {
+                if (response.status === 200) {
+                    console.log('MusicFetch 서버 응답:', response.data);
+                    if (response.data && response.data.youtube_data && response.data.youtube_data.items && response.data.youtube_data.items.length > 0) {
+                        const videoId = response.data.youtube_data.items[0].id;
+                        localStorage.setItem("singer", response.data.singer);
+                        setSinger(response.data.singer);
+                        localStorage.setItem("musicTitle", response.data.music_title);
+                        setMusicTitle(response.data.music_title);
+                        localStorage.setItem("videoId", videoId);
+                        setVideoId(videoId);
+                    }
+                }
+            })
+            .catch((error) => {
+                console.error('MusicFetch 데이터를 가져오는 중 오류 발생:', error);
+            });
     };
 
 
@@ -124,14 +124,14 @@ function Main() {
             );
             if (response.status === 200) {
 
-                
+
                 console.log("팔로워 가져오기 성공", response.data);
 
-                
+
             }
         }
         catch (error) {
-            console.log("팔로워 가져오기 실패",error.response);
+            console.log("팔로워 가져오기 실패", error.response);
         }
     };
 
@@ -144,7 +144,7 @@ function Main() {
                 }
             });
             if (response.status === 200) {
-                const data = response.data[0]; 
+                const data = response.data[0];
                 seta1(data.answer1);
                 seta2(data.answer2);
                 seta3(data.answer3);
@@ -163,7 +163,7 @@ function Main() {
         }
     };
 
-   
+
 
     function sendQna() {
         axios.put(
@@ -517,16 +517,16 @@ function Main() {
                                     <img src={picturePlay} width='17vw' height='23vh' />
                                     <img src={picturePause} width='17vw' height='23vh' />
                                 </div>
-       
+
 
                             </div>
 
                             {
-        <div className="youtube-video" style={videoStyle}>
-          <YouTube videoId={videoId} opts={opts} />
-        </div>
-      }
-                           
+                                <div className="youtube-video" style={videoStyle}>
+                                    <YouTube videoId={videoId} opts={opts} />
+                                </div>
+                            }
+
                             <div className='hang'>
                                 <button className="login-gray" style={{ fontSize: "15px" }} onClick={() => navigate(`/mypage/${localStorage.getItem("username")}`)}>마이페이지</button>
                                 <div style={{ width: "4vh" }}></div>
@@ -623,89 +623,89 @@ function Main() {
 
                                     </div>
 
-                                        </div>
-
-
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <div style={{ height: "5vh" }}></div>
-                        <div className='main-transparent-box' style={{ height: "37vh" }}>
-                            <div className='hang' style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                <p style={{ paddingTop: "10px", fontSize: "17px" }}>내 이웃들</p>
-                                <div style={{ width: "0.5vw" }}></div>
-                                <img src={picturePlus} width='15vw' height='15vh' onClick={handleFollowListClick} style={{ paddingTop: "10px" }} />
-                            </div>
-                            <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
-                            <div style={{ height: "78%" }}></div>
-                        </div>
-                        <div style={{ height: "1vh" }}></div>
 
-                        <div className='main-transparent-box' style={{ height: "28vh" }}>
-                            <p style={{ paddingTop: "10px", fontSize: "17px" }}>산성비 랭킹</p>
-                            <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
-                            <div style={{ height: "83%" }}></div>
-                        </div>
-                        <div className='trash-image-container'>
-                            <img src={picturetrash} alt="trash" onClick={handleTrashClick} style={{ cursor: 'pointer', width: "4.5vw", height: "8vh" }} />
+
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div className={`shadow ${showPopup ? 'active' : ''}`} style={{ display: showPopup ? 'block' : 'none' }}></div>
-
-                {showPopup && (
-                    <div className={`letter-popup ${isExiting ? 'exiting' : ''}`}>
-                        <div className="letter-popup-content">
-                            <div className='hangs'>
-                                <img src={picturetrash} width='50vw' height='50vh' alt="trash" onClick={handleTrashClick} />
-                                <p className='trash-popup-message' > 감정 쓰레기통에 감정을 버려보세요!</p>
-                            </div>
-                            <textarea
-                                className="trash-popup-textarea"
-                                value={text}
-                                onChange={handleChange}
-                                placeholder="감정을 적어보세요.."
-                            />
-                            <button className='trash-button' onClick={handleDiscard} >버리기!</button>
-
+                <div>
+                    <div style={{ height: "5vh" }}></div>
+                    <div className='main-transparent-box' style={{ height: "37vh" }}>
+                        <div className='hang' style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <p style={{ paddingTop: "10px", fontSize: "17px" }}>내 이웃들</p>
+                            <div style={{ width: "0.5vw" }}></div>
+                            <img src={picturePlus} width='15vw' height='15vh' onClick={handleFollowListClick} style={{ paddingTop: "10px" }} />
                         </div>
+                        <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
+                        <div style={{ height: "78%" }}></div>
                     </div>
-                )}
-                <div className={`shadow ${showFlwListPopup ? 'active' : ''}`} style={{ display: showFlwListPopup ? 'block' : 'none' }}></div>
-                {showFlwListPopup && (
-                    <div className={`letter-popup ${isFlwListExiting ? 'exiting' : ''}`}>
-                        <div className='follow-popup-content' style={{ backgroundColor: "#C2E9B5", width: "40vw", padding: "20px" }}>
-                            <div className='hang'>
-                                <img src={pictureApple} style={{ width: '50px', height: '40px', }} />
-                                <p style={{ fontSize: "25px" }}>이웃 검색</p>
-                            </div>
-                            <div style={{ height: "5vh" }}></div>
-                            <input className='input-name' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "20px", height: "10vh", width: "30vw" }} type='text' value={search_user} onChange={saveSearchuser} onKeyDown={handleEnterKey2}></input>
-                            <div style={{ height: "60%"}}>
+                    <div style={{ height: "1vh" }}></div>
+
+                    <div className='main-transparent-box' style={{ height: "28vh" }}>
+                        <p style={{ paddingTop: "10px", fontSize: "17px" }}>산성비 랭킹</p>
+                        <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
+                        <div style={{ height: "83%" }}></div>
+                    </div>
+                    <div className='trash-image-container'>
+                        <img src={picturetrash} alt="trash" onClick={handleTrashClick} style={{ cursor: 'pointer', width: "4.5vw", height: "8vh" }} />
+                    </div>
+                </div>
+            </div>
+            <div className={`shadow ${showPopup ? 'active' : ''}`} style={{ display: showPopup ? 'block' : 'none' }}></div>
+
+            {showPopup && (
+                <div className={`letter-popup ${isExiting ? 'exiting' : ''}`}>
+                    <div className="letter-popup-content">
+                        <div className='hangs'>
+                            <img src={picturetrash} width='50vw' height='50vh' alt="trash" onClick={handleTrashClick} />
+                            <p className='trash-popup-message' > 감정 쓰레기통에 감정을 버려보세요!</p>
+                        </div>
+                        <textarea
+                            className="trash-popup-textarea"
+                            value={text}
+                            onChange={handleChange}
+                            placeholder="감정을 적어보세요.."
+                        />
+                        <button className='trash-button' onClick={handleDiscard} >버리기!</button>
+
+                    </div>
+                </div>
+            )}
+            <div className={`shadow ${showFlwListPopup ? 'active' : ''}`} style={{ display: showFlwListPopup ? 'block' : 'none' }}></div>
+            {showFlwListPopup && (
+                <div className={`letter-popup ${isFlwListExiting ? 'exiting' : ''}`}>
+                    <div className='follow-popup-content' style={{ backgroundColor: "#C2E9B5", width: "40vw", padding: "20px" }}>
+                        <div className='hang'>
+                            <img src={pictureApple} style={{ width: '50px', height: '40px', }} />
+                            <p style={{ fontSize: "25px" }}>이웃 검색</p>
+                        </div>
+                        <div style={{ height: "5vh" }}></div>
+                        <input className='input-name' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "20px", height: "10vh", width: "30vw" }} type='text' value={search_user} onChange={saveSearchuser} onKeyDown={handleEnterKey2}></input>
+                        <div style={{ height: "60%" }}>
                             <div style={{ height: "2vh" }}></div>
 
-                                <div>
-                                    {usernames.map((username) => (
-                                        <div key={username.id}>
-                                            <div className='hang'>
-                                                    <p style={{ fontSize: "22px", width:"12vw" }}>{username}</p>
-                                                <hr style={{width: "15vw",borderStyle:"dashed"}}></hr>
-                                                <button className="login-gray" style={{ fontSize: "15px", width:"10vw"}}>팔로우</button>
-                                            </div>
-
-                                                <div style={{ height: "2vh" }}></div>
+                            <div>
+                                {usernames.map((username) => (
+                                    <div key={username.id}>
+                                        <div className='hang'>
+                                            <p style={{ fontSize: "22px", width: "12vw" }}>{username}</p>
+                                            <hr style={{ width: "15vw", borderStyle: "dashed" }}></hr>
+                                            <button className="login-gray" style={{ fontSize: "15px", width: "10vw" }}>팔로우</button>
                                         </div>
-                                    ))}
-                                </div>
+
+                                        <div style={{ height: "2vh" }}></div>
+                                    </div>
+                                ))}
                             </div>
-                            <button className="login-gray" style={{ fontSize: "22px", display: "flex", alignItems: "flex-end", justifyContent: "flex-end", width: "100%", height: "100%" }} onClick={handleFollowListDiscard}>나가기</button>
                         </div>
+                        <button className="login-gray" style={{ fontSize: "22px", display: "flex", alignItems: "flex-end", justifyContent: "flex-end", width: "100%", height: "100%" }} onClick={handleFollowListDiscard}>나가기</button>
                     </div>
-                )}
-            </div>
+                </div>
+            )}
         </div>
+        
     );
 }
 
