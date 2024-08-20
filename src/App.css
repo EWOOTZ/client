@@ -31,8 +31,6 @@ div {
   align-items: center;
 }
 
-
-
 .white-line {
   width: 95vw;
   height: 90vh;
@@ -323,8 +321,6 @@ div {
   animation: fadeIn 0.1s ease-in;
   font-family: 'HJ';
 }
-
-
 
 .login-gray:disabled {
   cursor: not-allowed; 
