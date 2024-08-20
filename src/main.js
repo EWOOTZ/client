@@ -626,7 +626,7 @@ function Main() {
                                 </div>
 
 
-                            </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -705,7 +705,7 @@ function Main() {
                 </div>
             )}
         </div>
-        
+        </div>
     );
 }
 
