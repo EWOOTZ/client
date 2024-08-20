@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'; 
 import { useNavigate } from 'react-router-dom';
@@ -5,6 +6,7 @@ import './Letter.css';
 import backimage from './assets/backg_image.png';
 import letter_case from './assets/letter_case.png';
 import tree from './assets/tree.png';
+import notice from './assets/notice_board.png';
 import Swal from 'sweetalert2';
 
 function Ground() {
@@ -151,7 +153,12 @@ function Ground() {
                 <img src={letter_case} alt="Letter Case" 
                 className='letter-case-style'
                 onClick={handleLetterCaseClick} />
-            
+
+                    <img 
+                    src={notice} 
+                    alt="notice" 
+                    className='notice-style' 
+                />   
                 <img 
                     src={tree} 
                     alt="Tree" 
