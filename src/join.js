@@ -2,8 +2,7 @@
 import './App.css';
 import { useEffect, useState } from 'react';
 import pictureHome from './images/Oak Tree.png';
-import pictureapple from './images/apple.png';
-import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2'
 
@@ -11,7 +10,6 @@ function Join() {
   let title = '<당신>의\n';
   let title2 = '마이홈피';
   const navigate = useNavigate();
-
   const [id, setId] = useState('');
   const [pw, setPw] = useState('');
   const [repw, setRepw] = useState('');
@@ -44,21 +42,16 @@ function Join() {
     } else {
       setIsPasswordMatch("");
     }
-
   }, [pw, repw]);
 
   function idCheck() {
     axios.post(
       `/users/duplicate?username=${id}`,
-
       {
         'headers': { 'Content-Type': 'application/json' }
       }
     ).then((response) => {
-      console.log(axios.AxiosHeaders);
-      console.log(response.data);
       if (response.status == 200) {
-     
         Swal.fire({
           icon: "success",
           text: "사용가능한 아이디입니다!",
@@ -70,7 +63,6 @@ function Join() {
         title: "이미 존재하는 아이디입니다.",
         text: "다른 아이디를 입력하세요!",
     });
-     
     });
   }
 
@@ -81,15 +73,12 @@ function Join() {
         title: "회원가입 실패",
         text: "모든 항목을 입력해주세요!",
     });
-      
-   
     } else if (pw !== repw) {
       Swal.fire({
         icon: "warning",
         title: "회원가입 실패",
         text: "비밀번호가 일치하지 않습니다.",
     });
-
     } else {
       axios.post(
         '/users/signup',
@@ -98,42 +87,29 @@ function Join() {
           'headers': { 'Content-Type': 'application/json' }
         }
       ).then((response) => {
-        console.log(axios.AxiosHeaders);
-        console.log(response.data);
         if (response.status == 201) {
-          //localStorage.setItem("access_token", response.data[0]);
           Swal.fire({
             icon: "success",
             title: "회원가입 성공!",
             text: "로그인 해주세요!",
         });
-          
           navigate("/");
           console.log("회원가입 성공");
-          console.log(response.data[0]);
-
         }
         else {
           Swal.fire({
             icon: "warning",
             title: "회원가입 실패",
         });
-          console.log(id);
-          console.log(pw);
-          console.log(name);
         }
       }).catch((error) => {
         console.log(error.response);
-        console.log(id);
-        console.log(pw);
-        console.log(name);
         Swal.fire({
           icon: "warning",
           title: "회원가입 실패",
       });
       });
     }
-
   }
   return (
     <div className='backg'>
