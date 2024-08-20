@@ -235,7 +235,18 @@ margin-right: 8px;
   width: 18vw;
   height: auto;
   object-fit: contain;
-  margin-left: 15vw; /* 오른쪽 여백 20px */
+  margin-left: 6vw; /* 오른쪽 여백 20px */
+}
+
+.notice-style {
+  position: absolute;
+  left: 0;
+  top: 33.5vh; 
+  transform: translateY(-50%); 
+  width: 22vw;
+  height: auto;
+  object-fit: contain;
+  margin-left: 26vw;
 }
 
 .tree-style {
@@ -246,18 +257,18 @@ margin-right: 8px;
   width: 31vw;
   height: auto;
   object-fit: contain;
-  margin-right: 15vw; /* 오른쪽 여백 20px */
+  margin-right: 9vw; /* 오른쪽 여백 20px */
 }
 
 /*소원 텍스트박스 style*/
 .text-box-style {
   position: absolute;
-  top: 64vh; 
+  top: 65vh; 
   right : 0;
   width: 37vw;
   min-height: 10vh; 
   max-height: 5vh; /* 최대 높이 설정 (5줄의 높이) */
-  margin-right: 12vw; /* 오른쪽 여백 20px */
+  margin-right: 5vw; /* 오른쪽 여백 20px */
   height: 20vh;
   padding: 1.2vh;
   background-color: rgba(255, 255, 255, 0.8); /* 반투명 흰색 배경 */

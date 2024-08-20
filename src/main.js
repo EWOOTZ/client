@@ -107,6 +107,32 @@ function Main() {
         }
     };
 
+
+
+    const getFollower = async () => {
+        try {
+            const response = await axios.get(
+                '/follow/',
+                {
+                    'headers': {
+                        'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            if (response.status === 200) {
+
+                
+                console.log("팔로워 가져오기 성공", response.data);
+
+                
+            }
+        }
+        catch (error) {
+            console.log("팔로워 가져오기 실패",error.response);
+        }
+    };
+
     const getQna = async () => {
         try {
             const response = await axios.get('/qna/', {
@@ -116,7 +142,7 @@ function Main() {
                 }
             });
             if (response.status === 200) {
-                const data = response.data[0]; // 배열의 첫 번째 요소
+                const data = response.data[0]; 
                 seta1(data.answer1);
                 seta2(data.answer2);
                 seta3(data.answer3);
@@ -250,8 +276,8 @@ function Main() {
     const [a10, seta10] = useState('');
     const [singer, setSinger] = useState('');
     const [musicTitle, setMusicTitle] = useState('');
-
     const [videoId, setVideoId] = useState(null);
+    const [follewer, setfollower] = useState('');
 
 
     const scrollToBottom = () => {
@@ -352,16 +378,16 @@ function Main() {
         getQna();
         getVisit();
         MusicFetch();
+        getFollower();
     }, []);
 
 
     useEffect(() => {
         scrollToBottom();
-    }, [visitView]); // visitView가 변경될 때마다 호출
+    }, [visitView]); 
     
     useEffect(() => {
         if (visitContent === '') {
-            // 상태 업데이트 후에 로그를 확인해 비워졌는지 확인
             console.log("방명록 필드가 비워졌습니다.");
         }
     }, [visitContent]);
