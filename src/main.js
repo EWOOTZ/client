@@ -240,7 +240,6 @@ function Main() {
         });
     }
 
-
     function sendFollow(selectedUsername) {
         axios.post(
             '/follow/',
@@ -260,11 +259,30 @@ function Main() {
             console.log(response.status);
             if (response.status === 201) {
                 console.log("팔로우 보내기 성공");
+
+                Swal.fire({
+                    icon: "success",
+                    text: "구독 성공!",
+                });
+
+                 
             }
         }).catch((error) => {
             console.log(`follower : ${localStorage.getItem("username")}`);
             console.log(`follwee : ${selectedUsername}`);
-            console.log("팔로우 보내기 실패", error.response);
+
+            console.log("팔로우 보내기 실패",error.response);
+
+            Swal.fire({
+                icon: "warning",
+                text: "이미 구독을 한 유저 입니다",
+            });
+
+        });
+    }
+   
+   
+         
         });
     }
 
@@ -274,6 +292,7 @@ function Main() {
     const handleFolloweeClick = (name) => {
         setSelectedFollowee(name);
     };
+
 
     const [isExiting, setIsExiting] = useState(false);
     const [isFlwListExiting, setIsFlwListExiting] = useState(false);
@@ -660,16 +679,17 @@ function Main() {
                             <div style={{ height: "60%" }}>
                                 <div style={{ height: "2vh" }}></div>
 
-                                <div>
-                                    {usernames.map((username) => (
-                                        <div key={username.id}>
-                                            <div className='hang'>
-                                                <p style={{ fontSize: "22px", width: "12vw" }}>{username}</p>
-                                                <hr style={{ width: "15vw", borderStyle: "dashed" }}></hr>
-                                                <button className="login-gray" style={{ fontSize: "15px", width: "10vw" }} onClick={() => sendFollow(username)}>팔로우</button>
-                                            </div>
+                               
+                            <div>
+                                {usernames.map((username) => (
+                                    <div key={username.id}>
+                                        <div className='hang'>
+                                            <p style={{ fontSize: "22px", width: "12vw" }}>{username}</p>
+                                            <hr style={{ width: "15vw", borderStyle: "dashed" }}></hr>
+                                            <button className="login-gray" style={{ fontSize: "15px", width: "10vw" }}onClick={() => sendFollow(username)}>구독</button>
 
                                             <div style={{ height: "2vh" }}></div>
+
                                         </div>
                                     ))}
                                 </div>
