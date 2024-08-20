@@ -122,6 +122,7 @@ function Main() {
             });
     };
 
+
     const getQna = async () => {
         try {
             const response = await axios.get('/qna/', {
@@ -239,6 +240,41 @@ function Main() {
         });
     }
 
+
+    function sendFollow(selectedUsername) {
+        axios.post(
+            '/follow/',
+            {
+                "follower": localStorage.getItem("username"),
+                "followee": selectedUsername,
+            },
+            {
+                'headers': {
+                    'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+                    'Content-Type': 'application/json'
+                }
+            }
+        ).then((response) => {
+            console.log(`follower : ${localStorage.getItem("username")}`);
+            console.log(`follwee : ${selectedUsername}`);
+            console.log(response.status);
+            if (response.status === 201) {
+                console.log("팔로우 보내기 성공");
+            }
+        }).catch((error) => {
+            console.log(`follower : ${localStorage.getItem("username")}`);
+            console.log(`follwee : ${selectedUsername}`);
+            console.log("팔로우 보내기 실패", error.response);
+        });
+    }
+
+
+    const [selectedUsername, setSelectedUsername] = useState("");
+
+    const handleFolloweeClick = (name) => {
+        setSelectedFollowee(name);
+    };
+
     const [isExiting, setIsExiting] = useState(false);
     const [isFlwListExiting, setIsFlwListExiting] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
@@ -264,6 +300,8 @@ function Main() {
     const [a10, seta10] = useState('');
     const [search_user, setSearchUser] = useState('');
 
+
+
     async function getSearch() {
         axios.get('/search/?', {
             params: { search_user },
@@ -275,8 +313,12 @@ function Main() {
             .then((response) => {
                 console.log(response.status);
                 if (response.status === 200) {
+                    console.log(response.data);
                     const extractedUsernames = response.data.map(user => user.username);
                     setUsernames(extractedUsernames);
+
+                    console.log(response.data);
+
                     console.log('유저 검색 결과:', usernames);
                 }
             })
@@ -287,7 +329,7 @@ function Main() {
     const [singer, setSinger] = useState('');
     const [musicTitle, setMusicTitle] = useState('');
     const [videoId, setVideoId] = useState(null);
-    const [follewer, setfollower] = useState('');
+
 
     const scrollToBottom = () => {
         const element = document.querySelector('.scroll2');
@@ -423,8 +465,6 @@ function Main() {
 
     let title = `${fullname || localStorage.getItem("fullname")}`;
     let title2 = '의 마이홈피';
-    let title3 = '<당신>의'
-
     const navigate = useNavigate();
 
     return (
@@ -569,26 +609,17 @@ function Main() {
                         <div style={{ height: "5vh" }}></div>
                         <div className='main-transparent-box' style={{ height: "37vh" }}>
                             <div className='hang' style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                <p style={{ paddingTop: "10px", fontSize: "20px" }}>내 이웃들</p>
+                                <p style={{ paddingTop: "10px", fontSize: "17px" }}>내 이웃들</p>
                                 <div style={{ width: "0.5vw" }}></div>
                                 <img src={picturePlus} width='15vw' height='15vh' onClick={handleFollowListClick} style={{ paddingTop: "10px" }} />
                             </div>
                             <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
-                            <div style={{height:"1vh"}}></div>
-                            <div style={{ height: "78%" }}>
-                                <div>
-                                    {followee.map((myfollowee) => (
-                                        <div key={myfollowee.id}>
-                                            <p style={{ fontSize: "17px"}}>{myfollowee}</p>
-                                            <div style={{ height: "2vh" }}></div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
+                            <div style={{ height: "78%" }}></div>
                         </div>
                         <div style={{ height: "1vh" }}></div>
+
                         <div className='main-transparent-box' style={{ height: "28vh" }}>
-                            <p style={{ paddingTop: "10px", fontSize: "20px" }}>산성비 랭킹</p>
+                            <p style={{ paddingTop: "10px", fontSize: "17px" }}>산성비 랭킹</p>
                             <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
                             <div style={{ height: "83%" }}></div>
                         </div>
@@ -612,6 +643,7 @@ function Main() {
                                 placeholder="감정을 적어보세요.."
                             />
                             <button className='trash-button' onClick={handleDiscard} >버리기!</button>
+
                         </div>
                     </div>
                 )}
@@ -627,26 +659,59 @@ function Main() {
                             <input className='input-name' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "20px", height: "10vh", width: "30vw" }} type='text' value={search_user} onChange={saveSearchuser} onKeyDown={handleEnterKey2}></input>
                             <div style={{ height: "60%" }}>
                                 <div style={{ height: "2vh" }}></div>
+
                                 <div>
                                     {usernames.map((username) => (
                                         <div key={username.id}>
                                             <div className='hang'>
                                                 <p style={{ fontSize: "22px", width: "12vw" }}>{username}</p>
                                                 <hr style={{ width: "15vw", borderStyle: "dashed" }}></hr>
-                                                <button className="login-gray" style={{ fontSize: "15px", width: "10vw" }}>팔로우</button>
+                                                <button className="login-gray" style={{ fontSize: "15px", width: "10vw" }} onClick={() => sendFollow(username)}>팔로우</button>
                                             </div>
+
                                             <div style={{ height: "2vh" }}></div>
                                         </div>
                                     ))}
                                 </div>
                             </div>
-                            <button className="login-gray" style={{ fontSize: "22px", display: "flex", alignItems: "flex-end", justifyContent: "flex-end", width: "100%", height: "100%" }} onClick={handleFollowListDiscard}>나가기</button>
+                        </div>
+                        <div>
+                            <div style={{ height: "5vh" }}></div>
+                            <div className='main-transparent-box' style={{ height: "37vh" }}>
+                                <div className='hang' style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                    <p style={{ paddingTop: "10px", fontSize: "20px" }}>내 이웃들</p>
+                                    <div style={{ width: "0.5vw" }}></div>
+                                    <img src={picturePlus} width='15vw' height='15vh' onClick={handleFollowListClick} style={{ paddingTop: "10px" }} />
+                                </div>
+                                <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
+                                <div style={{ height: "1vh" }}></div>
+                                <div style={{ height: "78%" }}>
+                                    <div>
+                                        {followee.map((myfollowee) => (
+                                            <div key={myfollowee.id}>
+                                                <p style={{ fontSize: "17px" }}>{myfollowee}</p>
+                                                <div style={{ height: "2vh" }}></div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                            <div style={{ height: "1vh" }}></div>
+                            <div className='main-transparent-box' style={{ height: "28vh" }}>
+                                <p style={{ paddingTop: "10px", fontSize: "20px" }}>산성비 랭킹</p>
+                                <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
+                                <div style={{ height: "83%" }}></div>
+                            </div>
+                            <div className='trash-image-container'>
+                                <img src={picturetrash} alt="trash" onClick={handleTrashClick} style={{ cursor: 'pointer', width: "4.5vw", height: "8vh" }} />
+                            </div>
                         </div>
                     </div>
                 )}
             </div>
-        </div>
-    );
+
+            </div>
+            );
 }
 
-export default Main;
+            export default Main;
