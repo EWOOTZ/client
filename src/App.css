@@ -323,3 +323,9 @@ div {
   animation: fadeIn 0.1s ease-in;
   font-family: 'HJ';
 }
+
+
+
+.login-gray:disabled {
+  cursor: not-allowed; 
+}
