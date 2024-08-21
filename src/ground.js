@@ -141,6 +141,10 @@ function Ground() {
     const handleLetterCaseClick = () => {
         navigate(`/letter/${localStorage.getItem("id")}`);
     };
+    const handleNoticeClick = () => {
+        navigate(`/notice/${localStorage.getItem("id")}`);
+    };
+
 
     return (
         <div className={`backg ${isPopupVisible ? 'blur-background' : ''}`} onClick={handlePopupClose}>
@@ -149,7 +153,7 @@ function Ground() {
                 <img src={letter_case} alt="Letter Case"
                     className='letter-case-style'
                     onClick={handleLetterCaseClick} />
-                <img src={notice} alt="notice" className='notice-style'/>
+                <img src={notice} alt="notice" className='notice-style'onClick={handleNoticeClick}/>
                 <img src={tree} alt="Tree" className='tree-style' onClick={handleTreeClick}/>
                 <textarea value={text} onChange={handleInputChange} onFocus={handleFocus} onBlur={handleBlur} className='text-box-style'/>
                 <button className='send-button' onClick={handleSendClick} disabled={text === '소원을 적어주세요' || text.trim() === ''}>소원 전송</button>

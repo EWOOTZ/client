@@ -1,3 +1,128 @@
+/*notice.js*/
+
+.yellow-box-top {
+  width: 70vw;
+  height: 8vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #FFF8EF;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.white-box-top {
+  width: 70vw;
+  height: 6vh;
+  display: flex;
+  justify-content: center;
+  margin: 8px;
+  align-items: center;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.yellow-box-bottom {
+  width: 70vw;
+  height: 65vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #FFF8EF;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+}
+.white-box-bottom{
+  width: 70vw;
+  height: 63vh;
+  display: flex;
+  margin: 9px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+}
+
+
+.custom-select {
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+  border: none;
+  border-radius: 4px;
+  font-size: 15px;
+  cursor: pointer;
+
+}
+
+.custom-select:focus {
+  outline: none;
+  border-color: #007bff; /* 포커스 시 테두리 색상 */
+}
+
+.custom-select option {
+  background-color: #fff;
+  color: #333;
+}
+
+.input-search {
+  font-size: 12px;
+  font-family: "HJ";
+  color: #8A8A8A;
+  width: 35vw;
+  height: 5vh;
+  border-radius: 2px;
+  border: none;
+  outline: none;
+  padding-left: 10px;
+  position: relative;
+  background-color: white;
+}
+
+.container-search{
+  height: 85vh;
+  width: 10vw;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-y: auto;
+
+
+}
+.notice-gray-box {
+  background-color: #ECECEC;
+  border: none;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  margin: 15px;
+  border-radius: 8px;
+  width: 15vw;
+  height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.notice-gray-box2{
+  background-color: #ECECEC;
+  border: none;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  
+  border-radius: 8px;
+  width: 75vw;
+  height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+
+
 /*Main*/
 .go-ground-gray {
   color: #8A8A8A;
