@@ -10,6 +10,7 @@ import Main from './main';
 import Mypage from './mypage';
 import axios from 'axios';
 import Swal from 'sweetalert2'
+import Notice from './notice';
 
 const Home = () => {
   let title = '<당신>의\n';
@@ -112,6 +113,7 @@ const App = () => {
           <Route path="/letter/:id" element={<Letter />} />
           <Route path="/main/:id" element={<Main />} />
           <Route path="/mypage/:id" element={<Mypage />} />
+          <Route path="/notice/:id" element={<Notice />} />
         </Routes>
       </BrowserRouter>
     </div>

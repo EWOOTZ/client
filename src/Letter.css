@@ -1,3 +1,36 @@
+/*notice.js*/
+
+
+.notice-gray-box {
+  background-color: #ECECEC;
+  border: none;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  margin: 15px;
+  border-radius: 8px;
+  width: 15vw;
+  height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.notice-gray-box2{
+  background-color: #ECECEC;
+  border: none;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  
+  border-radius: 8px;
+  width: 75vw;
+  height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+
+
 /*Main*/
 .go-ground-gray {
   color: #8A8A8A;
