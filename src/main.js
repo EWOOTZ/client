@@ -380,6 +380,15 @@ function Main() {
     const specificFunction2 = () => {
         getSearch();
     };
+    const handleEnterKey3 = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // 엔터 키의 기본 동작을 방지 (폼 제출 등)
+            specificFunction3(); // 엔터를 눌렀을 때 실행할 함수
+        }
+    };
+    const specificFunction3 = () => {
+        sendVisit();
+    };
 
     useEffect(() => {
         const handlePopState = (event) => {
@@ -479,7 +488,7 @@ function Main() {
                                     <YouTube videoId={videoId} opts={opts} />
                                 </div>
                             }
-                            <div className='hang'>
+                            <div className='hang' style={{height:"5vh", display:"flex", alignItems:"flex-end", justifyContent:"flex-end"}}>
                                 <button className="login-gray" style={{ fontSize: "15px" }} onClick={() => navigate(`/mypage/${localStorage.getItem("username")}`)}>마이페이지</button>
                                 <div style={{ width: "4vh" }}></div>
                                 <button className="login-gray" style={{ fontSize: "15px" }} onClick={() => navigate('/')}>로그아웃</button>
@@ -570,7 +579,7 @@ function Main() {
                                     <div className="hang" style={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-end", height: "20%", width: "100%" }}>
                                         <input className='input-name' style={{ width: "10vw" }} type='text' placeholder='이름' value={visitname} onChange={saveVisitname} />
                                         <div style={{ width: "1vh" }}></div>
-                                        <input className='input-name' style={{ width: "32vw" }} type='text' placeholder='방명록을 작성하세요.' value={visitContent} onChange={savecontent} />
+                                        <input className='input-name' style={{ width: "32vw" }} type='text' placeholder='방명록을 작성하세요.' value={visitContent} onChange={savecontent} onKeyDown={handleEnterKey3}/>
                                         <button className="login-gray" style={{ fontSize: "20px", display: "flex", paddingBottom: "8px" }} onClick={() => sendVisit()}>전송</button>
                                     </div>
                                 </div>
