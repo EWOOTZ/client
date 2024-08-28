@@ -1,7 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useRef } from "react";
 
-const wordString = `길거리 길다
+const wordString = `길거리
+길다
 길어지다
 길이
 김
@@ -330,7 +331,7 @@ const wordString = `길거리 길다
 늘어놓다
 늘어서다
 늘어지다
-늙다`.split(/|\n/gm);
+늙다`.split('\n' );
 
 const Game = () => {
     const [waitWords, setWaitWords] = useState([]);
@@ -346,7 +347,7 @@ const Game = () => {
     const intervalRefs = useRef([]);
 
     const delay = 1000; // 단어가 떨어지는 간격
-    const gameoverLimit = 5; // 게임 오버가 되는 실패 횟수
+    const gameoverLimit = 1; // 게임 오버가 되는 실패 횟수
 
     useEffect(() => {
         if (gameStarted) {
@@ -386,7 +387,7 @@ const Game = () => {
                 const x = Math.floor(
                     Math.random() * (gamePanelRef.current.offsetWidth - 50)
                 );
-                const speed = Math.random() * 3 + 1; // 단어별 속도 (1~4 사이의 랜덤 값)
+                const speed = Math.random() * 15 + 1; 
                 const wordObj = { word, x, y: 0, speed };
                 setActiveWordObjs((prev) => [...prev, wordObj]);
             } else {
@@ -425,7 +426,6 @@ const Game = () => {
 
     const renderWords = () => {
         return activeWordObjs.map((wordObj, index) => {
-            wordObj.speed = Math.floor(Math.random() * 10);
             const yPosition = wordObj.y + wordObj.speed;
             if (yPosition >= gamePanelRef.current.offsetHeight - 30) {
                 setFailed((prevFailed) => prevFailed + 1);
@@ -492,7 +492,7 @@ const Game = () => {
                             <br />
                             2. 없는 단어 입력 시 <b>점수가 차감</b>됩니다.
                             <br />
-                            3. <b>{gameoverLimit}개</b>가 바닥에 떨어지면 <b>게임은 종료</b>
+                            3. <b>단어</b>가 바닥에 떨어지면 <b>게임은 종료</b>
                             됩니다.
                             <br />
                             4. 단어가 모두 나와서 처리되면 <b>게임은 종료</b>됩니다.

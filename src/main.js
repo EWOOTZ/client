@@ -460,7 +460,7 @@ function Main() {
                             ) : (
                                 <img src={picturebasic} alt="Default" style={{ width: '100px', height: '100px' }} />
                             )}                            <div style={{ height: "2vh" }}></div>
-                            <p style={{ paddingLeft: "1vh", fontSize: "20px", width: "32vh", display: "flex", alignItems: "flex-start", justifyContent: "flex-start" }}>
+                            <p style={{ paddingLeft: "1vh", fontSize: "20px", width: "32vh", display: "flex", alignItems: "flex-start"}}>
                                 {fullname}
                             </p>
                             <div style={{ height: "1vh" }}></div>
@@ -607,7 +607,7 @@ function Main() {
 
                         <div className='hang'>
                             <div className='trash-image-container'>
-                                <img src={joyconImg} alt="trash" onClick={() => navigate(`/game/}`)} style={{
+                                <img src={joyconImg} alt="trash" onClick={() => navigate(`/game/`)} style={{
                                     cursor: 'pointer',
                                     width: "8vw",
                                     height: "15vh",
