@@ -266,6 +266,17 @@ const DailyContent = ({ selectedOption, handleChange }) => (
 function FoodAllContent({ selectedOption, handleChange }) {
   const [boardView, setboardview] = useState([]);
   const [profile_image, setProfileImg] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
+  const [isExiting, setIsExiting] = useState(false);
+
+
+  const handleBoardClick = () => {
+    setShowPopup(true);
+  };
+  const handleBoardcloseClick = () => {
+    setShowPopup(false);
+    setIsExiting(false);
+  };
   const gridItems = [
     { id: 1, profileImage: picturebasic, description: "전체 맛집인듯 아닌듯 몇번째 맛집일까요", write: "애햄이1" },
     { id: 2, profileImage: picturebasic, description: "두 번째 맛집", write: "애햄이2" },
@@ -333,7 +344,7 @@ function FoodAllContent({ selectedOption, handleChange }) {
                 <p style={{ fontSize: "15px", color: "#8A8A8A", display: "flex", width: "13vh", alignItems: "center", justifyContent: "center" }}>{item.write}</p>
               </button>
               <div style={{ width: "3vw" }}></div>
-              <button onClick={() => { console.log(`클릭${item.id}`) }}
+              <button onClick={handleBoardClick}
                 style={{
                   display: "flex",
                   alignItems: "flex-start",
@@ -352,8 +363,20 @@ function FoodAllContent({ selectedOption, handleChange }) {
               </button>
             </div>
           ))}
-
         </div>
+        <div className={`shadow ${showPopup ? 'active' : ''}`} style={{ display: showPopup ? 'block' : 'none' }}></div>
+        {showPopup && (
+          <div className={`letter-popup ${isExiting ? 'exiting' : ''}`}>
+            <div className="backg" style={{ width: "70vw", height: "70vh", borderRadius: "10px" }}>
+              <div className="yellow-box" style={{ width: "68vw", height: "66vh", borderRadius: "10px" }}>
+              <img src={gridItems[0].profileImage} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%'}} />
+              <p style={{ fontSize: "23px", textAlign: "start" }}>{gridItems[0].description}</p>
+              <p style={{ fontSize: "23px", textAlign: "start" }}>{gridItems[0].description}</p>
+              <button className='trash-button' onClick={handleBoardcloseClick} >버리기!</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
