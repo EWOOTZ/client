@@ -608,7 +608,7 @@ function Main() {
                             <div style={{ height: "78%" }}>
                                 <div>
                                     {followee.map((myfollowee) => (
-                                        <div key={myfollowee.id}>
+                                        <div key={myfollowee}>
                                             <p style={{ fontSize: "17px" }}>{myfollowee}</p>
                                             <div style={{ height: "1vh" }}></div>
                                         </div>
