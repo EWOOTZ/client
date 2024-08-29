@@ -169,9 +169,17 @@ function Main() {
         ).then((response) => {
             if (response.status === 200) {
                 console.log("qna 성공");
+                Swal.fire({
+                    icon: "success",
+                    text: "답변 등록 성공!",
+                });
             }
         }).catch((error) => {
             console.log(error.response);
+            Swal.fire({
+                icon: "warning",
+                title: "답변 등록 실패.",
+            });
         });
     }
 
@@ -380,6 +388,15 @@ function Main() {
     const specificFunction2 = () => {
         getSearch();
     };
+    const handleEnterKey3 = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // 엔터 키의 기본 동작을 방지 (폼 제출 등)
+            specificFunction3(); // 엔터를 눌렀을 때 실행할 함수
+        }
+    };
+    const specificFunction3 = () => {
+        sendVisit();
+    };
 
     useEffect(() => {
         const handlePopState = (event) => {
@@ -452,7 +469,8 @@ function Main() {
                                 <img src={profile_image} alt="Profile" style={{ width: '100px', height: '100px' }} />
                             ) : (
                                 <img src={picturebasic} alt="Default" style={{ width: '100px', height: '100px' }} />
-                            )}                            <div style={{ height: "2vh" }}></div>
+                            )}                            
+                            <div style={{ height: "2vh" }}></div>
                             <p style={{ paddingLeft: "1vh", fontSize: "20px" }}>
                                 {fullname}
                             </p>
@@ -479,7 +497,7 @@ function Main() {
                                     <YouTube videoId={videoId} opts={opts} />
                                 </div>
                             }
-                            <div className='hang'>
+                            <div className='hang' style={{ height: "5vh", display: "flex", alignItems: "flex-end", justifyContent: "flex-end" }}>
                                 <button className="login-gray" style={{ fontSize: "15px" }} onClick={() => navigate(`/mypage/${localStorage.getItem("username")}`)}>마이페이지</button>
                                 <div style={{ width: "4vh" }}></div>
                                 <button className="login-gray" style={{ fontSize: "15px" }} onClick={() => navigate('/')}>로그아웃</button>
@@ -570,7 +588,7 @@ function Main() {
                                     <div className="hang" style={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-end", height: "20%", width: "100%" }}>
                                         <input className='input-name' style={{ width: "10vw" }} type='text' placeholder='이름' value={visitname} onChange={saveVisitname} />
                                         <div style={{ width: "1vh" }}></div>
-                                        <input className='input-name' style={{ width: "32vw" }} type='text' placeholder='방명록을 작성하세요.' value={visitContent} onChange={savecontent} />
+                                        <input className='input-name' style={{ width: "32vw" }} type='text' placeholder='방명록을 작성하세요.' value={visitContent} onChange={savecontent} onKeyDown={handleEnterKey3} />
                                         <button className="login-gray" style={{ fontSize: "20px", display: "flex", paddingBottom: "8px" }} onClick={() => sendVisit()}>전송</button>
                                     </div>
                                 </div>
@@ -586,7 +604,7 @@ function Main() {
                                 <img src={picturePlus} width='15vw' height='15vh' onClick={handleFollowListClick} style={{ paddingTop: "10px" }} />
                             </div>
                             <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
-                            <div style={{height:"1vh"}}></div>
+                            <div style={{ height: "1vh" }}></div>
                             <div style={{ height: "78%" }}>
                                 <div>
                                     {followee.map((myfollowee) => (
@@ -617,7 +635,7 @@ function Main() {
                                 <img src={picturetrash} width='50vw' height='50vh' alt="trash" onClick={handleTrashClick} />
                                 <p className='trash-popup-message' > 감정 쓰레기통에 감정을 버려보세요!</p>
                             </div>
-                            <textarea className="trash-popup-textarea" value={text} onChange={handleChange} placeholder="감정을 적어보세요.."/>
+                            <textarea className="trash-popup-textarea" value={text} onChange={handleChange} placeholder="감정을 적어보세요.." />
                             <button className='trash-button' onClick={handleDiscard} >버리기!</button>
                         </div>
                     </div>

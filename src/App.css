@@ -86,7 +86,7 @@ div {
   background-color: #ECECEC;
   border-radius: 10px;
   flex-direction: column;
-  padding-left: 3vw;
+  padding-left: 2vw;
 }
 
 .yellow-box {
@@ -206,6 +206,14 @@ div {
   justify-content: center;
   text-align: start;
   align-items: center;
+}
+
+.hide{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
 }
 
 .hang4 {
