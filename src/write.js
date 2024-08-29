@@ -129,7 +129,7 @@ function Letter() {
               <label htmlFor='imageUpload'>
                 <button
                   className='input-title'
-                  style={{ width: "7vw" }}
+                  style={{ width: "9vw" }}
                   onClick={() => document.getElementById('imageUpload').click()}
                 >
                   사진 첨부
