@@ -10,6 +10,7 @@ import picturebasic from './images/basicProfile.png';
 import picturePin from './images/pin.png';
 import { useEffect } from 'react';
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
+import Write from './write';
 
 function formatDate() {
   const today = new Date();
@@ -185,7 +186,7 @@ function Notice() {
             </div>
           </div>
           <div className="hang" style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "20%", width: "100%" }}>
-            <button className="login-gray" style={{ fontSize: "20px" }} onClick={() => navigate('/ground')}>글쓰기!</button>
+            <button className="login-gray" style={{ fontSize: "20px" }} onClick={() => navigate('/write/:id')}>글쓰기!</button>
             <img src={notice_pencil} alt="notice_pencil" style={{ width: "1.4vw" }} />
           </div>
 

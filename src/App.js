@@ -9,7 +9,8 @@ import Letter from './Letter';
 import Main from './main';
 import Mypage from './mypage';
 import axios from 'axios';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
+import Write from './write';
 import Notice from './notice';
 
 const Home = () => {
@@ -114,6 +115,8 @@ const App = () => {
           <Route path="/main/:id" element={<Main />} />
           <Route path="/mypage/:id" element={<Mypage />} />
           <Route path="/notice/:id" element={<Notice />} />
+          <Route path="/write/:id" element={<Write/>} />
+
         </Routes>
       </BrowserRouter>
     </div>
