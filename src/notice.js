@@ -11,12 +11,17 @@ import picturePin from './images/pin.png';
 import { useEffect } from 'react';
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 
+function formatDate() {
+  const today = new Date();
+  const day = today.getDate();
+  const month = today.getMonth() + 1;
+  const year = today.getFullYear();
+  return `${year}.${month}.${day}`;
+}
 
 function Notice() {
   const [profile_image, setProfileImg] = useState("");
-
   const [selectedCategory, setSelectedCategory] = useState(null);
-
   const [selectedOption, setSelectedOption] = useState('latest'); // Notice 컴포넌트 내부로 이동
 
   const getMypage = async () => {
@@ -53,9 +58,43 @@ function Notice() {
     }
   };
 
+  function sendBoard() {
+    axios.post(
+      '/board/',
+      {
+        "tag": "",
+        "title": "",
+        "contents": "",
+        "date": formatDate(),
+        "link": "",
+      },
+      {
+        'headers': {
+          'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    ).then((response) => {
+      console.log(`follower : ${localStorage.getItem("username")}`);
+      console.log(`follwee : ${selectedUsername}`);
+      console.log(response.status);
+      if (response.status === 201) {
+        Swal.fire({
+          icon: "success",
+          text: "구독 성공!",
+        });
+      }
+    }).catch((error) => {
+      console.log("팔로우 보내기 실패", error.response);
+      Swal.fire({
+        icon: "warning",
+        text: "이미 구독을 한 유저 입니다",
+      });
+    });
+  }
+
   useEffect(() => {
     getMypage();
-
   }, []);
 
 
@@ -82,6 +121,8 @@ function Notice() {
         return <FoodBusanContent />;
       case 'foodJeju':
         return <FoodJejuContent />;
+      case 'foodElse':
+        return <FoodElseContent />;
       default:
         return <DailyContent />;
     }
@@ -137,6 +178,10 @@ function Notice() {
             <div className='hang' style={{ width: "12.5vh" }}>
               <img src={picturePin} style={{ width: "1.4vw" }} />
               <button className="login-gray" style={{ fontSize: "17px", height: "4vh" }} onClick={() => setSelectedCategory('foodJeju')}>제주</button>
+            </div>
+            <div className='hang' style={{ width: "12.5vh" }}>
+              <img src={picturePin} style={{ width: "1.4vw" }} />
+              <button className="login-gray" style={{ fontSize: "17px", height: "4vh" }} onClick={() => setSelectedCategory('foodElse')}>기타</button>
             </div>
           </div>
           <div className="hang" style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "20%", width: "100%" }}>
@@ -219,10 +264,10 @@ const DailyContent = ({ selectedOption, handleChange }) => (
 );
 
 function FoodAllContent({ selectedOption, handleChange }) {
+  const [boardView, setboardview] = useState([]);
   const [profile_image, setProfileImg] = useState("");
-
   const gridItems = [
-    { id: 1, profileImage: picturebasic, description: "첫 번째 맛집인듯 아닌듯 몇번째 맛집일까요", write: "애햄이1" },
+    { id: 1, profileImage: picturebasic, description: "전체 맛집인듯 아닌듯 몇번째 맛집일까요", write: "애햄이1" },
     { id: 2, profileImage: picturebasic, description: "두 번째 맛집", write: "애햄이2" },
     { id: 3, profileImage: picturebasic, description: "세 번째 맛집", write: "애햄이3" },
     { id: 4, profileImage: picturebasic, description: "네 번째 맛집", write: "애햄이4" },
@@ -230,8 +275,28 @@ function FoodAllContent({ selectedOption, handleChange }) {
     { id: 6, profileImage: picturebasic, description: "여섯 번째 맛집", write: "애햄이6" },
   ];
 
-  return (
+  const getBoard = async () => {
+    try {
+      const response = await axios.get('/board/', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.status === 200) {
+        setboardview(response.data);
+        console.log("게시판 가져오기 성공", response.data);
+      }
+    } catch (error) {
+      console.error("게시판 가져오기 실패", error.response);
+    }
+  };
 
+  useEffect(() => {
+    getBoard();
+  }, []);
+
+  return (
     <div className='column-container'>
       <div className='yellow-box-top'>
         <div className='white-box-top'>
@@ -252,16 +317,39 @@ function FoodAllContent({ selectedOption, handleChange }) {
         <div className='white-box-bottom' style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1vh', padding: '2vh', width: "100%" }}>
           {gridItems.map(item => (
             <div className='hang' key={item.id} style={{ border: '1.5px solid #ddd', borderRadius: '5px', padding: '1.5vh', textAlign: 'center', height: "20vh", alignItems: "center", justifyContent: "flex-start" }}>
-              <div>
-                <img src={item.profileImage} alt="Profile" style={{ width: '100px', height: '100px', borderRadius: '50%' }} />
-                <p style={{ fontSize: "15px", color: "#8A8A8A" }}>{item.write}</p>
-              </div>
-              <div style={{ width: "1.5vw" }}></div>
-              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "center", flexDirection: "column", height: "100%", width:"21.5vw"}}>
-                <p className='hide' style={{ fontSize: "23px",  WebkitLineClamp: 1, textAlign:"start" }}>{item.description}</p>
+              <button style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                border: 'none',
+                background: 'transparent',
+                cursor: 'pointer',
+                width: '12vh',
+                height: '12vh',
+                outline: "none",
+                fontFamily: "HJ"
+              }} onClick={() => { console.log(`클릭${item.id}`) }}>
+                <img src={item.profileImage} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%', objectFit: "cover" }} />
+                <p style={{ fontSize: "15px", color: "#8A8A8A", display: "flex", width: "13vh", alignItems: "center", justifyContent: "center" }}>{item.write}</p>
+              </button>
+              <div style={{ width: "3vw" }}></div>
+              <button onClick={() => { console.log(`클릭${item.id}`) }}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                  height: "100%",
+                  width: "20vw",
+                  border: "none",
+                  outline: "none",
+                  background: 'transparent',
+                  fontFamily: "HJ"
+                }}>
+                <p className='hide' style={{ fontSize: "23px", WebkitLineClamp: 1, textAlign: "start" }}>{item.description}</p>
                 <div style={{ height: "1vh" }}></div>
-                <p className='hide' style={{fontSize: "16px", color: "#8A8A8A", textAlign:"start"}}>맛집에 대한 설명ㅇㅇㅇㅇㅇㅇㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ</p>
-              </div>
+                <p className='hide' style={{ fontSize: "16px", color: "#8A8A8A", textAlign: "start" }}>맛집에 대한 설명ㅇㅇㅇㅇㅇㅇㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ</p>
+              </button>
             </div>
           ))}
 
@@ -271,45 +359,675 @@ function FoodAllContent({ selectedOption, handleChange }) {
   )
 };
 
-const FoodSeoulContent = () => (
-  <div>
-    <h2>맛집 탐방 카테고리</h2>
-    <p>여기는 서울 맛집 탐방에 대한 내용이 표시됩니다.</p>
-  </div>
-);
+function FoodSeoulContent({ selectedOption, handleChange }) {
+  const [boardView, setboardview] = useState([]);
+  const [profile_image, setProfileImg] = useState("");
+  const gridItems = [
+    { id: 1, profileImage: picturebasic, description: "서울 맛집인듯 아닌듯 몇번째 맛집일까요", write: "애햄이1" },
+    { id: 2, profileImage: picturebasic, description: "두 번째 맛집", write: "애햄이2" },
+    { id: 3, profileImage: picturebasic, description: "세 번째 맛집", write: "애햄이3" },
+    { id: 4, profileImage: picturebasic, description: "네 번째 맛집", write: "애햄이4" },
+    { id: 5, profileImage: picturebasic, description: "다섯 번째 맛집", write: "애햄이5" },
+    { id: 6, profileImage: picturebasic, description: "여섯 번째 맛집", write: "애햄이6" },
+  ];
 
-const FoodGangContent = () => (
-  <div>
-    <h2>맛집 탐방 카테고리</h2>
-    <p>여기는 강릉 맛집 탐방에 대한 내용이 표시됩니다.</p>
-  </div>
-);
+  const getBoard = async () => {
+    try {
+      const response = await axios.get('/board/', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.status === 200) {
+        setboardview(response.data);
+        console.log("게시판 가져오기 성공", response.data);
+      }
+    } catch (error) {
+      console.error("게시판 가져오기 실패", error.response);
+    }
+  };
 
-const FoodDaejeonContent = () => (
-  <div>
-    <h2>맛집 탐방 카테고리</h2>
-    <p>여기는 대전 맛집 탐방에 대한 내용이 표시됩니다.</p>
-  </div>
-);
+  useEffect(() => {
+    getBoard();
+  }, []);
 
-const FoodDaeguContent = () => (
-  <div>
-    <h2>맛집 탐방 카테고리</h2>
-    <p>여기는 대구 맛집 탐방에 대한 내용이 표시됩니다.</p>
-  </div>
-);
+  return (
+    <div className='column-container'>
+      <div className='yellow-box-top'>
+        <div className='white-box-top'>
+          <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
+            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>전체</p>
+            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>500000000 개의 글</p>
+            <div style={{ width: "45vw" }}></div>
+            <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
+              <option value="latest">최신순</option>
+              <option value="oldest">오래된 순</option>
+              <option value="popular">인기순</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div style={{ height: "2vh" }}></div>
+      <div className='yellow-box-bottom'>
+        <div className='white-box-bottom' style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1vh', padding: '2vh', width: "100%" }}>
+          {gridItems.map(item => (
+            <div className='hang' key={item.id} style={{ border: '1.5px solid #ddd', borderRadius: '5px', padding: '1.5vh', textAlign: 'center', height: "20vh", alignItems: "center", justifyContent: "flex-start" }}>
+              <button style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                border: 'none',
+                background: 'transparent',
+                cursor: 'pointer',
+                width: '12vh',
+                height: '12vh',
+                outline: "none",
+                fontFamily: "HJ"
+              }} onClick={() => { console.log(`클릭${item.id}`) }}>
+                <img src={item.profileImage} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%', objectFit: "cover" }} />
+                <p style={{ fontSize: "15px", color: "#8A8A8A", display: "flex", width: "13vh", alignItems: "center", justifyContent: "center" }}>{item.write}</p>
+              </button>
+              <div style={{ width: "3vw" }}></div>
+              <button onClick={() => { console.log(`클릭${item.id}`) }}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                  height: "100%",
+                  width: "20vw",
+                  border: "none",
+                  outline: "none",
+                  background: 'transparent',
+                  fontFamily: "HJ"
+                }}>
+                <p className='hide' style={{ fontSize: "23px", WebkitLineClamp: 1, textAlign: "start" }}>{item.description}</p>
+                <div style={{ height: "1vh" }}></div>
+                <p className='hide' style={{ fontSize: "16px", color: "#8A8A8A", textAlign: "start" }}>맛집에 대한 설명ㅇㅇㅇㅇㅇㅇㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ</p>
+              </button>
+            </div>
+          ))}
 
-const FoodBusanContent = () => (
-  <div>
-    <h2>맛집 탐방 카테고리</h2>
-    <p>여기는 부산맛집 탐방에 대한 내용이 표시됩니다.</p>
-  </div>
-);
+        </div>
+      </div>
+    </div>
+  )
+};
 
-const FoodJejuContent = () => (
-  <div>
-    <h2>맛집 탐방 카테고리</h2>
-    <p>여기는 제주 맛집 탐방에 대한 내용이 표시됩니다.</p>
-  </div>
-);
+function FoodGangContent({ selectedOption, handleChange }) {
+  const [boardView, setboardview] = useState([]);
+  const [profile_image, setProfileImg] = useState("");
+  const gridItems = [
+    { id: 1, profileImage: picturebasic, description: "강릉 맛집인듯 아닌듯 몇번째 맛집일까요", write: "애햄이1" },
+    { id: 2, profileImage: picturebasic, description: "두 번째 맛집", write: "애햄이2" },
+    { id: 3, profileImage: picturebasic, description: "세 번째 맛집", write: "애햄이3" },
+    { id: 4, profileImage: picturebasic, description: "네 번째 맛집", write: "애햄이4" },
+    { id: 5, profileImage: picturebasic, description: "다섯 번째 맛집", write: "애햄이5" },
+    { id: 6, profileImage: picturebasic, description: "여섯 번째 맛집", write: "애햄이6" },
+  ];
+
+  const getBoard = async () => {
+    try {
+      const response = await axios.get('/board/', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.status === 200) {
+        setboardview(response.data);
+        console.log("게시판 가져오기 성공", response.data);
+      }
+    } catch (error) {
+      console.error("게시판 가져오기 실패", error.response);
+    }
+  };
+
+  useEffect(() => {
+    getBoard();
+  }, []);
+
+  return (
+    <div className='column-container'>
+      <div className='yellow-box-top'>
+        <div className='white-box-top'>
+          <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
+            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>전체</p>
+            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>500000000 개의 글</p>
+            <div style={{ width: "45vw" }}></div>
+            <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
+              <option value="latest">최신순</option>
+              <option value="oldest">오래된 순</option>
+              <option value="popular">인기순</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div style={{ height: "2vh" }}></div>
+      <div className='yellow-box-bottom'>
+        <div className='white-box-bottom' style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1vh', padding: '2vh', width: "100%" }}>
+          {gridItems.map(item => (
+            <div className='hang' key={item.id} style={{ border: '1.5px solid #ddd', borderRadius: '5px', padding: '1.5vh', textAlign: 'center', height: "20vh", alignItems: "center", justifyContent: "flex-start" }}>
+              <button style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                border: 'none',
+                background: 'transparent',
+                cursor: 'pointer',
+                width: '12vh',
+                height: '12vh',
+                outline: "none",
+                fontFamily: "HJ"
+              }} onClick={() => { console.log(`클릭${item.id}`) }}>
+                <img src={item.profileImage} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%', objectFit: "cover" }} />
+                <p style={{ fontSize: "15px", color: "#8A8A8A", display: "flex", width: "13vh", alignItems: "center", justifyContent: "center" }}>{item.write}</p>
+              </button>
+              <div style={{ width: "3vw" }}></div>
+              <button onClick={() => { console.log(`클릭${item.id}`) }}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                  height: "100%",
+                  width: "20vw",
+                  border: "none",
+                  outline: "none",
+                  background: 'transparent',
+                  fontFamily: "HJ"
+                }}>
+                <p className='hide' style={{ fontSize: "23px", WebkitLineClamp: 1, textAlign: "start" }}>{item.description}</p>
+                <div style={{ height: "1vh" }}></div>
+                <p className='hide' style={{ fontSize: "16px", color: "#8A8A8A", textAlign: "start" }}>맛집에 대한 설명ㅇㅇㅇㅇㅇㅇㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ</p>
+              </button>
+            </div>
+          ))}
+
+        </div>
+      </div>
+    </div>
+  )
+};
+
+function FoodDaejeonContent({ selectedOption, handleChange }) {
+  const [boardView, setboardview] = useState([]);
+  const [profile_image, setProfileImg] = useState("");
+  const gridItems = [
+    { id: 1, profileImage: picturebasic, description: "대전 맛집인듯 아닌듯 몇번째 맛집일까요", write: "애햄이1" },
+    { id: 2, profileImage: picturebasic, description: "두 번째 맛집", write: "애햄이2" },
+    { id: 3, profileImage: picturebasic, description: "세 번째 맛집", write: "애햄이3" },
+    { id: 4, profileImage: picturebasic, description: "네 번째 맛집", write: "애햄이4" },
+    { id: 5, profileImage: picturebasic, description: "다섯 번째 맛집", write: "애햄이5" },
+    { id: 6, profileImage: picturebasic, description: "여섯 번째 맛집", write: "애햄이6" },
+  ];
+
+  const getBoard = async () => {
+    try {
+      const response = await axios.get('/board/', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.status === 200) {
+        setboardview(response.data);
+        console.log("게시판 가져오기 성공", response.data);
+      }
+    } catch (error) {
+      console.error("게시판 가져오기 실패", error.response);
+    }
+  };
+
+  useEffect(() => {
+    getBoard();
+  }, []);
+
+  return (
+    <div className='column-container'>
+      <div className='yellow-box-top'>
+        <div className='white-box-top'>
+          <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
+            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>전체</p>
+            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>500000000 개의 글</p>
+            <div style={{ width: "45vw" }}></div>
+            <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
+              <option value="latest">최신순</option>
+              <option value="oldest">오래된 순</option>
+              <option value="popular">인기순</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div style={{ height: "2vh" }}></div>
+      <div className='yellow-box-bottom'>
+        <div className='white-box-bottom' style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1vh', padding: '2vh', width: "100%" }}>
+          {gridItems.map(item => (
+            <div className='hang' key={item.id} style={{ border: '1.5px solid #ddd', borderRadius: '5px', padding: '1.5vh', textAlign: 'center', height: "20vh", alignItems: "center", justifyContent: "flex-start" }}>
+              <button style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                border: 'none',
+                background: 'transparent',
+                cursor: 'pointer',
+                width: '12vh',
+                height: '12vh',
+                outline: "none",
+                fontFamily: "HJ"
+              }} onClick={() => { console.log(`클릭${item.id}`) }}>
+                <img src={item.profileImage} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%', objectFit: "cover" }} />
+                <p style={{ fontSize: "15px", color: "#8A8A8A", display: "flex", width: "13vh", alignItems: "center", justifyContent: "center" }}>{item.write}</p>
+              </button>
+              <div style={{ width: "3vw" }}></div>
+              <button onClick={() => { console.log(`클릭${item.id}`) }}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                  height: "100%",
+                  width: "20vw",
+                  border: "none",
+                  outline: "none",
+                  background: 'transparent',
+                  fontFamily: "HJ"
+                }}>
+                <p className='hide' style={{ fontSize: "23px", WebkitLineClamp: 1, textAlign: "start" }}>{item.description}</p>
+                <div style={{ height: "1vh" }}></div>
+                <p className='hide' style={{ fontSize: "16px", color: "#8A8A8A", textAlign: "start" }}>맛집에 대한 설명ㅇㅇㅇㅇㅇㅇㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ</p>
+              </button>
+            </div>
+          ))}
+
+        </div>
+      </div>
+    </div>
+  )
+};
+
+function FoodDaeguContent({ selectedOption, handleChange }) {
+  const [boardView, setboardview] = useState([]);
+  const [profile_image, setProfileImg] = useState("");
+  const gridItems = [
+    { id: 1, profileImage: picturebasic, description: "대구 맛집인듯 아닌듯 몇번째 맛집일까요", write: "애햄이1" },
+    { id: 2, profileImage: picturebasic, description: "두 번째 맛집", write: "애햄이2" },
+    { id: 3, profileImage: picturebasic, description: "세 번째 맛집", write: "애햄이3" },
+    { id: 4, profileImage: picturebasic, description: "네 번째 맛집", write: "애햄이4" },
+    { id: 5, profileImage: picturebasic, description: "다섯 번째 맛집", write: "애햄이5" },
+    { id: 6, profileImage: picturebasic, description: "여섯 번째 맛집", write: "애햄이6" },
+  ];
+
+  const getBoard = async () => {
+    try {
+      const response = await axios.get('/board/', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.status === 200) {
+        setboardview(response.data);
+        console.log("게시판 가져오기 성공", response.data);
+      }
+    } catch (error) {
+      console.error("게시판 가져오기 실패", error.response);
+    }
+  };
+
+  useEffect(() => {
+    getBoard();
+  }, []);
+
+  return (
+    <div className='column-container'>
+      <div className='yellow-box-top'>
+        <div className='white-box-top'>
+          <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
+            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>전체</p>
+            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>500000000 개의 글</p>
+            <div style={{ width: "45vw" }}></div>
+            <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
+              <option value="latest">최신순</option>
+              <option value="oldest">오래된 순</option>
+              <option value="popular">인기순</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div style={{ height: "2vh" }}></div>
+      <div className='yellow-box-bottom'>
+        <div className='white-box-bottom' style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1vh', padding: '2vh', width: "100%" }}>
+          {gridItems.map(item => (
+            <div className='hang' key={item.id} style={{ border: '1.5px solid #ddd', borderRadius: '5px', padding: '1.5vh', textAlign: 'center', height: "20vh", alignItems: "center", justifyContent: "flex-start" }}>
+              <button style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                border: 'none',
+                background: 'transparent',
+                cursor: 'pointer',
+                width: '12vh',
+                height: '12vh',
+                outline: "none",
+                fontFamily: "HJ"
+              }} onClick={() => { console.log(`클릭${item.id}`) }}>
+                <img src={item.profileImage} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%', objectFit: "cover" }} />
+                <p style={{ fontSize: "15px", color: "#8A8A8A", display: "flex", width: "13vh", alignItems: "center", justifyContent: "center" }}>{item.write}</p>
+              </button>
+              <div style={{ width: "3vw" }}></div>
+              <button onClick={() => { console.log(`클릭${item.id}`) }}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                  height: "100%",
+                  width: "20vw",
+                  border: "none",
+                  outline: "none",
+                  background: 'transparent',
+                  fontFamily: "HJ"
+                }}>
+                <p className='hide' style={{ fontSize: "23px", WebkitLineClamp: 1, textAlign: "start" }}>{item.description}</p>
+                <div style={{ height: "1vh" }}></div>
+                <p className='hide' style={{ fontSize: "16px", color: "#8A8A8A", textAlign: "start" }}>맛집에 대한 설명ㅇㅇㅇㅇㅇㅇㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ</p>
+              </button>
+            </div>
+          ))}
+
+        </div>
+      </div>
+    </div>
+  )
+};
+
+function FoodBusanContent({ selectedOption, handleChange }) {
+  const [boardView, setboardview] = useState([]);
+  const [profile_image, setProfileImg] = useState("");
+  const gridItems = [
+    { id: 1, profileImage: picturebasic, description: "부산 맛집인듯 아닌듯 몇번째 맛집일까요", write: "애햄이1" },
+    { id: 2, profileImage: picturebasic, description: "두 번째 맛집", write: "애햄이2" },
+    { id: 3, profileImage: picturebasic, description: "세 번째 맛집", write: "애햄이3" },
+    { id: 4, profileImage: picturebasic, description: "네 번째 맛집", write: "애햄이4" },
+    { id: 5, profileImage: picturebasic, description: "다섯 번째 맛집", write: "애햄이5" },
+    { id: 6, profileImage: picturebasic, description: "여섯 번째 맛집", write: "애햄이6" },
+  ];
+
+  const getBoard = async () => {
+    try {
+      const response = await axios.get('/board/', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.status === 200) {
+        setboardview(response.data);
+        console.log("게시판 가져오기 성공", response.data);
+      }
+    } catch (error) {
+      console.error("게시판 가져오기 실패", error.response);
+    }
+  };
+
+  useEffect(() => {
+    getBoard();
+  }, []);
+
+  return (
+    <div className='column-container'>
+      <div className='yellow-box-top'>
+        <div className='white-box-top'>
+          <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
+            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>전체</p>
+            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>500000000 개의 글</p>
+            <div style={{ width: "45vw" }}></div>
+            <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
+              <option value="latest">최신순</option>
+              <option value="oldest">오래된 순</option>
+              <option value="popular">인기순</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div style={{ height: "2vh" }}></div>
+      <div className='yellow-box-bottom'>
+        <div className='white-box-bottom' style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1vh', padding: '2vh', width: "100%" }}>
+          {gridItems.map(item => (
+            <div className='hang' key={item.id} style={{ border: '1.5px solid #ddd', borderRadius: '5px', padding: '1.5vh', textAlign: 'center', height: "20vh", alignItems: "center", justifyContent: "flex-start" }}>
+              <button style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                border: 'none',
+                background: 'transparent',
+                cursor: 'pointer',
+                width: '12vh',
+                height: '12vh',
+                outline: "none",
+                fontFamily: "HJ"
+              }} onClick={() => { console.log(`클릭${item.id}`) }}>
+                <img src={item.profileImage} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%', objectFit: "cover" }} />
+                <p style={{ fontSize: "15px", color: "#8A8A8A", display: "flex", width: "13vh", alignItems: "center", justifyContent: "center" }}>{item.write}</p>
+              </button>
+              <div style={{ width: "3vw" }}></div>
+              <button onClick={() => { console.log(`클릭${item.id}`) }}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                  height: "100%",
+                  width: "20vw",
+                  border: "none",
+                  outline: "none",
+                  background: 'transparent',
+                  fontFamily: "HJ"
+                }}>
+                <p className='hide' style={{ fontSize: "23px", WebkitLineClamp: 1, textAlign: "start" }}>{item.description}</p>
+                <div style={{ height: "1vh" }}></div>
+                <p className='hide' style={{ fontSize: "16px", color: "#8A8A8A", textAlign: "start" }}>맛집에 대한 설명ㅇㅇㅇㅇㅇㅇㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ</p>
+              </button>
+            </div>
+          ))}
+
+        </div>
+      </div>
+    </div>
+  )
+};
+
+function FoodJejuContent({ selectedOption, handleChange }) {
+  const [boardView, setboardview] = useState([]);
+  const [profile_image, setProfileImg] = useState("");
+  const gridItems = [
+    { id: 1, profileImage: picturebasic, description: "기타 맛집인듯 아닌듯 몇번째 맛집일까요", write: "애햄이1" },
+    { id: 2, profileImage: picturebasic, description: "두 번째 맛집", write: "애햄이2" },
+    { id: 3, profileImage: picturebasic, description: "세 번째 맛집", write: "애햄이3" },
+    { id: 4, profileImage: picturebasic, description: "네 번째 맛집", write: "애햄이4" },
+    { id: 5, profileImage: picturebasic, description: "다섯 번째 맛집", write: "애햄이5" },
+    { id: 6, profileImage: picturebasic, description: "여섯 번째 맛집", write: "애햄이6" },
+  ];
+
+  const getBoard = async () => {
+    try {
+      const response = await axios.get('/board/', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.status === 200) {
+        setboardview(response.data);
+        console.log("게시판 가져오기 성공", response.data);
+      }
+    } catch (error) {
+      console.error("게시판 가져오기 실패", error.response);
+    }
+  };
+
+  useEffect(() => {
+    getBoard();
+  }, []);
+
+  return (
+    <div className='column-container'>
+      <div className='yellow-box-top'>
+        <div className='white-box-top'>
+          <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
+            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>전체</p>
+            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>500000000 개의 글</p>
+            <div style={{ width: "45vw" }}></div>
+            <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
+              <option value="latest">최신순</option>
+              <option value="oldest">오래된 순</option>
+              <option value="popular">인기순</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div style={{ height: "2vh" }}></div>
+      <div className='yellow-box-bottom'>
+        <div className='white-box-bottom' style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1vh', padding: '2vh', width: "100%" }}>
+          {gridItems.map(item => (
+            <div className='hang' key={item.id} style={{ border: '1.5px solid #ddd', borderRadius: '5px', padding: '1.5vh', textAlign: 'center', height: "20vh", alignItems: "center", justifyContent: "flex-start" }}>
+              <button style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                border: 'none',
+                background: 'transparent',
+                cursor: 'pointer',
+                width: '12vh',
+                height: '12vh',
+                outline: "none",
+                fontFamily: "HJ"
+              }} onClick={() => { console.log(`클릭${item.id}`) }}>
+                <img src={item.profileImage} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%', objectFit: "cover" }} />
+                <p style={{ fontSize: "15px", color: "#8A8A8A", display: "flex", width: "13vh", alignItems: "center", justifyContent: "center" }}>{item.write}</p>
+              </button>
+              <div style={{ width: "3vw" }}></div>
+              <button onClick={() => { console.log(`클릭${item.id}`) }}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                  height: "100%",
+                  width: "20vw",
+                  border: "none",
+                  outline: "none",
+                  background: 'transparent',
+                  fontFamily: "HJ"
+                }}>
+                <p className='hide' style={{ fontSize: "23px", WebkitLineClamp: 1, textAlign: "start" }}>{item.description}</p>
+                <div style={{ height: "1vh" }}></div>
+                <p className='hide' style={{ fontSize: "16px", color: "#8A8A8A", textAlign: "start" }}>맛집에 대한 설명ㅇㅇㅇㅇㅇㅇㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ</p>
+              </button>
+            </div>
+          ))}
+
+        </div>
+      </div>
+    </div>
+  )
+};
+
+function FoodElseContent({ selectedOption, handleChange }) {
+  const [boardView, setboardview] = useState([]);
+  const [profile_image, setProfileImg] = useState("");
+  const gridItems = [
+    { id: 1, profileImage: picturebasic, description: "기타 맛집인듯 아닌듯 몇번째 맛집일까요", write: "애햄이1" },
+    { id: 2, profileImage: picturebasic, description: "두 번째 맛집", write: "애햄이2" },
+    { id: 3, profileImage: picturebasic, description: "세 번째 맛집", write: "애햄이3" },
+    { id: 4, profileImage: picturebasic, description: "네 번째 맛집", write: "애햄이4" },
+    { id: 5, profileImage: picturebasic, description: "다섯 번째 맛집", write: "애햄이5" },
+    { id: 6, profileImage: picturebasic, description: "여섯 번째 맛집", write: "애햄이6" },
+  ];
+
+  const getBoard = async () => {
+    try {
+      const response = await axios.get('/board/', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.status === 200) {
+        setboardview(response.data);
+        console.log("게시판 가져오기 성공", response.data);
+      }
+    } catch (error) {
+      console.error("게시판 가져오기 실패", error.response);
+    }
+  };
+
+  useEffect(() => {
+    getBoard();
+  }, []);
+
+  return (
+    <div className='column-container'>
+      <div className='yellow-box-top'>
+        <div className='white-box-top'>
+          <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
+            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>전체</p>
+            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>500000000 개의 글</p>
+            <div style={{ width: "45vw" }}></div>
+            <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
+              <option value="latest">최신순</option>
+              <option value="oldest">오래된 순</option>
+              <option value="popular">인기순</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div style={{ height: "2vh" }}></div>
+      <div className='yellow-box-bottom'>
+        <div className='white-box-bottom' style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1vh', padding: '2vh', width: "100%" }}>
+          {gridItems.map(item => (
+            <div className='hang' key={item.id} style={{ border: '1.5px solid #ddd', borderRadius: '5px', padding: '1.5vh', textAlign: 'center', height: "20vh", alignItems: "center", justifyContent: "flex-start" }}>
+              <button style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                border: 'none',
+                background: 'transparent',
+                cursor: 'pointer',
+                width: '12vh',
+                height: '12vh',
+                outline: "none",
+                fontFamily: "HJ"
+              }} onClick={() => { console.log(`클릭${item.id}`) }}>
+                <img src={item.profileImage} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%', objectFit: "cover" }} />
+                <p style={{ fontSize: "15px", color: "#8A8A8A", display: "flex", width: "13vh", alignItems: "center", justifyContent: "center" }}>{item.write}</p>
+              </button>
+              <div style={{ width: "3vw" }}></div>
+              <button onClick={() => { console.log(`클릭${item.id}`) }}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                  height: "100%",
+                  width: "20vw",
+                  border: "none",
+                  outline: "none",
+                  background: 'transparent',
+                  fontFamily: "HJ"
+                }}>
+                <p className='hide' style={{ fontSize: "23px", WebkitLineClamp: 1, textAlign: "start" }}>{item.description}</p>
+                <div style={{ height: "1vh" }}></div>
+                <p className='hide' style={{ fontSize: "16px", color: "#8A8A8A", textAlign: "start" }}>맛집에 대한 설명ㅇㅇㅇㅇㅇㅇㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ</p>
+              </button>
+            </div>
+          ))}
+
+        </div>
+      </div>
+    </div>
+  )
+};
 export default Notice;

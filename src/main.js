@@ -109,8 +109,7 @@ function Main() {
             }
         }).then((response) => {
             if (response.status === 200) {
-                const myfollowee = response.data.map(user => user.fullname);
-                setFollowee(myfollowee);
+                setFollowee(response.data);
             }
         })
             .catch((error) => {
@@ -609,7 +608,7 @@ function Main() {
                                 <div>
                                     {followee.map((myfollowee) => (
                                         <div key={myfollowee.id}>
-                                            <p style={{ fontSize: "17px" }}>{myfollowee}</p>
+                                            <p style={{ fontSize: "17px" }}>{myfollowee.followee}</p>
                                             <div style={{ height: "1vh" }}></div>
                                         </div>
                                     ))}
