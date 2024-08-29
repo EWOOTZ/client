@@ -660,6 +660,8 @@
   padding-left: 10px;
   background-color: white;
   margin-left: 10px;
+  resize: none;
+
 }
 
 .input-date {
@@ -750,6 +752,9 @@
   display: block;
   /* 팝업이 열릴 때 그림자를 보이게 함 */
 }
+
+
+
 
 .letter-popup {
   position: fixed;
