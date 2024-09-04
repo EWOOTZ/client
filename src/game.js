@@ -18,7 +18,7 @@ const Game = () => {
     const inputRef = useRef(null);
     const intervalRefs = useRef([]);
 
-    const delay = 1000; // 단어가 떨어지는 간격
+    const delay = 1250; // 단어가 떨어지는 간격
     const gameoverLimit = 1; // 게임 오버가 되는 실패 횟수
 
     // 최고 점수와 실패 기록을 localStorage에서 불러오기
@@ -195,7 +195,7 @@ const Game = () => {
                     <div className="popup-content">
                         <h1>게임 설명</h1>
                         <div className="popup-content">
-                        1. 위에서 떨어지는 단어가 바닥에 닿기 전에 해당 단어를 입력하여 점수를 획득하세요.
+                        1. 위에서 떨어지는 단어가 바닥에 닿기 전에 해당 단어를 입력하여 점수를 획득하세요.          
                         <br />
                         2. 없는 단어 입력 시 점수가 차감 됩니다.
                         <br />
