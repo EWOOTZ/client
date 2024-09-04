@@ -8,18 +8,21 @@ import joyconImg from './assets/joycon.png';
 import pictureHome from './images/Oak Tree.png';
 import pictureApple from './images/apple.png';
 import picturesky from './images/sky4.png';
-import picturefriend from './images/friend7.png';
 import picturebasic from './images/basicProfile.png';
 import pictureCD from './images/CD.png';
 import picturePlay from './images/Play.png';
 import picturePause from './images/Pause.png';
+import picturePlus from './images/plus.png';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+
 import AWS from 'aws-sdk';
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
+
+import { useNavigate } from 'react-router-dom';
+
 import React, { useRef } from 'react';
 import YouTube from 'react-youtube';
-
 
 function formatDate() {
     const today = new Date();
@@ -71,7 +74,6 @@ function Main() {
             });
     };
 
-
     const getMypage = async () => {
         try {
             const response = await axios.get(
@@ -84,29 +86,42 @@ function Main() {
                 }
             );
             if (response.status === 200) {
-                console.log(axios.AxiosHeaders);
-                console.log(response.data);
-                console.log(response.status);
                 localStorage.setItem("fullname", response.data.fullname);
+                localStorage.setItem("username", response.data.username);
                 setFullname(response.data.fullname);
                 localStorage.setItem("profile_image", response.data.profile_image);
                 setProfileImg(response.data.profile_image);
-                localStorage.setItem("id", response.data.id);
+                localStorage.setItem("ID", response.data.id);
                 localStorage.setItem("statusM", response.data.status_message);
                 setStatus(response.data.status_message);
                 localStorage.setItem("music_info", response.data.music_info);
                 console.log(localStorage.getItem("fullname"));
                 console.log(localStorage.getItem("statusM"));
-                console.log(localStorage.getItem("id"));
+                console.log(localStorage.getItem("ID"));
                 console.log(localStorage.getItem("profile_image"));
                 console.log(localStorage.getItem("music_info"));
                 console.log("마이페이지 가져오기 성공");
-
             }
         }
         catch (error) {
             console.log(error.response);
         }
+    };
+
+    async function getFollower() {
+        axios.get('/follow/', {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+                'Content-Type': 'application/json'
+            }
+        }).then((response) => {
+            if (response.status === 200) {
+                setFollowee(response.data);
+            }
+        })
+            .catch((error) => {
+                console.error('팔로워 목록 가져오기 실패:', error);
+            });
     };
 
     const getQna = async () => {
@@ -118,7 +133,7 @@ function Main() {
                 }
             });
             if (response.status === 200) {
-                const data = response.data[0]; // 배열의 첫 번째 요소
+                const data = response.data[0];
                 seta1(data.answer1);
                 seta2(data.answer2);
                 seta3(data.answer3);
@@ -129,26 +144,6 @@ function Main() {
                 seta8(data.answer8);
                 seta9(data.answer9);
                 seta10(data.answer10);
-
-                console.log("질문답 가져오기 성공", response.data);
-            }
-        } catch (error) {
-            console.error("질문답 가져오기 실패", error.response);
-        }
-    };
-
-    const getFollower = async () => {
-        try {
-            const response = await axios.get('/follow/', {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-            if (response.status === 200) {
-                const data = response.data[0];
-                console.log(data.followee);
-
                 console.log("질문답 가져오기 성공", response.data);
             }
         } catch (error) {
@@ -178,52 +173,21 @@ function Main() {
                 }
             }
         ).then((response) => {
-            console.log(axios.AxiosHeaders);
-            console.log(response.data);
-            console.log(response.status);
             if (response.status === 200) {
                 console.log("qna 성공");
+                Swal.fire({
+                    icon: "success",
+                    text: "답변 등록 성공!",
+                });
             }
         }).catch((error) => {
             console.log(error.response);
-
+            Swal.fire({
+                icon: "warning",
+                title: "답변 등록 실패.",
+            });
         });
     }
-
-    function sendQna() {
-        axios.post(
-            '/qna/',
-            {
-                "answer1": a1,
-                "answer2": a2,
-                "answer3": a3,
-                "answer4": a4,
-                "answer5": a5,
-                "answer6": a6,
-                "answer7": a7,
-                "answer8": a8,
-                "answer9": a9,
-                "answer10": a10,
-            },
-            {
-                'headers': {
-                    'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
-                    'Content-Type': 'application/json'
-                }
-            }
-        ).then((response) => {
-            console.log(axios.AxiosHeaders);
-            console.log(response.data);
-            console.log(response.status);
-            if (response.status === 200) {
-                console.log("qna 성공");
-            }
-        }).catch((error) => {
-            console.log(error.response);
-
-        });
-    }
-
 
     const getVisit = async () => {
         try {
@@ -243,7 +207,6 @@ function Main() {
         }
     };
 
-
     function sendVisit() {
         if (!visitContent || !visitname) {
             Swal.fire({
@@ -255,7 +218,7 @@ function Main() {
         axios.post(
             '/dialog/',
             {
-                "user_id": localStorage.getItem("id"),
+                "user_id": localStorage.getItem("ID"),
                 "visitor": visitname,
                 "contents": visitContent,
             },
@@ -263,10 +226,12 @@ function Main() {
                 'headers': { 'Content-Type': 'application/json' }
             }
         ).then((response) => {
+
             console.log(axios.AxiosHeaders);
 
             console.log(response.data);
             console.log(response.status);
+
             if (response.status === 201) {
                 Swal.fire({
                     icon: "success",
@@ -283,10 +248,42 @@ function Main() {
         });
     }
 
+    function sendFollow(selectedUsername) {
+        axios.post(
+            '/follow/',
+            {
+                "follower": localStorage.getItem("username"),
+                "followee": selectedUsername,
+            },
+            {
+                'headers': {
+                    'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+                    'Content-Type': 'application/json'
+                }
+            }
+        ).then((response) => {
+            console.log(`follower : ${localStorage.getItem("username")}`);
+            console.log(`follwee : ${selectedUsername}`);
+            console.log(response.status);
+            if (response.status === 201) {
+                Swal.fire({
+                    icon: "success",
+                    text: "구독 성공!",
+                });
+            }
+        }).catch((error) => {
+            console.log("팔로우 보내기 실패", error.response);
+            Swal.fire({
+                icon: "warning",
+                text: "이미 구독을 한 유저 입니다",
+            });
+        });
+    }
+
+    const [followee, setFollowee] = useState([]);
     const [isExiting, setIsExiting] = useState(false);
+    const [isFlwListExiting, setIsFlwListExiting] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
-    const [isFlwExiting, setFlwIsExiting] = useState(false);
-    const [showFlwPopup, setFlwShowPopup] = useState(false);
     const [showFlwListPopup, setFlwListShowPopup] = useState(false);
     const [text, setText] = useState("");
     const [status, setStatus] = useState("");
@@ -295,6 +292,7 @@ function Main() {
     const [visitContent, setvisitContent] = useState("");
     const [profile_image, setProfileImg] = useState("");
     const [visitView, setVisitview] = useState([]);
+    const [usernames, setUsernames] = useState([]); // 상태 추가    
     const [a1, seta1] = useState('');
     const [a2, seta2] = useState('');
     const [a3, seta3] = useState('');
@@ -305,11 +303,31 @@ function Main() {
     const [a8, seta8] = useState('');
     const [a9, seta9] = useState('');
     const [a10, seta10] = useState('');
+    const [search_user, setSearchUser] = useState('');
     const [singer, setSinger] = useState('');
     const [musicTitle, setMusicTitle] = useState('');
-
     const [videoId, setVideoId] = useState(null);
 
+    async function getSearch() {
+        axios.get('/search/?', {
+            params: { search_user },
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+                'Content-Type': 'application/json'
+            }
+        })
+            .then((response) => {
+                console.log(response.status);
+                if (response.status === 200) {
+                    const extractedUsernames = response.data.map(user => user.username);
+                    setUsernames(extractedUsernames);
+                    console.log('유저 검색 결과:', usernames);
+                }
+            })
+            .catch((error) => {
+                console.error('서치 목록 가져오기 실패:', error);
+            });
+    };
 
     const scrollToBottom = () => {
         const element = document.querySelector('.scroll2');
@@ -359,6 +377,11 @@ function Main() {
         setVisitname(event.target.value);
         console.log(event.target.value);
     };
+    const saveSearchuser = event => {
+        setSearchUser(event.target.value);
+        console.log(event.target.value);
+    };
+
     const handleEnterKey = (event) => {
         if (event.key === 'Enter') {
             event.preventDefault(); // 엔터 키의 기본 동작을 방지 (폼 제출 등)
@@ -368,32 +391,39 @@ function Main() {
     const specificFunction = () => {
         sendQna();
     };
+    const handleEnterKey2 = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // 엔터 키의 기본 동작을 방지 (폼 제출 등)
+            specificFunction2(); // 엔터를 눌렀을 때 실행할 함수
+        }
+    };
+    const specificFunction2 = () => {
+        getSearch();
+    };
+    const handleEnterKey3 = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // 엔터 키의 기본 동작을 방지 (폼 제출 등)
+            specificFunction3(); // 엔터를 눌렀을 때 실행할 함수
+        }
+    };
+    const specificFunction3 = () => {
+        sendVisit();
+    };
 
     useEffect(() => {
         const handlePopState = (event) => {
             window.history.pushState(null, null, window.location.pathname); // 현재 URL 유지
         };
-
         window.history.pushState(null, null, window.location.pathname); // 현재 상태를 pushState로 추가
         window.addEventListener('popstate', handlePopState);
-
         return () => {
             window.removeEventListener('popstate', handlePopState);
         };
     }, []);
 
-
     const handleTrashClick = () => {
         setText("");
         setShowPopup(true);
-    };
-
-    const handleFollowClick = () => {
-        setFlwShowPopup(true);
-    };
-
-    const handleFollowDiscard = () => {
-        setFlwShowPopup(false);
     };
 
     const handleFollowListClick = () => {
@@ -420,11 +450,8 @@ function Main() {
         getMypage();
         getQna();
         getVisit();
-
-        MusicFetch();
-
         getFollower();
-
+        MusicFetch();
     }, []);
 
 
@@ -434,23 +461,18 @@ function Main() {
 
     useEffect(() => {
         if (visitContent === '') {
-            // 상태 업데이트 후에 로그를 확인해 비워졌는지 확인
             console.log("방명록 필드가 비워졌습니다.");
         }
     }, [visitContent]);
 
-
     let title = `${fullname || localStorage.getItem("fullname")}`;
     let title2 = '의 마이홈피';
-    let title3 = '<당신>의'
-
-
     const navigate = useNavigate();
 
     return (
         <div className='backg'>
             <div className='white-line' style={{ padding: "10px" }}>
-                <button className="go-ground-gray" style={{ fontSize: "23px" }} onClick={() => navigate(`/ground/${localStorage.getItem("id")}`)}>광장가기</button>
+                <button className="go-ground-gray" style={{ fontSize: "23px" }} onClick={() => navigate(`/ground/${localStorage.getItem("username")}`)}>광장가기</button>
                 <div className='hang'>
                     <div>
                         <p className='date-text' style={{ padding: "6px" }}>{formatDate()}</p>
@@ -459,8 +481,14 @@ function Main() {
                                 <img src={profile_image} alt="Profile" style={{ width: '100px', height: '100px' }} />
                             ) : (
                                 <img src={picturebasic} alt="Default" style={{ width: '100px', height: '100px' }} />
+
                             )}                            <div style={{ height: "2vh" }}></div>
                             <p style={{ paddingLeft: "1vh", fontSize: "20px", width: "32vh", display: "flex", alignItems: "flex-start"}}>
+
+                            )}                            
+                            <div style={{ height: "2vh" }}></div>
+                            <p style={{ paddingLeft: "1vh", fontSize: "20px" }}>
+
                                 {fullname}
                             </p>
                             <div style={{ height: "1vh" }}></div>
@@ -470,7 +498,6 @@ function Main() {
                                 <p style={{ fontSize: "18px" }}>{status}</p>
                             </div>
                             <div style={{ height: "2vh" }}>
-
                             </div>
                             <div className='green-box'>
                                 <div className='hang' style={{ paddingRight: "2vh" }}>
@@ -482,9 +509,7 @@ function Main() {
                                     <img src={picturePause} width='17vw' height='23vh' />
                                 </div>
 
-
                             </div>
-
                             {
                                 <div className="youtube-video" style={videoStyle}>
                                     <YouTube videoId={videoId} opts={opts} />
@@ -493,6 +518,9 @@ function Main() {
 
                             <div className='hang'>
                                 <button className="login-gray" style={{ fontSize: "15px" }} onClick={() => navigate(`/mypage/${localStorage.getItem("id")}`)}>마이페이지</button>
+
+                            <div className='hang' style={{ height: "5vh", display: "flex", alignItems: "flex-end", justifyContent: "flex-end" }}>
+                                <button className="login-gray" style={{ fontSize: "15px" }} onClick={() => navigate(`/mypage/${localStorage.getItem("username")}`)}>마이페이지</button>
                                 <div style={{ width: "4vh" }}></div>
                                 <button className="login-gray" style={{ fontSize: "15px" }} onClick={() => navigate('/')}>로그아웃</button>
                             </div>
@@ -510,56 +538,56 @@ function Main() {
                         <div className='main-gray-box'>
                             <div className='yellow-box-scroll' style={{ width: "53vw", height: "27vh", paddingLeft: "5vh" }}>
                                 <p style={{ fontSize: "10px", color: "black", textAlign: "right", width: "100%" }}>답변 칸을 클릭해 입력하고 ENTER를 누르면 저장돼요!</p>
-                                <p className='title-text' style={{ color: "black", fontSize: "25px" }}>Q.인생 영화 or 인생 책 한 가지</p>
+                                <p className='title-text' style={{ color: "black", fontSize: "22px" }}>Q. 인생 영화 or 인생 책 한 가지</p>
                                 <div className='hang'>
-                                    <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "25px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "25px" }} type='text' value={a1} onChange={savea1} onKeyDown={handleEnterKey}></input>
+                                    <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
+                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px" }} type='text' value={a1} onChange={savea1} onKeyDown={handleEnterKey}></input>
                                 </div>
-                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "25px" }}>Q.갖고 싶은 초능력은? </p>
+                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "22px" }}>Q. 갖고 싶은 초능력은? </p>
                                 <div className='hang'>
-                                    <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "25px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "25px" }} type='text' value={a2} onChange={savea2} onKeyDown={handleEnterKey}></input>
+                                    <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
+                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px" }} type='text' value={a2} onChange={savea2} onKeyDown={handleEnterKey}></input>
                                 </div>
-                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "25px" }}>Q.과거로 돌아갈 수 있다면 언제로?
+                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "22px" }}>Q. 과거로 돌아갈 수 있다면 언제로?
                                 </p>
                                 <div className='hang'>
-                                    <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "25px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "25px" }} type='text' value={a3} onChange={savea3} onKeyDown={handleEnterKey}></input>
+                                    <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
+                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px" }} type='text' value={a3} onChange={savea3} onKeyDown={handleEnterKey}></input>
                                 </div>
-                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "25px" }}>Q.기억에 남는 여행지는? </p>
+                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "22px" }}>Q. 기억에 남는 여행지는? </p>
                                 <div className='hang'>
-                                    <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "25px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "25px" }} type='text' value={a4} onChange={savea4} onKeyDown={handleEnterKey}></input>
+                                    <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
+                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px" }} type='text' value={a4} onChange={savea4} onKeyDown={handleEnterKey}></input>
                                 </div>
-                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "25px" }}>Q.죽기전에 먹고싶은 음식은? </p>
+                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "22px" }}>Q. 죽기전에 먹고싶은 음식은? </p>
                                 <div className='hang'>
-                                    <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "25px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "25px" }} type='text' value={a5} onChange={savea5} onKeyDown={handleEnterKey}></input>
+                                    <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
+                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px" }} type='text' value={a5} onChange={savea5} onKeyDown={handleEnterKey}></input>
                                 </div>
-                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "25px" }}>Q.외출할 때 하나만 챙긴다면? </p>
+                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "22px" }}>Q. 핸드폰 빼고 외출할 때 하나만 챙긴다면? </p>
                                 <div className='hang'>
-                                    <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "25px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "25px" }} type='text' value={a6} onChange={savea6} onKeyDown={handleEnterKey}></input>
+                                    <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
+                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px" }} type='text' value={a6} onChange={savea6} onKeyDown={handleEnterKey}></input>
                                 </div>
-                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "25px" }}>Q.내 버킷리스트 속 1번 </p>
+                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "22px" }}>Q. 내 버킷리스트 속 1번 </p>
                                 <div className='hang'>
-                                    <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "25px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "25px" }} type='text' value={a7} onChange={savea7} onKeyDown={handleEnterKey}></input>
+                                    <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
+                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px" }} type='text' value={a7} onChange={savea7} onKeyDown={handleEnterKey}></input>
                                 </div>
-                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "25px" }}>Q.무생물과 대화하기 vs 모든 생물과 대화하기  </p>
+                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "22px" }}>Q. 무생물과 대화하기 vs 모든 생물과 대화하기  </p>
                                 <div className='hang'>
-                                    <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "25px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "25px" }} type='text' value={a8} onChange={savea8} onKeyDown={handleEnterKey}></input>
+                                    <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
+                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px" }} type='text' value={a8} onChange={savea8} onKeyDown={handleEnterKey}></input>
                                 </div>
-                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "25px" }}>Q.못씻기 vs 못먹기 </p>
+                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "22px" }}>Q. 못씻기 vs 못먹기 </p>
                                 <div className='hang'>
-                                    <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "25px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "25px" }} type='text' value={a9} onChange={savea9} onKeyDown={handleEnterKey}></input>
+                                    <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
+                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px" }} type='text' value={a9} onChange={savea9} onKeyDown={handleEnterKey}></input>
                                 </div>
-                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "25px" }}>Q.주말을 해적과 함께 보내기 vs 주말을 닌자와 함께 보내기</p>
+                                <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "22px" }}>Q. 주말을 해적과 함께 보내기 vs 주말을 닌자와 함께 보내기</p>
                                 <div className='hang'>
-                                    <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "25px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "25px" }} type='text' value={a10} onChange={savea10} onKeyDown={handleEnterKey}></input>
+                                    <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
+                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px" }} type='text' value={a10} onChange={savea10} onKeyDown={handleEnterKey}></input>
                                 </div>                            </div>
                             <div style={{ height: "13px" }}></div>
                             <div className='sky-box' style={{ width: "53vw", height: "43vh", backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.5)), url(${picturesky})`, backgroundSize: "cover" }}>
@@ -582,7 +610,7 @@ function Main() {
                                     <div className="hang" style={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-end", height: "20%", width: "100%" }}>
                                         <input className='input-name' style={{ width: "10vw" }} type='text' placeholder='이름' value={visitname} onChange={saveVisitname} />
                                         <div style={{ width: "1vh" }}></div>
-                                        <input className='input-name' style={{ width: "32vw" }} type='text' placeholder='방명록을 작성하세요.' value={visitContent} onChange={savecontent} />
+                                        <input className='input-name' style={{ width: "32vw" }} type='text' placeholder='방명록을 작성하세요.' value={visitContent} onChange={savecontent} onKeyDown={handleEnterKey3} />
                                         <button className="login-gray" style={{ fontSize: "20px", display: "flex", paddingBottom: "8px" }} onClick={() => sendVisit()}>전송</button>
                                     </div>
 
@@ -593,14 +621,32 @@ function Main() {
                     <div>
                         <div style={{ height: "5vh" }}></div>
                         <div className='main-transparent-box' style={{ height: "37vh" }}>
-                            <p style={{ paddingTop: "10px", fontSize: "17px" }}>내 이웃들</p>
+
+                            <div className='hang' style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                <p style={{ paddingTop: "10px", fontSize: "20px" }}>내 이웃들</p>
+                                <div style={{ width: "0.5vw" }}></div>
+                                <img src={picturePlus} width='15vw' height='15vh' onClick={handleFollowListClick} style={{ paddingTop: "10px" }} />
+                            </div>
                             <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
-                            <div style={{ height: "78%" }}></div>
+                            <div style={{ height: "1vh" }}></div>
+                            <div style={{ height: "78%" }}>
+                                <div>
+                                    {followee.map((myfollowee) => (
+
+                                        <div key={myfollowee.id}>
+                                            <p style={{ fontSize: "17px" }}>{myfollowee.followee}</p>
+
+                                            <div style={{ height: "1vh" }}></div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                         <div style={{ height: "1vh" }}></div>
 
                         <div className='main-transparent-box' style={{ height: "28vh" }}>
-                            <p style={{ paddingTop: "10px", fontSize: "17px" }}>산성비 랭킹</p>
+                            <p style={{ paddingTop: "10px", fontSize: "20px" }}>산성비 랭킹</p>
+
                             <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
                             <div style={{ height: "83%" }}></div>
                         </div>
@@ -630,7 +676,6 @@ function Main() {
                     </div>
                 </div>
                 <div className={`shadow ${showPopup ? 'active' : ''}`} style={{ display: showPopup ? 'block' : 'none' }}></div>
-
                 {showPopup && (
                     <div className={`letter-popup ${isExiting ? 'exiting' : ''}`}>
                         <div className="letter-popup-content">
@@ -638,71 +683,45 @@ function Main() {
                                 <img src={picturetrash} width='50vw' height='50vh' alt="trash" onClick={handleTrashClick} />
                                 <p className='trash-popup-message' > 감정 쓰레기통에 감정을 버려보세요!</p>
                             </div>
-                            <textarea
-                                className="trash-popup-textarea"
-                                value={text}
-                                onChange={handleChange}
-                                placeholder="감정을 적어보세요.."
-                            />
+                            <textarea className="trash-popup-textarea" value={text} onChange={handleChange} placeholder="감정을 적어보세요.." />
                             <button className='trash-button' onClick={handleDiscard} >버리기!</button>
-
-                        </div>
-                    </div>
-                )}
-                <div className={`shadow ${showFlwPopup ? 'active' : ''}`} style={{ display: showFlwPopup ? 'block' : 'none' }}></div>
-                {showFlwPopup && (
-                    <div className={`letter-popup ${isFlwExiting ? 'exiting' : ''}`}>
-                        <div className='follow-popup-content' style={{ backgroundImage: 'url(' + picturefriend + ')' }}>
-                            <div>
-                                <img src={pictureHome} width='30vw' height='30vh' style={{ color: "white" }} />
-                                <img src={pictureHome} width='30vw' height='30vh' style={{ color: "white" }} />
-                                <img src={pictureHome} width='30vw' height='30vh' style={{ color: "white" }} />
-                            </div>
-                            <p style={{ color: '#00DAC0', fontSize: 37 }}>
-                                {title3}
-                            </p>
-                            <p style={{ color: '#8A8A8A', fontSize: 37 }}>
-                                마이홈피
-                            </p>
-                            <div style={{ height: "1vw" }}></div>
-                            <div className='yellow-box' style={{ width: "35vw", height: "35vh" }}>
-                                <img src={picturebasic} width='80vw' height='80vh'></img>
-                                <div style={{ height: "2vh" }}></div>
-                                <div className='hang'>
-                                    <p style={{ color: '#00DAC0', fontSize: 25 }}>
-                                        {fullname}
-                                    </p>
-                                    <div style={{ width: '2vw' }}></div>
-                                    <p style={{ color: 'black', fontSize: 25 }}>
-                                        님에게
-                                    </p>
-                                </div>
-                                <p style={{ color: 'black', fontSize: 25 }}>
-                                    일촌 맺기를 신청하시겠습니까?
-                                </p>
-                                <div style={{ height: "2vh" }}></div>
-                                <div className='hang'>
-                                    <button className="login-gray" style={{ fontSize: "22px" }} onClick={() => navigate()}>네!</button>
-                                    <div style={{ width: "5vh" }}></div>
-                                    <button className="login-gray" style={{ fontSize: "22px" }} onClick={handleFollowDiscard}>아니요.</button>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 )}
                 <div className={`shadow ${showFlwListPopup ? 'active' : ''}`} style={{ display: showFlwListPopup ? 'block' : 'none' }}></div>
                 {showFlwListPopup && (
-                    <div className={`letter-popup ${isFlwExiting ? 'exiting' : ''}`}>
-                        <div className='follow-popup-content' style={{ backgroundColor: "#C2E9B5", width: "40vw" }}>
+
+                    <div className={`letter-popup ${isFlwListExiting ? 'exiting' : ''}`}>
+                        <div className='follow-popup-content' style={{ backgroundColor: "#C2E9B5", width: "40vw", padding: "20px" }}>
+
                             <div className='hang'>
                                 <img src={pictureApple} style={{ width: '50px', height: '40px', }} />
-                                <p style={{ fontSize: "25px" }}>이웃 요청 목록</p>
+                                <p style={{ fontSize: "25px" }}>이웃 검색</p>
                             </div>
                             <div style={{ height: "1vh" }}></div>
                             <div className='yellow-box' style={{ height: "50vh", width: "25vw" }}>
 
                             </div>
                             <button className="login-gray" style={{ fontSize: "22px", display: "flex", alignItems: "flex-end", justifyContent: "flex-end", width: "100%", paddingRight: "20px", paddingTop: "25px" }} onClick={handleFollowListDiscard}>나가기</button>
+
+                            <div style={{ height: "5vh" }}></div>
+                            <input className='input-name' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "20px", height: "10vh", width: "30vw" }} type='text' value={search_user} onChange={saveSearchuser} onKeyDown={handleEnterKey2}></input>
+                            <div style={{ height: "60%" }}>
+                                <div style={{ height: "2vh" }}></div>
+                                <div>
+                                    {usernames.map((username) => (
+                                        <div key={username.id}>
+                                            <div className='hang'>
+                                                <p style={{ fontSize: "22px", width: "12vw" }}>{username}</p>
+                                                <hr style={{ width: "15vw", borderStyle: "dashed" }}></hr>
+                                                <button className="login-gray" style={{ fontSize: "15px", width: "10vw" }} onClick={() => sendFollow(username)}>구독</button>
+                                            </div>
+                                            <div style={{ height: "2vh" }}></div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            <button className="login-gray" style={{ fontSize: "22px", display: "flex", alignItems: "flex-end", justifyContent: "flex-end", width: "100%", height: "100%" }} onClick={handleFollowListDiscard}>나가기</button>
                         </div>
                     </div>
                 )}

@@ -1,15 +1,15 @@
 /* eslint-disable */
 import './App.css';
 import { useState, useEffect } from 'react';
-import pictureHome from './images/Oak Tree.png';
 import pictureapple from './images/apple.png';
 import picturebasic from './images/basicProfile.png';
-import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import YouTube from 'react-youtube';
 
 function Mypage() {
+    const formData = new FormData();
     const navigate = useNavigate();
     const [fileName, setFileName] = useState("");
     const [uploadImgUrl, setUploadImgUrl] = useState();
@@ -21,37 +21,29 @@ function Mypage() {
     const [singer, setSinger] = useState('');
     const [title, setTitle] = useState('');
     const [search, setSearch] = useState('');
-    const [searchClicked, setSearchClicked] = useState(false); 
+    const [searchClicked, setSearchClicked] = useState(false);
     const [isSearchEnabled, setIsSearchEnabled] = useState(false);
 
-
-
     const opts = {
-        width: "250", 
-        height: "150", 
+        width: "250",
+        height: "150",
         playerVars: {
             autoplay: 0, // 자동 재생 여부
         },
     };
-    
-    
+
     const handlePopupClose = () => {
         setShowPopup(false);
-
     };
-
-
 
     const saveSinger = event => {
         setSinger(event.target.value);
         console.log(event.target.value);
     };
-
     const saveTitle = event => {
         setTitle(event.target.value);
         console.log(event.target.value);
     };
-
     const saveSearch = (event) => {
         const value = event.target.value;
         setSearch(value);
@@ -60,39 +52,22 @@ function Mypage() {
     useEffect(() => {
         setIsSearchEnabled(search.trim() !== '');
     }, [search]);
-
-
     const handleTrashClick = () => {
         setShowPopup(true);
     };
-
-    const handleDiscard = () => {
-        setIsExiting(true);
-        setTimeout(() => {
-            setShowPopup(false);
-            setIsExiting(false);
-        }, 500);
-    };
-
     const saveUserFullname = event => {
         setFullname(event.target.value);
         console.log(event.target.value);
     };
-
     const saveUserIntro = event => {
         setIntro(event.target.value);
         console.log(event.target.value);
     };
-
-    const formData = new FormData();
-
     const handleFileChange = (event) => {
         console.log(localStorage.getItem("access_token"));
         if (event.target.files.length > 0) {
             const uploadFile = event.target.files[0];
-
             setFileName(uploadFile.name);
-
             const reader = new FileReader();
             reader.readAsDataURL(uploadFile);
             reader.onloadend = () => {
@@ -100,7 +75,6 @@ function Mypage() {
             };
             console.log(uploadFile);
             formData.append('file', uploadFile);
-
             axios({
                 method: 'post',
                 url: '/file/upload',
@@ -110,22 +84,22 @@ function Mypage() {
                     "Content-Type": "multipart/form-data",
                 }
             })
-            .then((response) => {
-                console.log(axios.AxiosHeaders);
-                console.log(response.data);
-                if (response.status === 200) {
-                    console.log("success upload profile image");
-                } else {
-                    alert("오류.");
+                .then((response) => {
+                    console.log(axios.AxiosHeaders);
+                    console.log(response.data);
+                    if (response.status === 200) {
+                        console.log("success upload profile image");
+                    } else {
+                        alert("오류.");
+                    }
                 }
-            });
+            );
         }
     };
-  
+
     async function fetchData() {
-        console.log(localStorage.getItem("access_token"));
         axios.get('/youtube/search?search=', {
-            params: {search},
+            params: { search },
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
                 'Content-Type': 'application/json'
@@ -139,26 +113,24 @@ function Mypage() {
                 }
             })
             .catch((error) => {
-                console.error('youtubeapi 데이터를 가져오는 중 오류 발생:', error);
+                console.error('youtubeapi 오류 발생:', error);
             });
     };
 
     useEffect(() => {
         getMypage();
-
         MusicFetch();
     }, []);
 
 
     const handleVideoSelect = (videoId) => {
-
         if (!singer || !title) {
             Swal.fire({
                 icon: 'warning',
                 title: '실패',
                 text: '가수와 제목 모두 채워주세요!',
             });
-            return; 
+            return;
         }
         const postData = {
             user_id: localStorage.getItem("id"), // getMypage에서 가져온 ID
@@ -166,22 +138,20 @@ function Mypage() {
             music_title: title, // saveTitle에서 설정된 값
             music_info: videoId // result.id.videoId
         };
-    
         axios.put('/youtube/mymusic', postData, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
                 'Content-Type': 'application/json',
             }
         })
-        .then(response => {
-            console.log(" YOUTUBE 선택 및 POST 성공:", response.data);
-            handlePopupClose(); 
-        })
-        .catch(error => {
-            console.error("YOUTUBE 선택 및 POST 실패:", error.response);
-        });
+            .then(response => {
+                console.log(" YOUTUBE 선택 및 POST 성공:", response.data);
+                handlePopupClose();
+            })
+            .catch(error => {
+                console.error("YOUTUBE 선택 및 POST 실패:", error.response);
+            });
     };
-    
 
     function sendMypage() {
         axios.put(
@@ -194,9 +164,6 @@ function Mypage() {
                 }
             }
         ).then((response) => {
-            console.log(axios.AxiosHeaders);
-            console.log(response.data);
-            console.log(response.status);
             if (response.status === 200) {
                 console.log("마이페이지 성공");
                 navigate(`/main/${localStorage.getItem("id")}`);
@@ -216,15 +183,10 @@ function Mypage() {
                 }
             }
         ).then((response) => {
-            console.log(axios.AxiosHeaders);
-            console.log('마이페이지 응답:', response);
-            console.log(response.status);
             if (response.status === 200) {
                 setFullname(response.data.fullname);
                 setIntro(response.data.status_message);
                 setUploadImgUrl(response.data.profile_image);
-
-
                 console.log("마이페이지 가져오기 성공");
             }
         }).catch((error) => {
@@ -232,7 +194,6 @@ function Mypage() {
         });
     }
 
-        
     const MusicFetch = () => {
         axios.get('/youtube/mymusic_video', {
             headers: {
@@ -240,22 +201,20 @@ function Mypage() {
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`
             }
         })
-        .then((response) => {
-            if (response.status === 200) {
-                console.log('MusicFetch 서버 응답:', response.data);
-                     {
-                   
-                    localStorage.setItem("singer", response.data.singer ); 
-                    setSinger(response.data.singer); 
-                    localStorage.setItem("Title", response.data.music_title);  
-                    setTitle(response.data.music_title);  
-              
-                } 
-            } 
-        })
-        .catch((error) => {
-            console.error('MusicFetch 데이터를 가져오는 중 오류 발생:', error);
-        });
+            .then((response) => {
+                if (response.status === 200) {
+                    console.log('MusicFetch 서버 응답:', response.data);
+                    {
+                        localStorage.setItem("singer", response.data.singer);
+                        setSinger(response.data.singer);
+                        localStorage.setItem("Title", response.data.music_title);
+                        setTitle(response.data.music_title);
+                    }
+                }
+            })
+            .catch((error) => {
+                console.error('MusicFetch 데이터를 가져오는 중 오류 발생:', error);
+            });
     };
 
     // 검색 버튼 클릭 핸들러
@@ -280,7 +239,7 @@ function Mypage() {
                     )}
                     <div style={{ width: "5vw" }}></div>
                     <label htmlFor="file-upload" className="login-gray">
-                        {"변경"}
+                        변경
                     </label>
                     <input
                         id="file-upload"
@@ -294,28 +253,28 @@ function Mypage() {
                 <div className='grey-box2'>
                     <div style={{ width: "20vw" }}></div>
                     <div className='hang3'>
-                        <p style={{ color: "black", fontSize: '2.7vh', width:"23vh" }}>닉네임</p>
-                        <input className='input-2' type='text' placeholder='닉네임을 입력하세요...' value={fullname} onChange={saveUserFullname}/>
+                        <p style={{ color: "black", fontSize: '2.7vh', width: "22vh" }}>닉네임</p>
+                        <input className='input-2' type='text' placeholder='닉네임을 입력하세요...' value={fullname} onChange={saveUserFullname} />
                     </div>
                     <div style={{ height: '5vh' }}></div>
                     <div className='hang'>
-                        <p style={{ color: "black", fontSize: '2.7vh', width:"23vh" }}>프로필 뮤직</p>
-                        <input className='input-2' type='text' placeholder='프로필 뮤직을 설정하세요...' value={`${singer} - ${title}`}/>
+                        <p style={{ color: "black", fontSize: '2.7vh', width: "22vh" }}>프로필 뮤직</p>
+                        <input className='input-2' type='text' placeholder='프로필 뮤직을 설정하세요...' value={`${singer} - ${title}`} />
 
                         <div style={{ width: "0.5vw" }}></div>
-                        <button className="login-gray" style={{ fontSize: "2.2vh" }} onClick={handleTrashClick}>검색</button>
+                        <button className="login-gray" style={{ fontSize: "2vh" }} onClick={handleTrashClick}>검색</button>
                     </div>
                     <div style={{ height: '5vh' }}></div>
                     <div className='hang'>
-                        <p style={{ color: "black", fontSize: '2.7vh', width:"23vh" }}>한줄 소개</p>
-                        <input className='input-2' type='text' placeholder='한줄 소개를 입력하세요...' value={intro} onChange={saveUserIntro}/>
+                        <p style={{ color: "black", fontSize: '2.7vh', width: "22vh" }}>한줄 소개</p>
+                        <input className='input-2' type='text' placeholder='한줄 소개를 입력하세요...' value={intro} onChange={saveUserIntro} />
                     </div>
                     <div style={{ height: '5vh' }}></div>
                     <div className='hang'>
-                        <p style={{ color: "black", fontSize: '2.7vh', width:"23vh" }}>내 미니홈피 URL</p>
-                        <input className='input-2' type='text' placeholder={`localhost:3000/main/${localStorage.getItem("id")}`}/>
+                        <p style={{ color: "black", fontSize: '2.7vh', width: "22vh" }}>내 미니홈피 URL</p>
+                        <input className='input-2' type='text' placeholder={`localhost:3000/main/${localStorage.getItem("id")}`} />
                         <div style={{ width: "0.5vw" }}></div>
-                        <button className="login-gray" style={{ fontSize: "2.2vh" }} onClick={() => console.log(localStorage.getItem("access_token"))}>복사</button>
+                        <button className="login-gray" style={{ fontSize: "2vh" }} onClick={() => console.log(localStorage.getItem("access_token"))}>복사</button>
                     </div>
                 </div>
                 <div style={{ height: "1vh" }}></div>
@@ -328,15 +287,13 @@ function Mypage() {
             {showPopup && (
                 <div className={`letter-popup ${isExiting ? 'exiting' : ''}`}>
                     <div className="music-popup-content">
-                    <button className='close-button' style={{paddingRight: 5}} onClick={handlePopupClose}>×</button>
-                    <div style={{ height: "1.5vh" }}></div>
-
-                    <p style={{fontSize:"11px", color:"black", textAlign:"right", width:"100%"}}>가수와 제목을 모두 채워주세요!!</p>
-                
+                        <button className='close-button' style={{ paddingRight: 5 }} onClick={handlePopupClose}>×</button>
+                        <div style={{ height: "1.5vh" }}></div>
+                        <p style={{ fontSize: "11px", color: "black", textAlign: "right", width: "100%" }}>가수와 제목을 모두 채워주세요!!</p>
                         <div className='hang'>
                             <p style={{ color: "black", fontSize: '2.7vh' }}>가수</p>
                             <div style={{ width: '0.5vw' }}></div>
-                            <input className='input-4' type='text' placeholder='가수를 입력하세요.' value={singer} onChange={saveSinger}/>
+                            <input className='input-4' type='text' placeholder='가수를 입력하세요.' value={singer} onChange={saveSinger} />
                             <div style={{ width: '2vw' }}></div>
                             <p style={{ color: "black", fontSize: '2.7vh' }}>제목</p>
                             <div style={{ width: '0.5vw' }}></div>
@@ -349,18 +306,17 @@ function Mypage() {
                             <button className="login-gray" style={{ fontSize: "2.7vh" }} onClick={handleSearchClick} disabled={!isSearchEnabled}>검색</button>
                         </div>
                         {searchClicked && searchResults.length > 0 && (
-    <div className="results-list">
-        <ul>
-            {searchResults.map((result, index) => (
-                <li key={index} onClick={() => handleVideoSelect(result.id.videoId)}>
-                    <YouTube videoId={result.id.videoId} opts={opts} />
-                    {result.snippet && result.snippet.title ? result.snippet.title.replace(/&quot;/gi, '"') : '제목 없음'}
-                </li>
-            ))}
-        </ul>
-    </div>
-)}
-
+                            <div className="results-list">
+                                <ul>
+                                    {searchResults.map((result, index) => (
+                                        <li key={index} onClick={() => handleVideoSelect(result.id.videoId)}>
+                                            <YouTube videoId={result.id.videoId} opts={opts} />
+                                            {result.snippet && result.snippet.title ? result.snippet.title.replace(/&quot;/gi, '"') : '제목 없음'}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}

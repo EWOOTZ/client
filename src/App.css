@@ -31,8 +31,6 @@ div {
   align-items: center;
 }
 
-
-
 .white-line {
   width: 95vw;
   height: 90vh;
@@ -88,7 +86,7 @@ div {
   background-color: #ECECEC;
   border-radius: 10px;
   flex-direction: column;
-  padding-left: 3vw;
+  padding-left: 2vw;
 }
 
 .yellow-box {
@@ -210,6 +208,14 @@ div {
   align-items: center;
 }
 
+.hide{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
 .hang4 {
   flex-direction: row;
   display: flex;
@@ -323,8 +329,6 @@ div {
   animation: fadeIn 0.1s ease-in;
   font-family: 'HJ';
 }
-
-
 
 .login-gray:disabled {
   cursor: not-allowed; 

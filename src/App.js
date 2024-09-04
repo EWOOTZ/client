@@ -1,8 +1,8 @@
 /* eslint-disable */
 import './App.css';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import pictureHome from './images/Oak Tree.png';
-import { BrowserRouter, Route, Routes, useNavigate, useParams } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import Ground from './ground';
 import Join from './join';
 import Letter from './Letter';
@@ -10,17 +10,20 @@ import Main from './main';
 import Mypage from './mypage';
 import Game from './game';
 import axios from 'axios';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
+import Write from './write';
+import Notice from './notice';
 
 const Home = () => {
   let title = '<당신>의\n';
   let title2 = '마이홈피';
   const navigate = useNavigate();
-
   const [id, setId] = useState('');
   const [pw, setPw] = useState('');
+  const formData = new FormData();
+  formData.append('username', id);
+  formData.append('password', pw);
   
-
   const saveUserId = event => {
     setId(event.target.value);
     console.log(event.target.value);
@@ -30,10 +33,6 @@ const Home = () => {
     setPw(event.target.value);
     console.log(event.target.value);
   };
-
-  const formData = new FormData();
-  formData.append('username', id);
-  formData.append('password', pw);
 
   function Login() {
     axios({
@@ -117,6 +116,10 @@ const App= () => {
           <Route path="/main/:id" element={<Main />} />
           <Route path="/mypage/:id" element={<Mypage />} />
           <Route path="/game" element={<Game />} />
+          <Route path="/notice/:id" element={<Notice />} />
+          <Route path="/write/:id" element={<Write/>} />
+
+
         </Routes>
       </BrowserRouter>
     </div>
