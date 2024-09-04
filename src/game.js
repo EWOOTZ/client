@@ -1,7 +1,8 @@
 /* eslint-disable */
-
 import React, { useState, useEffect, useRef } from "react";
 import './game.css';
+import './App.css';
+import './Letter.css';
 
 const Game = () => {
     const [wordList, setWordList] = useState([]);
@@ -23,17 +24,13 @@ const Game = () => {
     // 최고 점수와 실패 기록을 localStorage에서 불러오기
     const getBestRecords = () => {
         const bestScore = localStorage.getItem('bestScore') || 0;
-        const bestFailed = localStorage.getItem('bestFailed') || 0;
-        return { bestScore: parseInt(bestScore), bestFailed: parseInt(bestFailed) };
+        return { bestScore: parseInt(bestScore) };
     };
 
-    const updateBestRecords = (newScore, newFailed) => {
-        const { bestScore, bestFailed } = getBestRecords();
+    const updateBestRecords = (newScore) => {
+        const { bestScore } = getBestRecords();
         if (newScore > bestScore) {
             localStorage.setItem('bestScore', newScore);
-        }
-        if (newFailed > bestFailed) {
-            localStorage.setItem('bestFailed', newFailed);
         }
     };
 
@@ -131,7 +128,7 @@ const Game = () => {
         setIsGameOver(true);
 
         // 최고 기록 업데이트
-        updateBestRecords(score, failed);
+        updateBestRecords(score);
     };
 
     const handleKeyDown = (event) => {
@@ -186,30 +183,27 @@ const Game = () => {
         });
     };
 
-    const { bestScore, bestFailed } = getBestRecords();
+    const { bestScore } = getBestRecords();
 
     return (
+
         <div>
-            <div className="game-info">
-                <div>최고 점수: {bestScore}</div>
-                <div>최고 실패: {bestFailed}</div>
-            </div>
+     
+
             {showHelp && !gameStarted && !isGameOver && (
                 <div className="popup">
                     <div className="popup-content">
                         <h1>게임 설명</h1>
-                        <div>
-                            1. 위에서 떨어지는 단어가 <b>바닥에 닿기 전에</b> 해당 단어를{" "}
-                            <b>입력</b>하여 점수를 획득하세요.
+                        <div className="popup-content">
+                        1. 위에서 떨어지는 단어가 바닥에 닿기 전에 해당 단어를 입력하여 점수를 획득하세요.
+                        <br />
+                        2. 없는 단어 입력 시 점수가 차감 됩니다.
+                        <br />
+                        3. 단어가 바닥에 떨어지면 게임은 종료됩니다.
                             <br />
-                            2. 없는 단어 입력 시 <b>점수가 차감</b>됩니다.
+                        4. 단어가 모두 나와서 처리되면 게임은 종료됩니다.
                             <br />
-                            3. <b>단어</b>가 바닥에 떨어지면 <b>게임은 종료</b>
-                            됩니다.
-                            <br />
-                            4. 단어가 모두 나와서 처리되면 <b>게임은 종료</b>됩니다.
-                            <br />
-                            5. 게임이 종료되면 획득한 점수가 공개됩니다.
+                        5. 게임이 종료되면 획득한 점수가 공개됩니다.
                             <br />
                         </div>
                         <button onClick={() => setGameStarted(true)}>게임 시작</button>
@@ -218,41 +212,59 @@ const Game = () => {
             )}
             {isGameOver && (
                 <div className="popup">
-                    <div className="popup-content">
-                        <div id="end-score">점수 : {score}</div>
+                    <div className="popup-content" style={{fontSize:"18px"}}>
+                    <div style={{ height: "1.5vw" }}></div>
+                        <div id="end-score">현재 점수 : {score}</div>
+                        <div style={{ height: "3vw" }}></div>
+                        <div>최고 점수: {bestScore}</div>
+                        <div style={{ height: "2vw" }}></div>
                         <button onClick={() => {
                             setGameStarted(true);
                             setIsGameOver(false);
                             setShowHelp(false); // 다시 시작 시 도움말을 숨깁니다.
                         }}>다시 시작</button>
-                        <button onClick={() => setShowHelp(true)}>뒤로 가기</button>
+                        <button onClick={() => {
+                            setShowHelp(true);
+                            setIsGameOver(false); // 설명 팝업으로 돌아갈 때 게임 상태를 초기화
+                        }}>뒤로 가기</button>
+                        <div style={{ height: "1.5vw" }}></div>
                     </div>
                 </div>
             )}
+
+
             {!showHelp && gameStarted && !isGameOver && (
+
+<div className="hang">
                 <div className="game">
                     <div
-                        id="game-panel"
+                        className="game-panel"
                         ref={gamePanelRef}
                     >
                         {renderWords()}
                     </div>
-                    <div id="control-panel">
+                    <div className ="control-panel">
                         <input
                             id="input"
                             ref={inputRef}
                             onKeyDown={handleKeyDown}
                             disabled={!gameStarted}
-                            style={{ width: "100%", padding: "10px", fontSize: "16px" }}
+                            style={{   fontFamily: "HJ",
+                                width: "35vw", height:"3vh", padding: "8px", fontSize: "15px" }}
                         />
-                        <div>
-                            Score: <span id="score">{score}</span>
-                        </div>
-                        <div>
-                            Failed: <span id="failed">{failed}</span>
-                        </div>
+                    
                     </div>
                 </div>
+                <div className="column-container " >
+                <div className="game-info">
+                <div>최고 점수:{bestScore}</div>
+            </div>
+            <div className="game-info">
+                <div>현재 점수: {score}</div>
+            </div>
+                </div>
+                </div>
+
             )}
         </div>
     );
