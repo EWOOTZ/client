@@ -166,7 +166,7 @@ function Letter() {
           <div className='letter-popup-content'  onClick={(e) => e.stopPropagation()} style={{ padding: '50px', width:'30vw',height:'30vh' }}>
 
 
-          <p className='trash-popup-message' style={{ paddingTop:'25px',textAlign: "center", alignItems: "center", justifyContent: "center", display: "flex", width: "25vw" }}>보내시겠습니까?</p>
+          <p className='trash-popup-message' style={{ paddingTop:'25px',textAlign: "center", alignItems: "center", justifyContent: "center", display: "flex", width: "25vw" }}>업로드 하시겠습니까?</p>
           <div style={{ height: '5vh' }}></div>
 
             <div className='letter-popup-buttons'>
