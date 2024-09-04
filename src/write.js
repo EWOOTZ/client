@@ -17,8 +17,17 @@ function Letter() {
   const [location, setSelectedLocation] = useState(null);
   const [image, setImage] = useState(null);
   const [imageText, setImageText] = useState('사진을 첨부해주세요!');
-  const date = new Date()
-  const link = ""
+
+  const today = new Date();
+  const day = today.getDate();
+  const month = today.getMonth() + 1;
+  const year = today.getFullYear();
+  const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
+  const dayOfWeek = daysOfWeek[today.getDay()]; // 요일
+
+
+  const date = `${year % 100}.${month}.${day}(${dayOfWeek})`;
+
 
   const navigate = useNavigate();
   const handleCategoryClick = (category) => {
@@ -59,9 +68,7 @@ function Letter() {
 
   const handleSubmit = () => {
     const postData = {
-      category, title, contents, date, link, image,
-      // date -> 오늘 날짜 전송 
-      //date: startDate.toISOString().split('T')[0]
+      category, title, contents, date
     };
     axios.post('/board/', postData, {
       headers: {
