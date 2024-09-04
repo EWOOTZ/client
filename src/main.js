@@ -18,6 +18,8 @@ import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import React, { useRef } from 'react';
 import YouTube from 'react-youtube';
+import joyconImg from './assets/joycon.png';
+
 
 function formatDate() {
     const today = new Date();
@@ -624,9 +626,27 @@ function Main() {
                             <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
                             <div style={{ height: "83%" }}></div>
                         </div>
-                        <div className='trash-image-container'>
-                            <img src={picturetrash} alt="trash" onClick={handleTrashClick} style={{ cursor: 'pointer', width: "4.5vw", height: "8vh" }} />
-                        </div>
+                        <div className='hang'>
+                            <div className='trash-image-container'>
+                                <img src={joyconImg} alt="trash" onClick={() =>   navigate(`/game/${localStorage.getItem("id")}`)} style={{
+                                    cursor: 'pointer',
+                                    width: "8vw",
+                                    height: "15vh",
+                                    marginTop: "-20px",
+                                    marginLeft: "-30px",
+                                    marginRight: "-25px",
+                                }} />
+                            </div>
+
+                            <div style={{ width: "3vh" }}></div>
+                            <div className='trash-image-container'>
+                                <img src={picturetrash} alt="trash" onClick={handleTrashClick} style={{ 
+                                    cursor: 'pointer', 
+                                    width: "4.5vw", 
+                                    height: "8vh", 
+                                    marginTop: "-50px", }} />
+                            </div>
+                            </div>
                     </div>
                 </div>
                 <div className={`shadow ${showPopup ? 'active' : ''}`} style={{ display: showPopup ? 'block' : 'none' }}></div>

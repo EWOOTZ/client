@@ -115,7 +115,7 @@ const App= () => {
           <Route path="/letter/:id" element={<Letter />} />
           <Route path="/main/:id" element={<Main />} />
           <Route path="/mypage/:id" element={<Mypage />} />
-          <Route path="/game" element={<Game />} />
+          <Route path="/game/:id" element={<Game />} />
           <Route path="/notice/:id" element={<Notice />} />
           <Route path="/write/:id" element={<Write/>} />
 
