@@ -268,7 +268,26 @@ function Main() {
                 text: "이미 구독을 한 유저 입니다",
             });
         });
+
     }
+
+
+        const fetchGame = () => {
+        axios.get('/score/', {
+            headers: {
+                'accept': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem("access_token")}`
+            }
+        })
+        .then((response) => {
+            if (response.status === 200) { 
+                console.log('game 서버 응답:', response.data);
+            }
+        })
+        .catch((error) => {
+            console.error('game 데이터를 가져오는 중 오류 발생:', error);
+        });
+    };
 
     const [followee, setFollowee] = useState([]);
     const [isExiting, setIsExiting] = useState(false);
@@ -442,6 +461,7 @@ function Main() {
         getVisit();
         getFollower();
         MusicFetch();
+        fetchGame();
     }, []);
 
 

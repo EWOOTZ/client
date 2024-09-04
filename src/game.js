@@ -3,6 +3,8 @@ import React, { useState, useEffect, useRef } from "react";
 import './game.css';
 import './App.css';
 import './Letter.css';
+import axios from 'axios';
+
 
 const Game = () => {
     const [wordList, setWordList] = useState([]);
@@ -13,6 +15,7 @@ const Game = () => {
     const [isGameOver, setIsGameOver] = useState(false);
     const [showHelp, setShowHelp] = useState(true);
     const [gameStarted, setGameStarted] = useState(false);
+    const [username, setUsername] = useState('');
 
     const gamePanelRef = useRef(null);
     const inputRef = useRef(null);
@@ -33,6 +36,70 @@ const Game = () => {
             localStorage.setItem('bestScore', newScore);
         }
     };
+
+    const fetchName = () => {
+        axios.get('/users/me', {
+            headers: {
+                'accept': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem("access_token")}`
+            }
+        })
+            .then((response) => {
+                if (response.status === 200) {
+                    setUsername(response.data.fullname);
+                    console.log('fetchName 서버 응답:', response.data);
+
+
+                }
+            })
+            .catch((error) => {
+                console.error('username 데이터를 가져오는 중 오류 발생:', error);
+            });
+    };
+
+
+    const fetchData = () => {
+        axios.get('/score/', {
+            headers: {
+                'accept': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem("access_token")}`
+            }
+        })
+        .then((response) => {
+            if (response.status === 200) { 
+                console.log('game 서버 응답:', response.data);
+            }
+        })
+        .catch((error) => {
+            console.error('game 데이터를 가져오는 중 오류 발생:', error);
+        });
+    };
+
+    function sendGame() {
+        axios.put(
+            '/score/',
+            { "username": username, "score": score },
+            {
+                'headers': {
+                    'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+                    'Content-Type': 'application/json'
+                }
+            }
+        ).then((response) => {
+            if (response.status === 201) {
+                console.log(" 게임 get성공 ");
+            }
+        })     .catch((error) => {
+            console.error('game을 전송하는 중 오류 발생:', error);
+        });
+    }
+
+
+    useEffect(() => {
+        fetchName();
+        fetchData(); 
+    }, []);
+
 
     // 단어 리스트 불러오기
     useEffect(() => {
@@ -129,6 +196,9 @@ const Game = () => {
 
         // 최고 기록 업데이트
         updateBestRecords(score);
+
+        sendGame();
+
     };
 
     const handleKeyDown = (event) => {
