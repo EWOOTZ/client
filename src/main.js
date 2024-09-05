@@ -272,23 +272,28 @@ function Main() {
 
     }
 
-
-        const fetchGame = () => {
+    const fetchRanking = () => {
         axios.get('/score/', {
             headers: {
                 'accept': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`
             }
-        })
-        .then((response) => {
-            if (response.status === 200) { 
-                console.log('game 서버 응답:', response.data);
-            }
-        })
-        .catch((error) => {
-            console.error('game 데이터를 가져오는 중 오류 발생:', error);
-        });
+        })            .then(response => {
+                if (response.status === 200) {
+
+                    console.log('모든 game score 서버 응답:', response.data);
+
+                    const sortedList = response.data.sort((a, b) => b.score - a.score);
+                    setRankingList(sortedList);
+                    console.log("랭킹",sortedList);
+                }
+            })
+            .catch(error => {
+                console.error('산성비 랭킹을 가져오는 중 오류 발생:', error);
+            });
     };
+
+    const [rankingList, setRankingList] = useState([]);
 
     const [followee, setFollowee] = useState([]);
     const [isExiting, setIsExiting] = useState(false);
@@ -462,7 +467,7 @@ function Main() {
         getVisit();
         getFollower();
         MusicFetch();
-        fetchGame();
+        fetchRanking();
     }, []);
 
 
@@ -643,10 +648,20 @@ function Main() {
                         </div>
                         <div style={{ height: "1vh" }}></div>
                         <div className='main-transparent-box' style={{ height: "25vh" }}>
-                            <p style={{ paddingTop: "10px", fontSize: "20px" }}>산성비 랭킹</p>
-                            <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
-                            <div style={{ height: "83%" }}></div>
+            <p style={{ paddingTop: "10px", fontSize: "20px" }}>산성비 랭킹</p>
+            <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
+            <div style={{ height: "83%", overflowY: "auto" }}>
+                {rankingList.length > 0 ? (
+                    rankingList.map((rank, index) => (
+                        <div key={index} style={{ margin: "10px 0" }}>
+                            <p style={{ fontSize: "15px" }}>{rank.fullname} - {rank.score }P</p>
                         </div>
+                    ))
+                ) : (
+                    <p style={{ fontSize: "17px", textAlign: "center" }}>랭킹이 없습니다.</p>
+                )}
+            </div>
+        </div>
                         <div className='hang'>
                             
                                 <img src={joyconImg} alt="trash" onClick={() =>   navigate(`/game/${localStorage.getItem("id")}`)} style={{
