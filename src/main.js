@@ -646,13 +646,13 @@ function Main() {
                         </div>
                         <div style={{ height: "1vh" }}></div>
                         <div className='main-transparent-box' style={{ height: "25vh" }}>
-            <p style={{ paddingTop: "10px", fontSize: "20px" }}>산성비 랭킹</p>
-            <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
-            <div style={{ height: "83%", overflowY: "auto" }}>
-                {rankingList.length > 0 ? (
-                    rankingList.map((rank, index) => (
+                        <p style={{ paddingTop: "10px", fontSize: "20px" }}>산성비 랭킹</p>
+                       <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
+                       <div style={{ height: "83%", overflowY: "auto" }}>
+                        {rankingList.length > 0 ? (
+                        rankingList.map((rank, index) => (
                         <div key={index} style={{ margin: "10px 0" }}>
-                            <p style={{ fontSize: "15px" }}>{rank.fullname} - {rank.score }P</p>
+                            <p style={{ fontSize: "15.5px" }}>{rank.fullname} - {rank.score }P</p>
                         </div>
                     ))
                 ) : (
