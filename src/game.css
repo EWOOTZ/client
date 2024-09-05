@@ -20,10 +20,29 @@
     text-align: center;
     width: 100%;
     max-width: 600px;
+    margin: auto;
+
+    position: relative;
 
     
+    
+}
+.lives-display {
+    display: flex;
+    align-items: center; 
 }
 
+
+.column-containers {
+    position: absolute;
+    top: 0; 
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px; 
+    z-index: 1000; 
+}
 .popup button {
     margin: 10px;
     background-color: white; /* 반투명 흰색 배경 */
@@ -41,8 +60,8 @@
     justify-content: center;
     font-family: "HJ";
     padding-top: 10px;
-    font-size: 13px;
-    padding-left: 40px;
+    font-size: 17px;
+    padding-left: 20px;
 }
 
 .game {

@@ -651,6 +651,7 @@ function Main() {
                         </div>
                         <div style={{ height: "1vh" }}></div>
                         <div className='main-transparent-box' style={{ height: "25vh" }}>
+
                             <p style={{ paddingTop: "10px", fontSize: "20px" }}>산성비 랭킹</p>
                             <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
                             <div style={{ height: "83%", overflowY: "auto" }}>
@@ -664,6 +665,7 @@ function Main() {
                                     <p style={{ fontSize: "17px", textAlign: "center" }}>랭킹이 없습니다.</p>
                                 )}
                             </div>
+
                         </div>
                         <div className='hang'>
 
