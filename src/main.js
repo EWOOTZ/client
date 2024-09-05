@@ -17,6 +17,8 @@ import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import React, { useRef } from 'react';
 import YouTube from 'react-youtube';
+import joyconImg from './assets/joycon.png';
+
 
 function formatDate() {
     const today = new Date();
@@ -31,6 +33,8 @@ function formatDate() {
 function Main() {
     const videoStyle = {
         margin: '10px',
+        marginRight: '35px',
+
     };
 
     const opts = {
@@ -265,7 +269,26 @@ function Main() {
                 text: "이미 구독을 한 유저 입니다",
             });
         });
+
     }
+
+
+        const fetchGame = () => {
+        axios.get('/score/', {
+            headers: {
+                'accept': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem("access_token")}`
+            }
+        })
+        .then((response) => {
+            if (response.status === 200) { 
+                console.log('game 서버 응답:', response.data);
+            }
+        })
+        .catch((error) => {
+            console.error('game 데이터를 가져오는 중 오류 발생:', error);
+        });
+    };
 
     const [followee, setFollowee] = useState([]);
     const [isExiting, setIsExiting] = useState(false);
@@ -439,6 +462,7 @@ function Main() {
         getVisit();
         getFollower();
         MusicFetch();
+        fetchGame();
     }, []);
 
 
@@ -484,7 +508,7 @@ function Main() {
                             <div className='green-box'>
                                 <div className='hang' style={{ paddingRight: "2vh" }}>
                                     <img src={pictureCD} width='40vw' height='20vh' />
-                                    <p style={{ fontSize: "18px" }}>{`${singer} - ${musicTitle}`}</p>                                </div>
+                                    <p style={{ fontSize: "15px" }}>{`${singer} - ${musicTitle}`}</p>                                </div>
                                 <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
                                 <div className='hang'>
                                     <img src={picturePlay} width='17vw' height='23vh' />
@@ -596,7 +620,7 @@ function Main() {
                     </div>
                     <div>
                         <div style={{ height: "5vh" }}></div>
-                        <div className='main-transparent-box' style={{ height: "37vh" }}>
+                        <div className='main-transparent-box' style={{ height: "35vh" }}>
                             <div className='hang' style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                                 <p style={{ paddingTop: "10px", fontSize: "20px" }}>내 이웃들</p>
                                 <div style={{ width: "0.5vw" }}></div>
@@ -618,14 +642,32 @@ function Main() {
                             </div>
                         </div>
                         <div style={{ height: "1vh" }}></div>
-                        <div className='main-transparent-box' style={{ height: "28vh" }}>
+                        <div className='main-transparent-box' style={{ height: "25vh" }}>
                             <p style={{ paddingTop: "10px", fontSize: "20px" }}>산성비 랭킹</p>
                             <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
                             <div style={{ height: "83%" }}></div>
                         </div>
-                        <div className='trash-image-container'>
-                            <img src={picturetrash} alt="trash" onClick={handleTrashClick} style={{ cursor: 'pointer', width: "4.5vw", height: "8vh" }} />
-                        </div>
+                        <div className='hang'>
+                            
+                                <img src={joyconImg} alt="trash" onClick={() =>   navigate(`/game/${localStorage.getItem("id")}`)} style={{
+                                    cursor: 'pointer',
+                                    width: "8vw",
+                                    height: "18vh",
+                                    marginLeft: "-30px",
+                                    marginRight: "-25px",
+                                    marginBottom:"-28px"
+                                }} />
+                            
+
+                            <div style={{ width: "3vh" }}></div>
+                            
+                                <img src={picturetrash} alt="trash" onClick={handleTrashClick} style={{ 
+                                    cursor: 'pointer', 
+                                    width: "4.5vw", 
+                                    height: "8vh",
+                                    }} />
+                           
+                            </div>
                     </div>
                 </div>
                 <div className={`shadow ${showPopup ? 'active' : ''}`} style={{ display: showPopup ? 'block' : 'none' }}></div>

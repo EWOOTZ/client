@@ -324,8 +324,7 @@
 
 .youtube-video {
   width: 100%;
-  max-width: 640px;
-  /* 비디오 크기 설정 */
+  max-width: 600px;
 }
 
 /*배경&화이트라인*/
