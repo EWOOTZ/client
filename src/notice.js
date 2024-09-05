@@ -8,6 +8,7 @@ import notice_search from './assets/notice_search.png';
 import notice_love from './assets/notice_love.png';
 import picturebasic from './images/basicProfile.png';
 import picturePin from './images/pin.png';
+import pictureEE from './images/KakaoTalk_20240905_151841191.jpg';
 import { useEffect } from 'react';
 import axios from 'axios';
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
@@ -211,10 +212,10 @@ function DailyContent({ selectedOption, handleChange }) {
       <div className='yellow-box-top'>
         <div className='white-box-top'>
           <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
-            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>전체</p>
-            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>500000000 개의 글</p>
-            <div style={{ width: "45vw" }}></div>
-            <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
+            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>일상</p>
+            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>{`${dailyboardView.length} 개의 글`}</p>
+            <div style={{ width: "50vw" }}></div>
+            <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ display: "flex", justifyContent: "flex-end", fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
               <option value="latest">최신순</option>
               <option value="oldest">오래된 순</option>
               <option value="popular">인기순</option>
@@ -229,6 +230,7 @@ function DailyContent({ selectedOption, handleChange }) {
             <p style={{ width: "43vw", height: "3vh", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>글제목</p>
             <hr style={{ border: "0.2px solid black", width: "100%" }} />
             <div>
+
             <div>
             {dailyboardView.map((dailyboard) => (
           <div key={dailyboard.id} style={{ cursor: 'pointer' }}>
@@ -270,6 +272,7 @@ function DailyContent({ selectedOption, handleChange }) {
     </div>
 </div>
            </div>
+
             </div>
           </div>
         )}
@@ -285,7 +288,7 @@ function DailyContent({ selectedOption, handleChange }) {
             <div>
               {dailyboardView.map((dailyboard) => (
                 <div key={dailyboard.id}>
-                  <p style={{display:"flex",justifyContent:"center"}}>{dailyboard.username}</p>
+                  <p style={{ display: "flex", justifyContent: "center" }}>{dailyboard.username}</p>
                   <hr style={{ border: "0.2px solid gray", width: "100%" }} />
                 </div>
               ))}
@@ -297,7 +300,7 @@ function DailyContent({ selectedOption, handleChange }) {
             <div>
               {dailyboardView.map((dailyboard) => (
                 <div key={dailyboard.id}>
-                  <p style={{display:"flex",justifyContent:"center"}}>{dailyboard.date}</p>
+                  <p style={{ display: "flex", justifyContent: "center" }}>{dailyboard.date}</p>
                   <hr style={{ border: "0.2px solid gray", width: "100%" }} />
                 </div>
               ))}
@@ -310,27 +313,39 @@ function DailyContent({ selectedOption, handleChange }) {
 };
 
 function FoodAllContent({ selectedOption, handleChange }) {
-  const [boardView, setboardview] = useState([]);
+  const [foodAllboardView, setFoodallboardview] = useState([]);
+  const [oneboardView, setoneboardview] = useState([]);
   const [profile_image, setProfileImg] = useState("");
+  const [itemId, setItemId] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
 
+  const getpostBoard = async () => {
+    try {
+      const response = await axios.get(`/board/${itemId}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.status === 200) {
+        setoneboardview(response.data);
+        console.log("맛집 게시판 가져오기 성공", response.data);
+      }
+    } catch (error) {
+      console.error("맛집 게시판 가져오기 실패", error.response);
+      console.error(error);
+    }
+  };
 
   const handleBoardClick = () => {
+    getpostBoard();
     setShowPopup(true);
   };
   const handleBoardcloseClick = () => {
     setShowPopup(false);
     setIsExiting(false);
   };
-  const gridItems = [
-    { id: 1, profileImage: picturebasic, description: "전체 맛집인듯 아닌듯 몇번째 맛집일까요", write: "애햄이1" },
-    { id: 2, profileImage: picturebasic, description: "두 번째 맛집", write: "애햄이2" },
-    { id: 3, profileImage: picturebasic, description: "세 번째 맛집", write: "애햄이3" },
-    { id: 4, profileImage: picturebasic, description: "네 번째 맛집", write: "애햄이4" },
-    { id: 5, profileImage: picturebasic, description: "다섯 번째 맛집", write: "애햄이5" },
-    { id: 6, profileImage: picturebasic, description: "여섯 번째 맛집", write: "애햄이6" },
-  ];
 
   const getBoard = async () => {
     try {
@@ -341,7 +356,7 @@ function FoodAllContent({ selectedOption, handleChange }) {
         }
       });
       if (response.status === 200) {
-        setboardview(response.data);
+        setFoodallboardview(response.data);
         console.log("맛집 게시판 가져오기 성공", response.data);
       }
     } catch (error) {
@@ -359,9 +374,9 @@ function FoodAllContent({ selectedOption, handleChange }) {
       <div className='yellow-box-top'>
         <div className='white-box-top'>
           <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
-            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>전체</p>
-            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>500000000 개의 글</p>
-            <div style={{ width: "45vw" }}></div>
+            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>맛집</p>
+            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>{`${foodAllboardView.length} 개의 글`}</p>
+            <div style={{ width: "50vw" }}></div>
             <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
               <option value="latest">최신순</option>
               <option value="oldest">오래된 순</option>
@@ -372,8 +387,8 @@ function FoodAllContent({ selectedOption, handleChange }) {
       </div>
       <div style={{ height: "2vh" }}></div>
       <div className='yellow-box-bottom'>
-        <div className='white-box-bottom' style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1vh', padding: '2vh', width: "100%" }}>
-          {gridItems.map(item => (
+        <div className='white-box-bottom' style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1vh', padding: '2vh', width: "100%", alignItems: "flex-start" }}>
+          {foodAllboardView.map(item => (
             <div className='hang' key={item.id} style={{ border: '1.5px solid #ddd', borderRadius: '5px', padding: '1.5vh', textAlign: 'center', height: "20vh", alignItems: "center", justifyContent: "flex-start" }}>
               <button style={{
                 display: 'flex',
@@ -386,9 +401,12 @@ function FoodAllContent({ selectedOption, handleChange }) {
                 height: '12vh',
                 outline: "none",
                 fontFamily: "HJ"
-              }} onClick={() => { console.log(`클릭${item.id}`) }}>
-                <img src={item.profileImage} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%', objectFit: "cover" }} />
-                <p style={{ fontSize: "15px", color: "#8A8A8A", display: "flex", width: "13vh", alignItems: "center", justifyContent: "center" }}>{item.write}</p>
+              }} onClick={() => {
+                console.log(`클릭${item.id}`);
+                setItemId(item.id);
+              }}>
+                <img src={picturebasic} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%', objectFit: "cover" }} />
+                <p style={{ fontSize: "15px", color: "#8A8A8A", display: "flex", width: "13vh", alignItems: "center", justifyContent: "center" }}>{item.username}</p>
               </button>
               <div style={{ width: "3vw" }}></div>
               <button onClick={handleBoardClick}
@@ -404,9 +422,9 @@ function FoodAllContent({ selectedOption, handleChange }) {
                   background: 'transparent',
                   fontFamily: "HJ"
                 }}>
-                <p className='hide' style={{ fontSize: "23px", WebkitLineClamp: 1, textAlign: "start" }}>{item.description}</p>
+                <p className='hide' style={{ fontSize: "23px", WebkitLineClamp: 1, textAlign: "start" }}>{item.title}</p>
                 <div style={{ height: "1vh" }}></div>
-                <p className='hide' style={{ fontSize: "16px", color: "#8A8A8A", textAlign: "start" }}>맛집에 대한 설명ㅇㅇㅇㅇㅇㅇㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ</p>
+                <p className='hide' style={{ fontSize: "16px", color: "#8A8A8A", textAlign: "start" }}>{item.contents}</p>
               </button>
             </div>
           ))}
@@ -414,13 +432,20 @@ function FoodAllContent({ selectedOption, handleChange }) {
         <div className={`shadow ${showPopup ? 'active' : ''}`} style={{ display: showPopup ? 'block' : 'none' }}></div>
         {showPopup && (
           <div className={`letter-popup ${isExiting ? 'exiting' : ''}`}>
-            <div className="backg" style={{ width: "70vw", height: "70vh", borderRadius: "10px" }}>
-              <div className="yellow-box" style={{ width: "68vw", height: "66vh", borderRadius: "10px" }}>
-                <img src={gridItems[0].profileImage} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%' }} />
-                <p style={{ fontSize: "23px", textAlign: "start" }}>{gridItems[0].description}</p>
-                <p style={{ fontSize: "23px", textAlign: "start" }}>{gridItems[0].description}</p>
-                <button className='trash-button' onClick={handleBoardcloseClick} >버리기!</button>
+            <div className="backg" style={{ width: "70vw", height: "70vh", borderRadius: "10px", padding: "2vh" }}>
+              <div style={{ width: "100%", height: "100%", backgroundColor: "#FFF8EF", borderRadius: "10px", overflowY: "auto", padding: "2vh", }}>
+                <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+                  <img src={pictureEE} alt="Profile" style={{ width: '40vh', height: '40vh', marginBottom: "5vh", paddingTop: "2vh" }} />
+                </div>
+                <div style={{ flexDirection: "column", width: "100%", display: "flex", alignItems:"center",justifyContent: "center" }}>
+                  <p style={{ fontSize: "40px", textAlign: "start", marginBottom: "1vh" }}>{oneboardView.title}</p>
+                  <p style={{ fontSize: "17px", textAlign: "start", marginBottom: "5vh" }}>{`글쓰니 : ${oneboardView.username}`}</p>
+                  <p style={{ fontSize: "25px", textAlign: "start", marginBottom: "5vh" }}>{oneboardView.contents}</p>
+                </div>
+                <div style={{width: "100%", display: "flex", alignItems:"flex-end",justifyContent: "flex-end" }}>
+                <button style={{ backgroundColor: "transparent", fontFamily: "HJ", fontSize: "22px", border: "none" }} onClick={handleBoardcloseClick}>닫기!</button>
               </div>
+            </div>
             </div>
           </div>
         )}
@@ -518,7 +543,6 @@ function FoodSeoulContent({ selectedOption, handleChange }) {
               </button>
             </div>
           ))}
-
         </div>
       </div>
     </div>

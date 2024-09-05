@@ -213,8 +213,8 @@ function Write() {
       </div>
       {isPopupVisible && (
         <div className='letter-popup' onClick={handlePopupClose}>
-          <div className='letter-popup-content' onClick={(e) => e.stopPropagation()} style={{ padding: '50px', width: '30vw', height: '30vh' }}>
-            <p className='trash-popup-message' style={{ paddingTop: '25px', textAlign: "center", alignItems: "center", justifyContent: "center", display: "flex", width: "25vw" }}>업로드 하시겠습니까?</p>
+          <div className='letter-popup-content' onClick={(e) => e.stopPropagation()} style={{padding:"3vh",width: '35vw', height: '30vh' }}>
+            <p className='trash-popup-message' style={{ paddingTop: '30px', textAlign: "center", alignItems: "center", justifyContent: "center", display: "flex", width: "100%" }}>업로드 하시겠습니까?</p>
             <div style={{ height: '5vh' }}></div>
             <div className='letter-popup-buttons'>
               <button className='letter-popup-button confirm' onClick={handleSubmit}>예</button>
