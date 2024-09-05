@@ -278,16 +278,16 @@ function Main() {
                 'accept': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`
             }
-        })            .then(response => {
-                if (response.status === 200) {
+        }).then(response => {
+            if (response.status === 200) {
 
-                    console.log('모든 game score 서버 응답:', response.data);
+                console.log('모든 game score 서버 응답:', response.data);
 
-                    const sortedList = response.data.sort((a, b) => b.score - a.score);
-                    setRankingList(sortedList);
-                    console.log("랭킹",sortedList);
-                }
-            })
+                const sortedList = response.data.sort((a, b) => b.score - a.score);
+                setRankingList(sortedList);
+                console.log("랭킹", sortedList);
+            }
+        })
             .catch(error => {
                 console.error('산성비 랭킹을 가져오는 중 오류 발생:', error);
             });
@@ -322,6 +322,7 @@ function Main() {
     const [singer, setSinger] = useState('');
     const [musicTitle, setMusicTitle] = useState('');
     const [videoId, setVideoId] = useState(null);
+
 
     async function getSearch() {
         axios.get('/search/?', {
@@ -497,7 +498,7 @@ function Main() {
                                 <img src={profile_image} alt="Profile" style={{ width: '100px', height: '100px' }} />
                             ) : (
                                 <img src={picturebasic} alt="Default" style={{ width: '100px', height: '100px' }} />
-                            )}                            
+                            )}
                             <div style={{ height: "2vh" }}></div>
                             <p style={{ paddingLeft: "1vh", fontSize: "20px" }}>
                                 {fullname}
@@ -521,8 +522,12 @@ function Main() {
                                 </div>
                             </div>
                             {
-                                <div className="youtube-video" style={{marginTop:"1vh",display:'flex', alignItems:"center"}}>
-                                    <YouTube videoId={videoId} opts={opts} />
+                                <div className="youtube-video" style={{ marginTop: "1vh", display: 'flex', alignItems: "center" }}>
+                                    {videoId ? (
+                                        <YouTube videoId={videoId} opts={opts} />
+                                    ) : (
+                                        <p>프로필 뮤직이 없습니다.</p> // 비디오 ID가 없을 때 표시할 내용 (선택 사항)
+                                    )}
                                 </div>
                             }
                             <div className='hang' style={{ height: "5vh", display: "flex", alignItems: "flex-end", justifyContent: "flex-end" }}>
@@ -646,41 +651,41 @@ function Main() {
                         </div>
                         <div style={{ height: "1vh" }}></div>
                         <div className='main-transparent-box' style={{ height: "25vh" }}>
-            <p style={{ paddingTop: "10px", fontSize: "20px" }}>산성비 랭킹</p>
-            <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
-            <div style={{ height: "83%", overflowY: "auto" }}>
-                {rankingList.length > 0 ? (
-                    rankingList.map((rank, index) => (
-                        <div key={index} style={{ margin: "10px 0" }}>
-                            <p style={{ fontSize: "15px" }}>{rank.fullname} - {rank.score }P</p>
+                            <p style={{ paddingTop: "10px", fontSize: "20px" }}>산성비 랭킹</p>
+                            <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
+                            <div style={{ height: "83%", overflowY: "auto" }}>
+                                {rankingList.length > 0 ? (
+                                    rankingList.map((rank, index) => (
+                                        <div key={index} style={{ margin: "10px 0" }}>
+                                            <p style={{ fontSize: "15px" }}>{rank.fullname} - {rank.score}P</p>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p style={{ fontSize: "17px", textAlign: "center" }}>랭킹이 없습니다.</p>
+                                )}
+                            </div>
                         </div>
-                    ))
-                ) : (
-                    <p style={{ fontSize: "17px", textAlign: "center" }}>랭킹이 없습니다.</p>
-                )}
-            </div>
-        </div>
                         <div className='hang'>
-                            
-                                <img src={joyconImg} alt="trash" onClick={() =>   navigate(`/game/${localStorage.getItem("id")}`)} style={{
-                                    cursor: 'pointer',
-                                    width: "8vw",
-                                    height: "18vh",
-                                    marginLeft: "-30px",
-                                    marginRight: "-25px",
-                                    marginBottom:"-28px"
-                                }} />
-                            
+
+                            <img src={joyconImg} alt="trash" onClick={() => navigate(`/game/${localStorage.getItem("id")}`)} style={{
+                                cursor: 'pointer',
+                                width: "8vw",
+                                height: "18vh",
+                                marginLeft: "-30px",
+                                marginRight: "-25px",
+                                marginBottom: "-28px"
+                            }} />
+
 
                             <div style={{ width: "3vh" }}></div>
-                            
-                                <img src={picturetrash} alt="trash" onClick={handleTrashClick} style={{ 
-                                    cursor: 'pointer', 
-                                    width: "4.5vw", 
-                                    height: "8vh",
-                                    }} />
-                           
-                            </div>
+
+                            <img src={picturetrash} alt="trash" onClick={handleTrashClick} style={{
+                                cursor: 'pointer',
+                                width: "4.5vw",
+                                height: "8vh",
+                            }} />
+
+                        </div>
                     </div>
                 </div>
                 <div className={`shadow ${showPopup ? 'active' : ''}`} style={{ display: showPopup ? 'block' : 'none' }}></div>

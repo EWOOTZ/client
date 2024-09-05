@@ -575,12 +575,11 @@
 
 .popup-title {
   font-size: 25px;
-  font-weight: bold;
   padding-top: 1vh;
   padding-bottom: 1.3vh;
-  top: 0;
   background-color: #FFF8EF;
-  z-index: 102;
+  flex-direction: row;
+  display: flex;
 }
 
 .popup-body {
@@ -601,10 +600,10 @@
   position: absolute;
   top: 1vh;
   right: 1.1vh;
-  background: transparent;
   border: none;
   font-size: 24px;
   color: #888;
+  background-color: transparent;
 }
 
 /*letter.css*/
