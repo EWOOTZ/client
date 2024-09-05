@@ -92,7 +92,7 @@ const Home = () => {
           <div className='hang'>
             <p style={{ color: "black", fontSize: '20px' }}>PW</p>
             <div style={{ width: '1vw' }}></div>
-            <input className='input-name' type='text' placeholder='패스워드를 입력하세요...' value={pw} onChange={saveUserPw} />
+            <input className='input-name' type='password' placeholder='패스워드를 입력하세요...' value={pw} onChange={saveUserPw} />
           </div>
           <div style={{ height: '10vh' }}></div>
           <button className="login-gray" style={{ fontSize: "30px" }} onClick={() => Login()}>로그인!</button>

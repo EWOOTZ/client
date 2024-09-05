@@ -24,6 +24,9 @@ function Mypage() {
     const [searchClicked, setSearchClicked] = useState(false);
     const [isSearchEnabled, setIsSearchEnabled] = useState(false);
 
+    const myUrl = `localhost:3000/main/${localStorage.getItem("id")}`;
+
+
     const opts = {
         width: "250",
         height: "150",
@@ -223,6 +226,19 @@ function Mypage() {
         fetchData();
     };
 
+    const handleCopyClipBoard = async (text) => {
+        try {
+            await navigator.clipboard.writeText(text);
+            Swal.fire({
+                icon: "success",
+                title: "복사 완료",
+                text: "URL이 복사되었습니다!",
+            });
+        }         catch (err) {
+            console.log(err);
+        }
+    };
+
     return (
         <div className='backg'>
             <div className='white-line'>
@@ -272,9 +288,9 @@ function Mypage() {
                     <div style={{ height: '5vh' }}></div>
                     <div className='hang'>
                         <p style={{ color: "black", fontSize: '2.7vh', width: "22vh" }}>내 미니홈피 URL</p>
-                        <input className='input-2' type='text' placeholder={`localhost:3000/main/${localStorage.getItem("id")}`} />
+                        <input className='input-2' type='text' placeholder={myUrl} />
                         <div style={{ width: "0.5vw" }}></div>
-                        <button className="login-gray" style={{ fontSize: "2vh" }} onClick={() => console.log(localStorage.getItem("access_token"))}>복사</button>
+                        <button className="login-gray" style={{ fontSize: "2vh" }} onClick={() => handleCopyClipBoard(myUrl)}>복사</button>
                     </div>
                 </div>
                 <div style={{ height: "1vh" }}></div>
