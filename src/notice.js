@@ -12,6 +12,7 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import Write from './write';
+import picturesky from './images/sky4.png';
 
 function formatDate() {
   const today = new Date();
@@ -26,6 +27,7 @@ function Notice() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedOption, setSelectedOption] = useState('latest'); // Notice 컴포넌트 내부로 이동
 
+  
   const getMypage = async () => {
     try {
       const response = await axios.get(
@@ -168,6 +170,19 @@ function Notice() {
 
 function DailyContent({ selectedOption, handleChange }) {
   const [dailyboardView, setdailyboardview] = useState([]);
+  const [showPopup, setShowPopup] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [isExiting, setIsExiting] = useState(false);
+
+  const handleButtonClick = (dailyboard) => {
+    setSelectedItem(dailyboard);
+    setShowPopup(true);
+  };
+
+  const handleBoardcloseClick = () => {
+    setShowPopup(false);
+    setIsExiting(false);
+  };
 
   const getDailyBoard = async () => {
     try {
@@ -189,6 +204,7 @@ function DailyContent({ selectedOption, handleChange }) {
   useEffect(() => {
     getDailyBoard();
   }, []);
+  
 
   return (
     <div className='column-container'>
@@ -213,15 +229,52 @@ function DailyContent({ selectedOption, handleChange }) {
             <p style={{ width: "43vw", height: "3vh", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>글제목</p>
             <hr style={{ border: "0.2px solid black", width: "100%" }} />
             <div>
-              <div>
-                {dailyboardView.map((dailyboard) => (
-                  <div key={dailyboard.id}>
-                    <p style={{paddingLeft:"1vw"}}>{dailyboard.title}</p>
-                    <hr style={{ border: "0.2px solid gray", width: "100%" }} />
-                  </div>
-                ))}
-              </div>
+            <div>
+            {dailyboardView.map((dailyboard) => (
+          <div key={dailyboard.id} style={{ cursor: 'pointer' }}>
+            <p
+              style={{ paddingLeft: "1vw", margin: 0, cursor: 'pointer' }}
+              onClick={() => handleButtonClick(dailyboard)}
+            >
+              {dailyboard.title}
+            </p>
+            <hr style={{ border: "0.2px solid gray", width: "100%" }} />
+          </div>
+        ))}
+        <div className={`shadow ${showPopup ? 'active' : ''}`} style={{ display: showPopup ? 'block' : 'none' }}></div>
+        {showPopup && (
+          <div className={`letter-popup ${isExiting ? 'exiting' : ''}`}>
+            <div className="backg" style={{ width: "70vw", height: "72vh", borderRadius: "10px" }}>
+           <div className='column-container'>
+           <div className="yellow-box" style={{ width: "65vw", height: "8vh", borderRadius: "10px"}}>
+           <div className="hang" style={{marginLeft:'10px', fontSize:'19px',display: "flex", justifyContent: "start", alignItems: "start", width: "100%", paddingLeft:"30px",paddingBottom:"15px" }}>
+           <p>제목: {selectedItem.title}</p>
+           <button onClick={handleBoardcloseClick} className="close-button" style={{paddingLeft:'12px'}}>X</button>
+
+          </div>
             </div>
+            <div style={{ height: "1vh" }}></div>
+            <div className="yellow-box" style={{ width: "65vw", height: "57vh", borderRadius: "10px", overflow: "hidden",  overflowY: "auto"  }}>
+  <div>
+    <img src={picturesky} style={{ width: "30vw", height: "30vh" }} />
+    <div style={{ height: "1vh" }}></div>
+    </div>
+    <div>
+    <p style={{ marginLeft:'10px', fontSize:'22px', display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
+      {selectedItem.username}
+      <img src={notice_love} alt="notice_love" />
+    </p>
+  </div>
+  <div style={{ padding:'10px',fontSize:'17px', display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
+    <p>      {selectedItem.contents} </p>
+    </div>
+</div>
+           </div>
+            </div>
+          </div>
+        )}
+      </div>
+      </div>
           </div>
           <div style={{ height: "60vh", width: "15vw" }}>
             <div className="hang" style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
