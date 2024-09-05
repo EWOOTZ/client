@@ -516,7 +516,7 @@ function Main() {
                                 </div>
                             </div>
                             {
-                                <div className="youtube-video" style={videoStyle}>
+                                <div className="youtube-video" style={{marginTop:"1vh",display:'flex', alignItems:"center"}}>
                                     <YouTube videoId={videoId} opts={opts} />
                                 </div>
                             }
@@ -631,10 +631,8 @@ function Main() {
                             <div style={{ height: "78%" }}>
                                 <div>
                                     {followee.map((myfollowee) => (
-
                                         <div key={myfollowee.id}>
-                                            <p style={{ fontSize: "17px" }}>{myfollowee.followee}</p>
-
+                                            <p style={{ fontSize: "17px" }}>{myfollowee.fullname}</p>
                                             <div style={{ height: "1vh" }}></div>
                                         </div>
                                     ))}
