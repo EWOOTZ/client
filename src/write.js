@@ -24,9 +24,9 @@ function Letter() {
   const year = today.getFullYear();
   const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
   const dayOfWeek = daysOfWeek[today.getDay()]; // 요일
-
-
   const date = `${year % 100}.${month}.${day}(${dayOfWeek})`;
+
+  const formData = new FormData();
 
 
   const navigate = useNavigate();
@@ -46,6 +46,7 @@ function Letter() {
     if (file) {
       setImage(URL.createObjectURL(file));
       setImageText(file.name);
+      formData.append('file', file);
     }
   };
 
@@ -83,6 +84,25 @@ function Letter() {
             title: "업로드 완료",
             text: "게시글이 업로드 되었습니다!",
           });
+
+          const post_id = response.data['id'];
+          
+          axios({
+            method: 'POST',
+            url: `/upload/posting/${post_id}`,
+            data: formData,
+            headers: {
+              'accept': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+              "Content-Type": "multipart/form-data",
+            }
+          })
+            .then((response) => {
+              console.log(axios.AxiosHeaders);
+              console.log(response.config);
+              console.log(response.data);
+            }
+            );
           navigate('/notice/:id');
         }
       })
