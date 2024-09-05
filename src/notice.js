@@ -9,6 +9,7 @@ import notice_love from './assets/notice_love.png';
 import picturebasic from './images/basicProfile.png';
 import picturePin from './images/pin.png';
 import { useEffect } from 'react';
+import axios from 'axios';
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import Write from './write';
 
@@ -59,40 +60,6 @@ function Notice() {
     }
   };
 
-  function sendBoard() {
-    axios.post(
-      '/board/',
-      {
-        "tag": "",
-        "title": "",
-        "contents": "",
-        "date": formatDate(),
-        "link": "",
-      },
-      {
-        'headers': {
-          'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
-          'Content-Type': 'application/json'
-        }
-      }
-    ).then((response) => {
-      console.log(`follower : ${localStorage.getItem("username")}`);
-      console.log(`follwee : ${selectedUsername}`);
-      console.log(response.status);
-      if (response.status === 201) {
-        Swal.fire({
-          icon: "success",
-          text: "구독 성공!",
-        });
-      }
-    }).catch((error) => {
-      console.log("팔로우 보내기 실패", error.response);
-      Swal.fire({
-        icon: "warning",
-        text: "이미 구독을 한 유저 입니다",
-      });
-    });
-  }
 
   useEffect(() => {
     getMypage();
@@ -199,70 +166,95 @@ function Notice() {
   );
 }
 
-const DailyContent = ({ selectedOption, handleChange }) => (
-  <div className='column-container'>
-    <div className='yellow-box-top'>
-      <div className='white-box-top'>
-        <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
-          <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>전체</p>
-          <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>500000000 개의 글</p>
-          <div style={{ width: "45vw" }}></div>
-          <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
-            <option value="latest">최신순</option>
-            <option value="oldest">오래된 순</option>
-            <option value="popular">인기순</option>
-          </select>
-        </div>
-      </div>
-    </div>
-    <div style={{ height: "2vh" }}></div>
-    <div className='yellow-box-bottom'>
-      <div className='white-box-bottom'>
-        <div style={{ height: "60vh", width: "42vw", paddingLeft: "3px" }}>
-          <p style={{ width: "43vw", height: "3vh", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>글제목</p>
-          <hr style={{ border: "0.2px solid black", width: "100%" }} />
-          <div>
-            <div>
-              <p>권해진 또오오옹ㅇ꺠애애앵ㅋㅋ!!</p>
-              <hr style={{ border: "0.2px solid gray", width: "100%" }} />
-            </div>
-            <div>
-              <p>댓걸~이 되는 방법 10가지!!</p>
-              <hr style={{ border: "0.2px solid gray", width: "100%" }} />
-            </div>
-          </div>
-        </div>
-        <div style={{ height: "60vh", width: "15vw" }}>
-          <div className="hang" style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
-            <p style={{ height: "2.95vh", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>글쓰니</p>
-            <img src={notice_love} alt="notice_love" />
-          </div>
-          <hr style={{ border: "0.2px solid black", width: "100%" }} />
-          <div>
-            <p style={{ width: "15vw", display: "flex", alignItems: "center", justifyContent: "center" }}>수진이짱</p>
-            <hr style={{ border: "0.2px solid gray", width: "100%" }} />
-          </div>
-          <p style={{ width: "15vw", display: "flex", alignItems: "center", justifyContent: "center" }}>이예원</p>
-          <div >
-            <hr style={{ border: "0.2px solid gray", width: "100%" }} />
-          </div>
-        </div>
-        <div style={{ height: "60vh", width: "10vw" }}>
-          <p style={{ height: "3vh", width: "10vw", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>작성일</p>
-          <hr style={{ border: "0.2px solid black", width: "100%" }} />
-          <div>
-            <p style={{ width: "10vw", display: "flex", alignItems: "center", justifyContent: "center" }}>2087-04-28</p>
-            <hr style={{ border: "0.2px solid gray", width: "100%" }} />
-          </div>
-          <div>
-            <p style={{ width: "10vw", display: "flex", alignItems: "center", justifyContent: "center" }}>2002-03-22</p>
-            <hr style={{ border: "0.2px solid gray", width: "100%" }} />
+function DailyContent({ selectedOption, handleChange }) {
+  const [dailyboardView, setdailyboardview] = useState([]);
+
+  const getDailyBoard = async () => {
+    try {
+      const response = await axios.get('/board/category/%EC%9D%BC%EC%83%81', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.status === 200) {
+        setdailyboardview(response.data);
+        console.log("일상 게시판 가져오기 성공", response.data);
+      }
+    } catch (error) {
+      console.error("일상 게시판 가져오기 실패", error.response);
+    }
+  };
+
+  useEffect(() => {
+    getDailyBoard();
+  }, []);
+
+  return (
+    <div className='column-container'>
+      <div className='yellow-box-top'>
+        <div className='white-box-top'>
+          <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
+            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>전체</p>
+            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>500000000 개의 글</p>
+            <div style={{ width: "45vw" }}></div>
+            <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
+              <option value="latest">최신순</option>
+              <option value="oldest">오래된 순</option>
+              <option value="popular">인기순</option>
+            </select>
           </div>
         </div>
       </div>
+      <div style={{ height: "2vh" }}></div>
+      <div className='yellow-box-bottom'>
+        <div className='white-box-bottom'>
+          <div style={{ height: "60vh", width: "42vw", paddingLeft: "3px" }}>
+            <p style={{ width: "43vw", height: "3vh", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>글제목</p>
+            <hr style={{ border: "0.2px solid black", width: "100%" }} />
+            <div>
+              <div>
+                {dailyboardView.map((dailyboard) => (
+                  <div key={dailyboard.id}>
+                    <p style={{paddingLeft:"1vw"}}>{dailyboard.title}</p>
+                    <hr style={{ border: "0.2px solid gray", width: "100%" }} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div style={{ height: "60vh", width: "15vw" }}>
+            <div className="hang" style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
+              <p style={{ height: "2.95vh", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>글쓰니</p>
+              <img src={notice_love} alt="notice_love" />
+            </div>
+            <hr style={{ border: "0.2px solid black", width: "100%" }} />
+            <div>
+              {dailyboardView.map((dailyboard) => (
+                <div key={dailyboard.id}>
+                  <p style={{display:"flex",justifyContent:"center"}}>{dailyboard.username}</p>
+                  <hr style={{ border: "0.2px solid gray", width: "100%" }} />
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ height: "60vh", width: "10vw" }}>
+            <p style={{ height: "3vh", width: "10vw", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>작성일</p>
+            <hr style={{ border: "0.2px solid black", width: "100%" }} />
+            <div>
+              {dailyboardView.map((dailyboard) => (
+                <div key={dailyboard.id}>
+                  <p style={{display:"flex",justifyContent:"center"}}>{dailyboard.date}</p>
+                  <hr style={{ border: "0.2px solid gray", width: "100%" }} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-);
+  )
+};
 
 function FoodAllContent({ selectedOption, handleChange }) {
   const [boardView, setboardview] = useState([]);
@@ -289,7 +281,7 @@ function FoodAllContent({ selectedOption, handleChange }) {
 
   const getBoard = async () => {
     try {
-      const response = await axios.get('/board/', {
+      const response = await axios.get('/board/category/%EB%A7%9B%EC%A7%91', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -297,10 +289,11 @@ function FoodAllContent({ selectedOption, handleChange }) {
       });
       if (response.status === 200) {
         setboardview(response.data);
-        console.log("게시판 가져오기 성공", response.data);
+        console.log("맛집 게시판 가져오기 성공", response.data);
       }
     } catch (error) {
-      console.error("게시판 가져오기 실패", error.response);
+      console.error("맛집 게시판 가져오기 실패", error.response);
+      console.error(error);
     }
   };
 
@@ -370,10 +363,10 @@ function FoodAllContent({ selectedOption, handleChange }) {
           <div className={`letter-popup ${isExiting ? 'exiting' : ''}`}>
             <div className="backg" style={{ width: "70vw", height: "70vh", borderRadius: "10px" }}>
               <div className="yellow-box" style={{ width: "68vw", height: "66vh", borderRadius: "10px" }}>
-              <img src={gridItems[0].profileImage} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%'}} />
-              <p style={{ fontSize: "23px", textAlign: "start" }}>{gridItems[0].description}</p>
-              <p style={{ fontSize: "23px", textAlign: "start" }}>{gridItems[0].description}</p>
-              <button className='trash-button' onClick={handleBoardcloseClick} >버리기!</button>
+                <img src={gridItems[0].profileImage} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%' }} />
+                <p style={{ fontSize: "23px", textAlign: "start" }}>{gridItems[0].description}</p>
+                <p style={{ fontSize: "23px", textAlign: "start" }}>{gridItems[0].description}</p>
+                <button className='trash-button' onClick={handleBoardcloseClick} >버리기!</button>
               </div>
             </div>
           </div>
