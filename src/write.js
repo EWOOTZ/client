@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import React, { useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import './Letter.css';
@@ -9,8 +7,8 @@ import axios from 'axios';
 
 import { useNavigate } from 'react-router-dom';
 
-function Letter() {
-  const [title, setTitle] = useState('')
+function Write() {
+  const [title, setTitle] = useState('');
   const [contents, setContent] = useState('');
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [category, setSelectedCategory] = useState(null);
@@ -28,8 +26,8 @@ function Letter() {
 
   const formData = new FormData();
 
-
   const navigate = useNavigate();
+  
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
     setSelectedLocation(null); // 카테고리 변경 시 위치 초기화
@@ -37,7 +35,7 @@ function Letter() {
 
   const handleLocationClick = (location) => {
     if (category === '맛집') {
-      setSelectedLocation(location);
+      setSelectedLocation(location); // 맛집일 때만 위치 선택 가능
     }
   };
 
@@ -49,7 +47,6 @@ function Letter() {
       formData.append('file', file);
     }
   };
-
 
   const isFormComplete = () => {
     if (!title || !contents || !category || !image) return false;
@@ -98,12 +95,10 @@ function Letter() {
             }
           })
             .then((response) => {
-              console.log(axios.AxiosHeaders);
               console.log(response.config);
               console.log(response.data);
-            }
-            );
-          navigate('/notice/:id');
+            });
+          navigate(`/notice/${post_id}`);
         }
       })
       .catch((error) => {
@@ -114,9 +109,6 @@ function Letter() {
           text: "게시글 업로드에 실패했습니다.",
         });
       });
-
-
-
   };
 
   return (
@@ -155,20 +147,20 @@ function Letter() {
             <p style={{ color: "black", fontSize: '20px' }}>맛집 위치</p>
             <div style={{ width: '1vw' }}></div>
             <div className='hang'>
-              {['서울', '강릉', '대전', '대구', '부산', '제주', '기타'].map((location) => (
+              {['서울', '강릉', '대전', '대구', '부산', '제주', '기타'].map((loc) => (
                 <button
-                  key={location}
+                  key={loc}
                   className='input-title'
                   style={{
                     width: "7vw",
-                    backgroundColor: location === location ? 'lightblue' : 'white',
+                    backgroundColor: loc === location ? 'lightblue' : 'white',
                     cursor: category === '맛집' ? 'pointer' : 'not-allowed',
                     opacity: category === '맛집' ? 1 : 0.5
                   }}
-                  onClick={() => handleLocationClick(location)}
+                  onClick={() => handleLocationClick(loc)}
                   disabled={category !== '맛집'}
                 >
-                  {location}
+                  {loc}
                 </button>
               ))}
             </div>
@@ -198,8 +190,6 @@ function Letter() {
               <div style={{ width: '1vw' }}></div>
               <p style={{ fontSize: "15px", color: "gray" }}>{imageText}</p>
             </div>
-
-
           </div>
           <div style={{ height: '2vh' }}></div>
           <div className='hangs'>
@@ -224,11 +214,8 @@ function Letter() {
       {isPopupVisible && (
         <div className='letter-popup' onClick={handlePopupClose}>
           <div className='letter-popup-content' onClick={(e) => e.stopPropagation()} style={{ padding: '50px', width: '30vw', height: '30vh' }}>
-
-
             <p className='trash-popup-message' style={{ paddingTop: '25px', textAlign: "center", alignItems: "center", justifyContent: "center", display: "flex", width: "25vw" }}>업로드 하시겠습니까?</p>
             <div style={{ height: '5vh' }}></div>
-
             <div className='letter-popup-buttons'>
               <button className='letter-popup-button confirm' onClick={handleSubmit}>예</button>
               <button className='letter-popup-button cancel' onClick={handlePopupClose}>아니요</button>
@@ -239,4 +226,5 @@ function Letter() {
     </div>
   );
 }
-export default Letter;
+
+export default Write;
