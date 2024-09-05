@@ -102,6 +102,17 @@ div {
   padding-bottom: 3vh;
 }
 
+.yellow-box2 {
+  width: 43vw;
+  height: 40vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #FFF8EF;
+  border-radius: 10px;
+  flex-direction: column;
+}
+
 .yellow-box-scroll {
   width: 43vw;
   height: 40vh;
