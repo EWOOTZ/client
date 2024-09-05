@@ -5,7 +5,6 @@ import './App.css';
 import './Letter.css';
 import axios from 'axios';
 
-
 const Game = () => {
     const [wordList, setWordList] = useState([]);
     const [waitWords, setWaitWords] = useState([]);
@@ -16,6 +15,7 @@ const Game = () => {
     const [showHelp, setShowHelp] = useState(true);
     const [gameStarted, setGameStarted] = useState(false);
     const [username, setUsername] = useState('');
+    const [bestScore, setBestScore] = useState(0); // 상태 변수 정의
 
     const gamePanelRef = useRef(null);
     const inputRef = useRef(null);
@@ -26,8 +26,8 @@ const Game = () => {
 
     // 최고 점수와 실패 기록을 localStorage에서 불러오기
     const getBestRecords = () => {
-        const bestScore = localStorage.getItem('bestScore') || 0;
-        return { bestScore: parseInt(bestScore) };
+        const storedBestScore = localStorage.getItem('bestScore') || 0;
+        return { bestScore: parseInt(storedBestScore) };
     };
 
     const updateBestRecords = (newScore) => {
@@ -48,15 +48,12 @@ const Game = () => {
                 if (response.status === 200) {
                     setUsername(response.data.fullname);
                     console.log('fetchName 서버 응답:', response.data);
-
-
                 }
             })
             .catch((error) => {
                 console.error('username 데이터를 가져오는 중 오류 발생:', error);
             });
     };
-
 
     const fetchData = () => {
         axios.get('/score/', {
@@ -67,11 +64,32 @@ const Game = () => {
         })
         .then((response) => {
             if (response.status === 200) { 
-                console.log('game 서버 응답:', response.data);
+                console.log('모든 game score 서버 응답:', response.data);
             }
         })
         .catch((error) => {
             console.error('game 데이터를 가져오는 중 오류 발생:', error);
+        });
+    };
+
+    const fetchScore = () => {
+        axios.get('/score/me', {
+            headers: {
+                'accept': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem("access_token")}`
+            }
+        })
+        .then((response) => {
+            if (response.status === 200) { 
+                const serverBestScore = response.data.score; // 서버 응답에서 'score' 값을 가져옴
+                setBestScore(serverBestScore); // 상태 업데이트
+                console.log('나의 game score 서버 응답:', response.data);
+
+                console.log('최고 점수:', serverBestScore);
+            }
+        })
+        .catch((error) => {
+            console.error('게임 점수를 가져오는 중 오류 발생:', error);
         });
     };
 
@@ -87,19 +105,18 @@ const Game = () => {
             }
         ).then((response) => {
             if (response.status === 201) {
-                console.log(" 게임 get성공 ");
+                console.log(" 게임 put 성공 ",response.data);
             }
         })     .catch((error) => {
             console.error('game을 전송하는 중 오류 발생:', error);
         });
     }
 
-
     useEffect(() => {
         fetchName();
         fetchData(); 
+        fetchScore();
     }, []);
-
 
     // 단어 리스트 불러오기
     useEffect(() => {
@@ -154,6 +171,9 @@ const Game = () => {
             return;
         }
 
+        fetchScore();
+
+
         setShowHelp(false);
         setWaitWords([...wordList]);
         setScore(0);
@@ -194,11 +214,9 @@ const Game = () => {
         setGameStarted(false);
         setIsGameOver(true);
 
-        // 최고 기록 업데이트
         updateBestRecords(score);
 
         sendGame();
-
     };
 
     const handleKeyDown = (event) => {
@@ -253,27 +271,22 @@ const Game = () => {
         });
     };
 
-    const { bestScore } = getBestRecords();
-
     return (
-
         <div>
-     
-
             {showHelp && !gameStarted && !isGameOver && (
                 <div className="popup">
                     <div className="popup-content">
                         <h1>게임 설명</h1>
                         <div className="popup-content">
-                        1. 위에서 떨어지는 단어가 바닥에 닿기 전에 해당 단어를 입력하여 점수를 획득하세요.          
-                        <br />
-                        2. 없는 단어 입력 시 점수가 차감 됩니다.
-                        <br />
-                        3. 단어가 바닥에 떨어지면 게임은 종료됩니다.
+                            1. 위에서 떨어지는 단어가 바닥에 닿기 전에 해당 단어를 입력하여 점수를 획득하세요.          
                             <br />
-                        4. 단어가 모두 나와서 처리되면 게임은 종료됩니다.
+                            2. 없는 단어 입력 시 점수가 차감 됩니다.
                             <br />
-                        5. 게임이 종료되면 획득한 점수가 공개됩니다.
+                            3. 단어가 바닥에 떨어지면 게임은 종료됩니다.
+                            <br />
+                            4. 단어가 모두 나와서 처리되면 게임은 종료됩니다.
+                            <br />
+                            5. 게임이 종료되면 획득한 점수가 공개됩니다.
                             <br />
                         </div>
                         <button onClick={() => setGameStarted(true)}>게임 시작</button>
@@ -282,8 +295,8 @@ const Game = () => {
             )}
             {isGameOver && (
                 <div className="popup">
-                    <div className="popup-content" style={{fontSize:"18px"}}>
-                    <div style={{ height: "1.5vw" }}></div>
+                    <div className="popup-content" style={{ fontSize: "18px" }}>
+                        <div style={{ height: "1.5vw" }}></div>
                         <div id="end-score">현재 점수 : {score}</div>
                         <div style={{ height: "3vw" }}></div>
                         <div>최고 점수: {bestScore}</div>
@@ -302,39 +315,31 @@ const Game = () => {
                 </div>
             )}
 
-
             {!showHelp && gameStarted && !isGameOver && (
-
-<div className="hang">
-                <div className="game">
-                    <div
-                        className="game-panel"
-                        ref={gamePanelRef}
-                    >
-                        {renderWords()}
+                <div className="hang">
+                    <div className="game">
+                        <div className="game-panel" ref={gamePanelRef}>
+                            {renderWords()}
+                        </div>
+                        <div className="control-panel">
+                            <input
+                                id="input"
+                                ref={inputRef}
+                                onKeyDown={handleKeyDown}
+                                disabled={!gameStarted}
+                                style={{ fontFamily: "HJ", width: "35vw", height: "3vh", padding: "8px", fontSize: "15px" }}
+                            />
+                        </div>
                     </div>
-                    <div className ="control-panel">
-                        <input
-                            id="input"
-                            ref={inputRef}
-                            onKeyDown={handleKeyDown}
-                            disabled={!gameStarted}
-                            style={{   fontFamily: "HJ",
-                                width: "35vw", height:"3vh", padding: "8px", fontSize: "15px" }}
-                        />
-                    
+                    <div className="column-container">
+                        <div className="game-info">
+                            <div>현재 점수: {score}</div>
+                        </div>
+                        <div className="game-info">
+                            <div>최고 점수: {bestScore}</div>
+                        </div>
                     </div>
                 </div>
-                <div className="column-container " >
-                <div className="game-info">
-                <div>최고 점수:{bestScore}</div>
-            </div>
-            <div className="game-info">
-                <div>현재 점수: {score}</div>
-            </div>
-                </div>
-                </div>
-
             )}
         </div>
     );
