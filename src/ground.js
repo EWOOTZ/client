@@ -47,6 +47,7 @@ function Ground() {
                     const shuffledWishes = shuffleArray(response.data);
                     setWishes(shuffledWishes);
                     setCurrentWishIndex(0);
+                    console.log(response.data);
                 }
             })
             .catch((error) => {
@@ -147,47 +148,49 @@ function Ground() {
 
 
     return (
-        <div className={`backg ${isPopupVisible ? 'blur-background' : ''}`} onClick={handlePopupClose}>
+        <div className='backg'>
             <div className='white-line'>
-                <img src={backimage} alt="Background" className='backimage-style' />
-                <img src={letter_case} alt="Letter Case"
+                <img src={backimage} className='backimage-style' />
+                <img src={letter_case}
                     className='letter-case-style'
                     onClick={handleLetterCaseClick} />
-                <img src={notice} alt="notice" className='notice-style'onClick={handleNoticeClick}/>
-                <img src={tree} alt="Tree" className='tree-style' onClick={handleTreeClick}/>
-                <textarea value={text} onChange={handleInputChange} onFocus={handleFocus} onBlur={handleBlur} className='text-box-style'/>
+                <img src={notice} alt="notice" className='notice-style' onClick={handleNoticeClick} />
+                <img src={tree} alt="Tree" className='tree-style' onClick={handleTreeClick} />
+                <textarea value={text} onChange={handleInputChange} onFocus={handleFocus} onBlur={handleBlur} className='text-box-style' />
                 <button className='send-button' onClick={handleSendClick} disabled={text === '소원을 적어주세요' || text.trim() === ''}>소원 전송</button>
             </div>
+            <div className={`shadow ${isPopupVisible ? 'active' : ''}`} style={{ display: isPopupVisible ? 'block' : 'none' }}></div>
             {isPopupVisible && (
-                <>
-                    <div className='shadow' onClick={handlePopupClose}></div>
-                    <div className='popup' onClick={(e) => e.stopPropagation()}>
-                        <div className='tree-popup-content'>
-                            <button className='close-button' onClick={handlePopupClose}>×</button>
-                            <button className='nav-button left' onClick={handlePrevWish}>&#8249;</button>
-                            <div className='wish-container'>
-                                {wishes.length === 0 ? (
-                                    <div className='popup-title'>
+                <div className='popup'>
+                    <div className='tree-popup-content'>
+                        <button className='nav-button left' style={{ backgroundColor: "transparent", display: "flex", justifyContent: "flex-start" }} onClick={handlePrevWish}>&#8249;</button>
+                        <div className='wish-container'>
+                            {wishes.length === 0 ? (
+                                <>
+                                    <div className='popup-title' style={{flexDirection:"row"}}>
                                         아무 소원이 없습니다
+                                        <button style={{backgroundColor:"transparent", width : "100%",display:"flex", alignItems:"flex-start",justifyContent:"flex-end", fontSize:"30px", height:"100%"}}onClick={handlePopupClose}>x</button>
+
                                     </div>
-                                ) : (
-                                    <>
-                                        <div className='popup-title'>
-                                            <span style={{ color: '#C2E9B5' }}>{wishes[currentWishIndex]?.username}</span>
-                                            <span style={{ color: 'black' }}> 님의 소원</span>
-                                        </div>
-                                        <div className='popup-body'>
-                                            <div className='popup-content-body'>{wishes[currentWishIndex]?.contents}</div>
-                                        </div>
-                                    </>
-                                )}
-                            </div>
-                            {wishes.length > 0 && (
-                                    <button className='nav-button right' onClick={handleNextWish}>&#8250;</button>
+                                </>
+                            ) : (
+                                <>
+                                    <div className='popup-title' >
+                                        <span style={{ color: '#C2E9B5',}}>{wishes[currentWishIndex]?.username}</span>
+                                        <span style={{ color: 'black'}}>  님의 소원</span>
+                                        <button className="close-button" style={{backgroundColor:"transparent", textAlign:"end"}} onClick={handlePopupClose}>x</button>
+                                    </div>
+                                    <div className='popup-body'>
+                                        <div className='popup-content-body'>{wishes[currentWishIndex]?.contents}</div>
+                                    </div>
+                                </>
                             )}
                         </div>
+                        {wishes.length > 0 && (
+                            <button className='nav-button right' style={{ backgroundColor: "transparent", display: "flex", justifyContent: "flex-end" }} onClick={handleNextWish}>&#8250;</button>
+                        )}
                     </div>
-                </>
+                </div>
             )}
         </div>
     );
