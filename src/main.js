@@ -1,5 +1,4 @@
 /* eslint-disable */
-/**/
 import './App.css';
 import './Letter.css';
 import { useState } from 'react';
@@ -34,6 +33,8 @@ function formatDate() {
 function Main() {
     const videoStyle = {
         margin: '10px',
+        marginRight: '35px',
+
     };
 
     const opts = {
@@ -507,7 +508,7 @@ function Main() {
                             <div className='green-box'>
                                 <div className='hang' style={{ paddingRight: "2vh" }}>
                                     <img src={pictureCD} width='40vw' height='20vh' />
-                                    <p style={{ fontSize: "18px" }}>{`${singer} - ${musicTitle}`}</p>                                </div>
+                                    <p style={{ fontSize: "15px" }}>{`${singer} - ${musicTitle}`}</p>                                </div>
                                 <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
                                 <div className='hang'>
                                     <img src={picturePlay} width='17vw' height='23vh' />
