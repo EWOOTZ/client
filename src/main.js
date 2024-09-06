@@ -261,6 +261,7 @@ function Main() {
                     icon: "success",
                     text: "구독 성공!",
                 });
+                getFollower();
             }
         }).catch((error) => {
             console.log("팔로우 보내기 실패", error.response);
