@@ -85,7 +85,7 @@ function Write() {
 
   const handleSubmit = () => {
     const postData = {
-      category, title, contents, date, image
+      category, title, contents, date, image, location
     };
     axios.post('/board/', postData, {
       headers: {
@@ -102,7 +102,7 @@ function Write() {
           });
 
           const post_id = response.data['id'];
-          navigate(`/notice/${post_id}`);
+          navigate(`/notice/${localStorage.getItem("id")}`);
         }
       })
       .catch((error) => {
