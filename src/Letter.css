@@ -292,7 +292,7 @@
   padding: 10px;
   border: none;
   border-radius: 5px;
-  max-height: 250px;
+  max-height: 290px;
   overflow-y: auto;
 }
 
@@ -804,7 +804,7 @@
 }
 
 .letter-popup-buttons {
-  margin-top: 15px;
+  margin-top: 20px;
   display: flex;
   justify-content: center;
 }
