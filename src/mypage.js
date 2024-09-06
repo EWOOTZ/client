@@ -80,7 +80,7 @@ function Mypage() {
             formData.append('file', uploadFile);
             axios({
                 method: 'post',
-                url: '/file/upload',
+                url: '/upload/profile',
                 data: formData,
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
@@ -301,8 +301,8 @@ function Mypage() {
             </div>
             <div className={`shadow ${showPopup ? 'active' : ''}`} style={{ display: showPopup ? 'block' : 'none' }}></div>
             {showPopup && (
-                <div className={`letter-popup ${isExiting ? 'exiting' : ''}`}>
-                    <div className="music-popup-content">
+                <div className={`letter-popup  ${isExiting ? 'exiting' : ''}`}>
+                    <div className="music-popup-content" >
                         <button className='close-button' style={{ paddingRight: 5 }} onClick={handlePopupClose}>×</button>
                         <div style={{ height: "1.5vh" }}></div>
                         <p style={{ fontSize: "11px", color: "black", textAlign: "right", width: "100%" }}>가수와 제목을 모두 채워주세요!!</p>

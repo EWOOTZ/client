@@ -27,6 +27,29 @@ function Notice() {
   const [profile_image, setProfileImg] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedOption, setSelectedOption] = useState('latest'); // Notice 컴포넌트 내부로 이동
+  const [selectTitle, setSelectTitle] = useState(''); // 초기값 빈 문자열로 설정
+
+
+ // 검색어를 설정하는 함수
+ const handleSearchInputChange = (event) => {
+  setSelectTitle(event.target.value);
+};
+
+const getTitle = async () => {
+  try {
+    const response = await axios.get(`/board/search/${selectTitle}`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    if (response.status === 200) {
+      console.log("게시글 검색 성공", response.data);
+    }
+  } catch (error) {
+    console.error("게시글 검색 실패", error.response);
+  }
+};
 
   
   const getMypage = async () => {
@@ -68,7 +91,6 @@ function Notice() {
     getMypage();
   }, []);
 
-
   const handleChange = (event) => {
     setSelectedOption(event.target.value);
     console.log('Selected:', event.target.value); // 선택된 값을 로그로 출력
@@ -108,9 +130,21 @@ function Notice() {
           <div style={{ height: "6vh" }}></div>
           <div className="hang" style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "17vh", width: "100%" }}>
             <div style={{ width: "1vh" }}></div>
-            <input className='input-search' style={{ width: "10vw", fontSize: "15px" }} type='text' placeholder='검색' />
+            <input 
+              className='input-search' 
+              style={{ width: "10vw", fontSize: "15px" }} 
+              type='text' 
+              placeholder='검색' 
+              value={selectTitle}
+              onChange={handleSearchInputChange} // 검색어 변경 핸들러
+            />
             <div style={{ width: "0.5vw" }}></div>
-            <img src={notice_search} alt="notice_search" style={{ width: "1.7vw" }} />
+            <img 
+              src={notice_search} 
+              alt="notice_search" 
+              style={{ width: "1.7vw", cursor: "pointer" }} 
+              onClick={getTitle} // 이미지 클릭 시 검색 실행
+            />
           </div>
           <div style={{ height: "3vh" }}></div>
           <p style={{ display: "flex", color: "black", fontSize: '21px', alignItems: "flex-start", justifyContent: "flex-start", width: "100%", paddingLeft: "40px" }}>카테고리</p>
