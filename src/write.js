@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import './Letter.css';
@@ -122,7 +123,10 @@ function Write() {
           <div className='hangs'>
             <p style={{ color: "black", fontSize: '20px' }}>제목</p>
             <div style={{ width: '1vw' }}></div>
-            <input className='input-title' type='text' placeholder='제목을 적으세요' value={title} onChange={(e) => setTitle(e.target.value)} />
+            <input className='input-title' type='text' placeholder='제목을 적으세요' value={title} onChange={(e) => {if (e.target.value.length <= 40) {setTitle(e.target.value);
+    }
+  }}
+   maxLength={40} />
           </div>
           <div style={{ height: '2vh' }}></div>
           <div className='hangs'>
