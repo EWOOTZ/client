@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useState } from 'react';
+import React, { useState ,useMemo} from 'react';
 import './App.css';
 import './Letter.css';
 import notice_pencil from './assets/notice_pencil.png';
@@ -28,7 +28,7 @@ function Notice() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedOption, setSelectedOption] = useState('latest'); // Notice 컴포넌트 내부로 이동
   const [selectTitle, setSelectTitle] = useState(''); // 초기값 빈 문자열로 설정
-
+  const [searchBoardView, setSearchboardview] = useState([]);
 
  // 검색어를 설정하는 함수
  const handleSearchInputChange = (event) => {
@@ -44,14 +44,24 @@ const getTitle = async () => {
       }
     });
     if (response.status === 200) {
-      console.log("게시글 검색 성공", response.data);
+      const searchData = response.data.map((item) => ({
+        title: item.title,
+        username: item.username,
+        date: item.date,
+        contents:item.contents,
+        views: item.views, 
+        id: item.id
+      }));
+      console.log("게시글 검색 성공", searchData);
+      setSearchboardview(searchData); 
+    
+      setSelectedCategory('SearchTitle'); 
     }
   } catch (error) {
     console.error("게시글 검색 실패", error.response);
   }
 };
 
-  
   const getMypage = async () => {
     try {
       const response = await axios.get(
@@ -86,11 +96,9 @@ const getTitle = async () => {
     }
   };
 
-
   useEffect(() => {
     getMypage();
   }, []);
-
 
   const handleChange = (event) => {
     setSelectedOption(event.target.value);
@@ -99,27 +107,28 @@ const getTitle = async () => {
 
   const renderCategoryContent = () => {
     switch (selectedCategory) {
+      case 'SearchTitle':
+        return <SearchTitle searchBoardView={searchBoardView} selectedOption={selectedOption} handleChange={handleChange} />;
       case 'daily':
-        return <DailyContent />;
+        return <DailyContent selectedOption={selectedOption} handleChange={handleChange} />; 
       case 'food':
-        return <FoodAllContent />;
+        return <FoodAllContent selectedOption={selectedOption} handleChange={handleChange} />
       case 'foodSeoul':
-        return <FoodSeoulContent />;
+        return <FoodSeoulContent  selectedOption={selectedOption} handleChange={handleChange} />;
       case 'foodGang':
-        return <FoodGangContent />;
+        return <FoodGangContent selectedOption={selectedOption} handleChange={handleChange}  />;
       case 'foodDaejeon':
-        return <FoodDaejeonContent />;
+        return <FoodDaejeonContent selectedOption={selectedOption} handleChange={handleChange}  />;
       case 'foodDaegu':
-        return <FoodDaeguContent />;
+        return <FoodDaeguContent  selectedOption={selectedOption} handleChange={handleChange} />;
       case 'foodBusan':
-        return <FoodBusanContent />;
+        return <FoodBusanContent  selectedOption={selectedOption} handleChange={handleChange} />;
       case 'foodJeju':
-        return <FoodJejuContent />;
+        return <FoodJejuContent  selectedOption={selectedOption} handleChange={handleChange} />;
       case 'foodElse':
-        return <FoodElseContent />;
+        return <FoodElseContent  selectedOption={selectedOption} handleChange={handleChange} />;
       default:
-        return <DailyContent />;
-    }
+        return <DailyContent selectedOption={selectedOption} handleChange={handleChange} />;    }
   };
 
   const navigate = useNavigate();
@@ -144,7 +153,7 @@ const getTitle = async () => {
               src={notice_search} 
               alt="notice_search" 
               style={{ width: "1.7vw", cursor: "pointer" }} 
-              onClick={getTitle} // 이미지 클릭 시 검색 실행
+              onClick={getTitle} 
             />
           </div>
           <div style={{ height: "3vh" }}></div>
@@ -204,6 +213,135 @@ const getTitle = async () => {
   );
 }
 
+function SearchTitle({ searchBoardView, selectedOption, handleChange }) {
+  const [showPopup, setShowPopup] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [isExiting, setIsExiting] = useState(false);
+
+  const handleButtonClick = (searchboard) => {
+    setSelectedItem(searchboard);
+    setShowPopup(true);
+  };
+
+  const handleBoardcloseClick = () => {
+    setShowPopup(false);
+    setIsExiting(false);
+  };
+
+  const sortedBoardView = useMemo(() => {
+    const sorted = [...searchBoardView];
+    switch (selectedOption) {
+      case 'latest':
+        return sorted.sort((a, b) =>new Date(b.date) - new Date(a.date) || b.id - a.id); // 최신순, 동일 날짜는 id로
+      case 'oldest':
+        return sorted.sort((a, b) =>  new Date(a.date) - new Date(b.date) || a.id - b.id); 
+      case 'popular':
+        return sorted.sort((a, b) => b.views - a.views); 
+      default:
+        return sorted;
+    }
+  }, [searchBoardView, selectedOption]);
+
+  return (
+    <div className='column-container'>
+      <div className='yellow-box-top'>
+        <div className='white-box-top'>
+          <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
+            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "19px" }}>검색 결과</p>
+            <p style={{ paddingLeft: "4vh", paddingTop: "1vh", fontSize: "16px" }}>{`${sortedBoardView.length} 개의 글`}</p>
+            <div style={{ width: "44vw" }}></div>
+            <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
+              <option value="latest">최신순</option>
+              <option value="oldest">오래된 순</option>
+              <option value="popular">인기순</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div style={{height:"2vh"}}></div>
+      <div className='yellow-box-bottom'>
+        <div className='white-box-bottom'>
+          <div style={{ height: "60vh", width: "42vw", paddingLeft: "3px" }}>
+            <p style={{ width: "43vw", height: "3vh", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>글제목</p>          
+            <hr style={{ border: "0.2px solid black", width: "100%" }} />
+            {sortedBoardView.map((searchboard) => (
+              <div key={searchboard.title} style={{ cursor: 'pointer' }}>
+                <p
+                  style={{ paddingLeft: "1vw", margin: 0, cursor: 'pointer' }}
+                  onClick={() => handleButtonClick(searchboard)}
+                >
+                  {searchboard.title}
+                </p>
+                <hr style={{ border: "0.2px solid gray", width: "100%" }} />
+              </div>
+            ))}
+          </div>
+          <div style={{ height: "60vh", width: "15vw" }}>
+            <div className="hang" style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
+              <p style={{ height: "2.95vh", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>글쓰니</p>
+              <img src={notice_love} alt="notice_love" />
+            </div>
+            <hr style={{ border: "0.2px solid black", width: "100%" }} />
+            <div>
+              {sortedBoardView.map((searchboard) => (
+                <div key={searchboard.id}>
+                  <p style={{ display: "flex", justifyContent: "center" }}>{searchboard.username}</p>
+                  <hr style={{ border: "0.2px solid gray", width: "100%" }} />
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ height: "60vh", width: "10vw" }}>
+            <p style={{ height: "3vh", width: "10vw", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>작성일</p>
+            <hr style={{ border: "0.2px solid black", width: "100%" }} />
+            <div>
+              {sortedBoardView.map((searchboard) => (
+                <div key={searchboard.id}>
+                  <p style={{ display: "flex", justifyContent: "center" }}>{searchboard.date}</p>
+                  <hr style={{ border: "0.2px solid gray", width: "100%" }} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className={`shadow ${showPopup ? 'active' : ''}`} style={{ display: showPopup ? 'block' : 'none' }}></div>
+      {showPopup && (
+        <div className={`letter-popup ${isExiting ? 'exiting' : ''}`}>
+          <div className="backg" style={{ width: "70vw", height: "72vh", borderRadius: "10px" }}>
+            <div className='column-container'>
+              <div className="yellow-box" style={{ width: "65vw", height: "8vh", borderRadius: "10px"}}>
+                <div className="hang" style={{marginLeft:'10px', fontSize:'19px', display: "flex", justifyContent: "start", alignItems: "start", width: "100%", paddingLeft:"30px", paddingBottom:"15px" }}>
+                  <p>제목: {selectedItem.title}</p>
+                  <button onClick={handleBoardcloseClick} className="close-button" style={{paddingLeft:'12px'}}>X</button>
+                </div>
+              </div>
+  
+              <div style={{ height: "1vh" }}></div>
+  
+              <div className="yellow-box" style={{ width: "65vw", height: "57vh", borderRadius: "10px", overflow: "hidden", overflowY: "auto" }}>
+                <div>
+                  <img src={picturesky} style={{ width: "30vw", height: "30vh" }} />
+                  <div style={{ height: "1vh" }}></div>
+                </div>
+                <div>
+                  <p style={{ marginLeft:'10px', fontSize:'22px', display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
+                    {selectedItem.username}
+                    <img src={notice_love} alt="notice_love" />
+                  </p>
+                </div>
+                <div style={{ padding:'10px', fontSize:'17px', display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
+                  <p>{selectedItem.contents}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 function DailyContent({ selectedOption, handleChange }) {
   const [dailyboardView, setdailyboardview] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
@@ -229,6 +367,7 @@ function DailyContent({ selectedOption, handleChange }) {
         }
       });
       if (response.status === 200) {
+        
         setdailyboardview(response.data);
         console.log("일상 게시판 가져오기 성공", response.data);
       }
@@ -240,6 +379,20 @@ function DailyContent({ selectedOption, handleChange }) {
   useEffect(() => {
     getDailyBoard();
   }, []);
+
+  const sortedDailyView = useMemo(() => {
+    const sorted = [...dailyboardView];
+    switch (selectedOption) {
+      case 'latest':
+        return sorted.sort((a, b) => new Date(b.date) - new Date(a.date) || b.id - a.id); // 최신순, 동일 날짜는 id로
+      case 'oldest':
+        return sorted.sort((a, b) => new Date(a.date) - new Date(b.date) || a.id - b.id); 
+      case 'popular':
+        return sorted.sort((a, b) => b.views - a.views);
+      default:
+        return sorted;
+    }
+  }, [dailyboardView, selectedOption]);
   
 
   return (
@@ -265,9 +418,8 @@ function DailyContent({ selectedOption, handleChange }) {
             <p style={{ width: "43vw", height: "3vh", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>글제목</p>
             <hr style={{ border: "0.2px solid black", width: "100%" }} />
             <div>
-
             <div>
-            {dailyboardView.map((dailyboard) => (
+            {sortedDailyView.map((dailyboard) => (
           <div key={dailyboard.id} style={{ cursor: 'pointer' }}>
             <p
               style={{ paddingLeft: "1vw", margin: 0, cursor: 'pointer' }}
@@ -286,25 +438,18 @@ function DailyContent({ selectedOption, handleChange }) {
            <div className="yellow-box" style={{ width: "65vw", height: "8vh", borderRadius: "10px"}}>
            <div className="hang" style={{marginLeft:'10px', fontSize:'19px',display: "flex", justifyContent: "start", alignItems: "start", width: "100%", paddingLeft:"30px",paddingBottom:"15px" }}>
            <p>제목: {selectedItem.title}</p>
-           <button onClick={handleBoardcloseClick} className="close-button" style={{paddingLeft:'12px'}}>X</button>
-
-          </div>
+           <button onClick={handleBoardcloseClick} className="close-button" style={{paddingLeft:'12px'}}>X</button></div>
             </div>
             <div style={{ height: "1vh" }}></div>
-            <div className="yellow-box" style={{ width: "65vw", height: "57vh", borderRadius: "10px", overflow: "hidden",  overflowY: "auto"  }}>
-  <div>
-    <img src={picturesky} style={{ width: "30vw", height: "30vh" }} />
-    <div style={{ height: "1vh" }}></div>
-    </div>
-    <div>
-    <p style={{ marginLeft:'10px', fontSize:'22px', display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
-      {selectedItem.username}
-      <img src={notice_love} alt="notice_love" />
-    </p>
-  </div>
-  <div style={{ padding:'10px',fontSize:'17px', display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
-    <p>      {selectedItem.contents} </p>
-    </div>
+            <div className="yellow-box" style={{ width: "65vw", height: "57vh", borderRadius: "10px", overflow: "hidden",  overflowY: "auto"  }}>  <div>
+         <img src={picturesky} style={{ width: "30vw", height: "30vh" }} />
+         <div style={{ height: "1vh" }}></div></div><div>
+        <p style={{ marginLeft:'10px', fontSize:'22px', display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
+          {selectedItem.username}
+          <img src={notice_love} alt="notice_love" /> </p></div>
+         <div style={{ padding:'10px',fontSize:'17px', display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
+          <p>{selectedItem.contents} </p>
+ </div>
 </div>
            </div>
 
@@ -321,7 +466,7 @@ function DailyContent({ selectedOption, handleChange }) {
             </div>
             <hr style={{ border: "0.2px solid black", width: "100%" }} />
             <div>
-              {dailyboardView.map((dailyboard) => (
+              {sortedDailyView.map((dailyboard) => (
                 <div key={dailyboard.id}>
                   <p style={{ display: "flex", justifyContent: "center" }}>{dailyboard.username}</p>
                   <hr style={{ border: "0.2px solid gray", width: "100%" }} />
@@ -333,7 +478,7 @@ function DailyContent({ selectedOption, handleChange }) {
             <p style={{ height: "3vh", width: "10vw", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>작성일</p>
             <hr style={{ border: "0.2px solid black", width: "100%" }} />
             <div>
-              {dailyboardView.map((dailyboard) => (
+              {sortedDailyView.map((dailyboard) => (
                 <div key={dailyboard.id}>
                   <p style={{ display: "flex", justifyContent: "center" }}>{dailyboard.date}</p>
                   <hr style={{ border: "0.2px solid gray", width: "100%" }} />
@@ -346,6 +491,7 @@ function DailyContent({ selectedOption, handleChange }) {
     </div>
   )
 };
+
 
 function FoodAllContent({ selectedOption, handleChange }) {
   const [foodAllboardView, setFoodallboardview] = useState([]);
@@ -370,16 +516,16 @@ function FoodAllContent({ selectedOption, handleChange }) {
     } catch (error) {
       console.error("특정 맛집 게시판 가져오기 실패", error.response);
       console.error(error);
-    } finally{
+    } finally {
       setIsLoading(false);
     }
   };
 
   const handleBoardClick = async (itemId) => {
-    try{
+    try {
       await getpostBoard(itemId);
       setShowPopup(true);
-    }catch(error){
+    } catch (error) {
       console.error('게시판 가져오기 실패', error);
     }
   };
@@ -408,8 +554,22 @@ function FoodAllContent({ selectedOption, handleChange }) {
   };
 
   useEffect(() => {
-    getBoard();
+    getBoard('latest'); // 초기값은 최신순으로 설정
   }, []);
+
+  const sortedFoodAllboardView = useMemo(() => {
+    const sorted = [...foodAllboardView];
+    switch (selectedOption) {
+      case 'latest':
+        return sorted.sort((a, b) => new Date(b.date) - new Date(a.date) || b.id - a.id); // 최신순, 동일 날짜는 id로
+      case 'oldest':
+        return sorted.sort((a, b) => new Date(a.date) - new Date(b.date) || a.id - b.id); 
+      case 'popular':
+        return sorted.sort((a, b) => b.views - a.views);
+      default:
+        return sorted;
+    }
+  }, [foodAllboardView, selectedOption]);
 
   return (
     <div className='column-container'>
@@ -430,7 +590,7 @@ function FoodAllContent({ selectedOption, handleChange }) {
       <div style={{ height: "2vh" }}></div>
       <div className='yellow-box-bottom'>
         <div className='white-box-bottom' style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1vh', padding: '2vh', width: "100%", alignItems: "flex-start" }}>
-          {foodAllboardView.map(item => (
+          {sortedFoodAllboardView.map(item => (
             <div className='hang' key={item.id} style={{ border: '1.5px solid #ddd', borderRadius: '5px', padding: '1.5vh', textAlign: 'center', height: "20vh", alignItems: "center", justifyContent: "flex-start" }}>
               <button style={{
                 display: 'flex',
@@ -472,36 +632,37 @@ function FoodAllContent({ selectedOption, handleChange }) {
         </div>
         <div className={`shadow ${showPopup ? 'active' : ''}`} style={{ display: showPopup ? 'block' : 'none' }}></div>
         {showPopup && (
-      <div className={`letter-popup ${isExiting ? 'exiting' : ''}`}>
-        <div className="backg" style={{ width: "70vw", height: "70vh", borderRadius: "10px", padding: "2vh" }}>
-          <div style={{ width: "100%", height: "100%", backgroundColor: "#FFF8EF", borderRadius: "10px", overflowY: "auto", padding: "2vh" }}>
-            {isLoading ? (
-              <p>로딩 중...</p> // 로딩 중임을 사용자에게 표시
-            ) : oneboardView ? (
-              <>
-                <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-                  <img src={pictureEE} alt="Profile" style={{ width: '40vh', height: '40vh', marginBottom: "5vh", paddingTop: "2vh" }} />
+          <div className={`letter-popup ${isExiting ? 'exiting' : ''}`}>
+            <div className="backg" style={{ width: "70vw", height: "70vh", borderRadius: "10px", padding: "2vh" }}>
+              <div style={{ width: "100%", height: "100%", backgroundColor: "#FFF8EF", borderRadius: "10px", overflowY: "auto", padding: "2vh" }}>
+                {isLoading ? (
+                  <p>로딩 중...</p>
+                ) : oneboardView ? (
+                  <>
+                    <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+                      <img src={pictureEE} alt="Profile" style={{ width: '40vh', height: '40vh', marginBottom: "5vh", paddingTop: "2vh" }} />
+                    </div>
+                    <div style={{ flexDirection: "column", width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <p style={{ fontSize: "40px", textAlign: "start", marginBottom: "1vh" }}>{oneboardView.title}</p>
+                      <p style={{ fontSize: "17px", textAlign: "start", marginBottom: "5vh" }}>{`글쓰니 : ${oneboardView.username}`}</p>
+                      <p style={{ fontSize: "25px", textAlign: "start", marginBottom: "5vh" }}>{oneboardView.contents}</p>
+                    </div>
+                  </>
+                ) : (
+                  <p>내용이 없습니다</p>
+                )}
+                <div style={{ width: "100%", display: "flex", alignItems: "flex-end", justifyContent: "flex-end" }}>
+                  <button style={{ backgroundColor: "transparent", fontFamily: "HJ", fontSize: "22px", border: "none" }} onClick={handleBoardcloseClick}>닫기!</button>
                 </div>
-                <div style={{ flexDirection: "column", width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <p style={{ fontSize: "40px", textAlign: "start", marginBottom: "1vh" }}>{oneboardView.title}</p>
-                  <p style={{ fontSize: "17px", textAlign: "start", marginBottom: "5vh" }}>{`글쓰니 : ${oneboardView.username}`}</p>
-                  <p style={{ fontSize: "25px", textAlign: "start", marginBottom: "5vh" }}>{oneboardView.contents}</p>
-                </div>
-              </>
-            ) : (
-              <p>내용이 없습니다</p> // 데이터가 없는 경우 처리
-            )}
-            <div style={{ width: "100%", display: "flex", alignItems: "flex-end", justifyContent: "flex-end" }}>
-              <button style={{ backgroundColor: "transparent", fontFamily: "HJ", fontSize: "22px", border: "none" }} onClick={handleBoardcloseClick}>닫기!</button>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-    )}
+        )}
       </div>
     </div>
-  )
-};
+  );
+}
+
 
 function FoodSeoulContent({ selectedOption, handleChange }) {
   const [foodSeoulboardView, setFoodseoulboardview] = useState([]);
@@ -567,13 +728,27 @@ function FoodSeoulContent({ selectedOption, handleChange }) {
     getBoard();
   }, []);
 
+  const sortedSeoulboardView = useMemo(() => {
+    const sorted = [...foodSeoulboardView];
+    switch (selectedOption) {
+      case 'latest':
+        return sorted.sort((a, b) => new Date(b.date) - new Date(a.date) || b.id - a.id); // 최신순, 동일 날짜는 id로
+      case 'oldest':
+        return sorted.sort((a, b) => new Date(a.date) - new Date(b.date) || a.id - b.id); 
+      case 'popular':
+        return sorted.sort((a, b) => b.views - a.views);
+      default:
+        return sorted;
+    }
+  }, [foodSeoulboardView, selectedOption]);
+
   return (
     <div className='column-container'>
       <div className='yellow-box-top'>
         <div className='white-box-top'>
           <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
             <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>전체</p>
-            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>500000000 개의 글</p>
+            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>{foodSeoulboardView.length} 개의 글</p>
             <div style={{ width: "45vw" }}></div>
             <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
               <option value="latest">최신순</option>
@@ -586,7 +761,7 @@ function FoodSeoulContent({ selectedOption, handleChange }) {
       <div style={{ height: "2vh" }}></div>
       <div className='yellow-box-bottom'>
         <div className='white-box-bottom' style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1vh', padding: '2vh', width: "100%", alignItems: "flex-start" }}>
-          {foodSeoulboardView.map(item => (
+          {sortedSeoulboardView.map(item => (
             <div className='hang' key={item.id} style={{ border: '1.5px solid #ddd', borderRadius: '5px', padding: '1.5vh', textAlign: 'center', height: "20vh", alignItems: "center", justifyContent: "flex-start" }}>
               <button style={{
                 display: 'flex',
@@ -721,13 +896,27 @@ function FoodGangContent({ selectedOption, handleChange }) {
     getBoard();
   }, []);
 
+  const sortedGangView = useMemo(() => {
+    const sorted = [...foodGangboardView];
+    switch (selectedOption) {
+      case 'latest':
+        return sorted.sort((a, b) => new Date(b.date) - new Date(a.date) || b.id - a.id); // 최신순, 동일 날짜는 id로
+      case 'oldest':
+        return sorted.sort((a, b) => new Date(a.date) - new Date(b.date) || a.id - b.id); 
+      case 'popular':
+        return sorted.sort((a, b) => b.views - a.views);
+      default:
+        return sorted;
+    }
+  }, [foodGangboardView, selectedOption]);
+  
   return (
     <div className='column-container'>
       <div className='yellow-box-top'>
         <div className='white-box-top'>
           <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
             <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>전체</p>
-            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>500000000 개의 글</p>
+            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>{foodGangboardView.length}개의 글</p>
             <div style={{ width: "45vw" }}></div>
             <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
               <option value="latest">최신순</option>
@@ -740,7 +929,7 @@ function FoodGangContent({ selectedOption, handleChange }) {
       <div style={{ height: "2vh" }}></div>
       <div className='yellow-box-bottom'>
         <div className='white-box-bottom' style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1vh', padding: '2vh', width: "100%", alignItems: "flex-start" }}>
-          {foodGangboardView.map(item => (
+          {sortedGangView.map(item => (
             <div className='hang' key={item.id} style={{ border: '1.5px solid #ddd', borderRadius: '5px', padding: '1.5vh', textAlign: 'center', height: "20vh", alignItems: "center", justifyContent: "flex-start" }}>
               <button style={{
                 display: 'flex',
@@ -876,13 +1065,27 @@ function FoodDaejeonContent({ selectedOption, handleChange }) {
     getBoard();
   }, []);
 
+  const sortedDaejeonView = useMemo(() => {
+    const sorted = [...foodDaejeonboardView];
+    switch (selectedOption) {
+      case 'latest':
+        return sorted.sort((a, b) => new Date(b.date) - new Date(a.date) || b.id - a.id); // 최신순, 동일 날짜는 id로
+      case 'oldest':
+        return sorted.sort((a, b) => new Date(a.date) - new Date(b.date) || a.id - b.id); 
+      case 'popular':
+        return sorted.sort((a, b) => b.views - a.views);
+      default:
+        return sorted;
+    }
+  }, [foodDaejeonboardView, selectedOption]);
+
   return (
     <div className='column-container'>
       <div className='yellow-box-top'>
         <div className='white-box-top'>
           <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
             <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>전체</p>
-            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>500000000 개의 글</p>
+            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>{foodDaejeonboardView.length}개의 글</p>
             <div style={{ width: "45vw" }}></div>
             <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
               <option value="latest">최신순</option>
@@ -895,7 +1098,7 @@ function FoodDaejeonContent({ selectedOption, handleChange }) {
       <div style={{ height: "2vh" }}></div>
       <div className='yellow-box-bottom'>
         <div className='white-box-bottom' style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1vh', padding: '2vh', width: "100%", alignItems: "flex-start" }}>
-          {foodDaejeonboardView.map(item => (
+          {sortedDaejeonView.map(item => (
             <div className='hang' key={item.id} style={{ border: '1.5px solid #ddd', borderRadius: '5px', padding: '1.5vh', textAlign: 'center', height: "20vh", alignItems: "center", justifyContent: "flex-start" }}>
               <button style={{
                 display: 'flex',
@@ -1030,13 +1233,27 @@ function FoodDaeguContent({ selectedOption, handleChange }) {
     getBoard();
   }, []);
 
+  const sortedDaeguView = useMemo(() => {
+    const sorted = [...foodDaeguboardView];
+    switch (selectedOption) {
+      case 'latest':
+        return sorted.sort((a, b) => new Date(b.date) - new Date(a.date) || b.id - a.id); // 최신순, 동일 날짜는 id로
+      case 'oldest':
+        return sorted.sort((a, b) => new Date(a.date) - new Date(b.date) || a.id - b.id); 
+      case 'popular':
+        return sorted.sort((a, b) => b.views - a.views);
+      default:
+        return sorted;
+    }
+  }, [foodDaeguboardView, selectedOption]);
+  
   return (
     <div className='column-container'>
       <div className='yellow-box-top'>
         <div className='white-box-top'>
           <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
             <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>전체</p>
-            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>500000000 개의 글</p>
+            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>{foodDaeguboardView.length} 개의 글</p>
             <div style={{ width: "45vw" }}></div>
             <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
               <option value="latest">최신순</option>
@@ -1049,7 +1266,7 @@ function FoodDaeguContent({ selectedOption, handleChange }) {
       <div style={{ height: "2vh" }}></div>
       <div className='yellow-box-bottom'>
         <div className='white-box-bottom' style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1vh', padding: '2vh', width: "100%", alignItems:"flex-start" }}>
-          {foodDaeguboardView.map(item => (
+          {sortedDaeguView.map(item => (
             <div className='hang' key={item.id} style={{ border: '1.5px solid #ddd', borderRadius: '5px', padding: '1.5vh', textAlign: 'center', height: "20vh", alignItems: "center", justifyContent: "flex-start" }}>
               <button style={{
                 display: 'flex',
@@ -1185,13 +1402,27 @@ function FoodBusanContent({ selectedOption, handleChange }) {
     getBoard();
   }, []);
 
+  const sortedBusanView = useMemo(() => {
+    const sorted = [...foodBusanboardView];
+    switch (selectedOption) {
+      case 'latest':
+        return sorted.sort((a, b) => new Date(b.date) - new Date(a.date) || b.id - a.id); // 최신순, 동일 날짜는 id로
+      case 'oldest':
+        return sorted.sort((a, b) => new Date(a.date) - new Date(b.date) || a.id - b.id); 
+      case 'popular':
+        return sorted.sort((a, b) => b.views - a.views);
+      default:
+        return sorted;
+    }
+  }, [foodBusanboardView, selectedOption]);
+
   return (
     <div className='column-container'>
       <div className='yellow-box-top'>
         <div className='white-box-top'>
           <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
             <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>전체</p>
-            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>500000000 개의 글</p>
+            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>{foodBusanboardView.length} 개의 글</p>
             <div style={{ width: "45vw" }}></div>
             <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
               <option value="latest">최신순</option>
@@ -1204,7 +1435,7 @@ function FoodBusanContent({ selectedOption, handleChange }) {
       <div style={{ height: "2vh" }}></div>
       <div className='yellow-box-bottom'>
         <div className='white-box-bottom' style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1vh', padding: '2vh', width: "100%", alignItems:"flex-start" }}>
-          {foodBusanboardView.map(item => (
+          {sortedBusanView.map(item => (
             <div className='hang' key={item.id} style={{ border: '1.5px solid #ddd', borderRadius: '5px', padding: '1.5vh', textAlign: 'center', height: "20vh", alignItems: "center", justifyContent: "flex-start" }}>
               <button style={{
                 display: 'flex',
@@ -1340,13 +1571,27 @@ function FoodJejuContent({ selectedOption, handleChange }) {
     getBoard();
   }, []);
 
+  const sortedJejuView = useMemo(() => {
+    const sorted = [...foodJejuboardView];
+    switch (selectedOption) {
+      case 'latest':
+        return sorted.sort((a, b) => new Date(b.date) - new Date(a.date) || b.id - a.id); // 최신순, 동일 날짜는 id로
+      case 'oldest':
+        return sorted.sort((a, b) => new Date(a.date) - new Date(b.date) || a.id - b.id); 
+      case 'popular':
+        return sorted.sort((a, b) => b.views - a.views);
+      default:
+        return sorted;
+    }
+  }, [foodJejuboardView, selectedOption]);
+
   return (
     <div className='column-container'>
       <div className='yellow-box-top'>
         <div className='white-box-top'>
           <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
             <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>전체</p>
-            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>500000000 개의 글</p>
+            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>{foodJejuboardView.length} 개의 글</p>
             <div style={{ width: "45vw" }}></div>
             <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
               <option value="latest">최신순</option>
@@ -1359,7 +1604,7 @@ function FoodJejuContent({ selectedOption, handleChange }) {
       <div style={{ height: "2vh" }}></div>
       <div className='yellow-box-bottom'>
         <div className='white-box-bottom' style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1vh', padding: '2vh', width: "100%", alignItems:"flex-start" }}>
-          {foodJejuboardView.map(item => (
+          {sortedJejuView.map(item => (
             <div className='hang' key={item.id} style={{ border: '1.5px solid #ddd', borderRadius: '5px', padding: '1.5vh', textAlign: 'center', height: "20vh", alignItems: "center", justifyContent: "flex-start" }}>
               <button style={{
                 display: 'flex',
@@ -1496,13 +1741,29 @@ function FoodElseContent({ selectedOption, handleChange }) {
     getBoard();
   }, []);
 
+  const sortedElseView = useMemo(() => {
+    const sorted = [...foodElseboardView];
+    switch (selectedOption) {
+      case 'latest':
+        return sorted.sort((a, b) => new Date(b.date) - new Date(a.date) || b.id - a.id); // 최신순, 동일 날짜는 id로
+      case 'oldest':
+        return sorted.sort((a, b) => new Date(a.date) - new Date(b.date) || a.id - b.id); 
+      case 'popular':
+        return sorted.sort((a, b) => b.views - a.views);
+      default:
+        return sorted;
+    }
+  }, [foodElseboardView, selectedOption]);
+
+  
+
   return (
     <div className='column-container'>
       <div className='yellow-box-top'>
         <div className='white-box-top'>
           <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
             <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>전체</p>
-            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>500000000 개의 글</p>
+            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>{foodElseboardView.length} 개의 글</p>
             <div style={{ width: "45vw" }}></div>
             <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
               <option value="latest">최신순</option>
@@ -1515,7 +1776,7 @@ function FoodElseContent({ selectedOption, handleChange }) {
       <div style={{ height: "2vh" }}></div>
       <div className='yellow-box-bottom'>
         <div className='white-box-bottom' style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1vh', padding: '2vh', width: "100%", alignItems:"flex-start" }}>
-          {foodElseboardView.map(item => (
+          {sortedElseView.map(item => (
             <div className='hang' key={item.id} style={{ border: '1.5px solid #ddd', borderRadius: '5px', padding: '1.5vh', textAlign: 'center', height: "20vh", alignItems: "center", justifyContent: "flex-start" }}>
               <button style={{
                 display: 'flex',
