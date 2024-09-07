@@ -6,14 +6,11 @@ import notice_pencil from './assets/notice_pencil.png';
 import notice_chart from './assets/notice_chart.png';
 import notice_search from './assets/notice_search.png';
 import notice_love from './assets/notice_love.png';
-import picturebasic from './images/basicProfile.png';
 import picturePin from './images/pin.png';
-import pictureEE from './images/KakaoTalk_20240905_151841191.jpg';
 import { useEffect } from 'react';
 import axios from 'axios';
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import Write from './write';
-import picturesky from './images/sky4.png';
 
 function formatDate() {
   const today = new Date();
@@ -50,7 +47,8 @@ const getTitle = async () => {
         date: item.date,
         contents:item.contents,
         views: item.views, 
-        id: item.id
+        id: item.id,
+        image: item.image
       }));
       console.log("게시글 검색 성공", searchData);
       setSearchboardview(searchData); 
@@ -100,6 +98,17 @@ const getTitle = async () => {
     getMypage();
   }, []);
 
+  useEffect(() => {
+    const handlePopState = (event) => {
+        window.history.pushState(null, null, window.location.pathname); // 현재 URL 유지
+    };
+    window.history.pushState(null, null, window.location.pathname); // 현재 상태를 pushState로 추가
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+        window.removeEventListener('popstate', handlePopState);
+    };
+}, []);
+
   const handleChange = (event) => {
     setSelectedOption(event.target.value);
     console.log('Selected:', event.target.value); // 선택된 값을 로그로 출력
@@ -138,6 +147,7 @@ const getTitle = async () => {
       <div className='hang'>
         <div className='notice-gray-box'>
           <div style={{ height: "6vh" }}></div>
+          <button className="go-ground-gray" style={{ fontSize: "15px", alignItems:"flex-start", width:"23vw" }} onClick={() => navigate(`/ground/${localStorage.getItem("username")}`)}>광장가기</button>
           <div className="hang" style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "17vh", width: "100%" }}>
             <div style={{ width: "1vh" }}></div>
             <input 
@@ -316,12 +326,10 @@ function SearchTitle({ searchBoardView, selectedOption, handleChange }) {
                   <button onClick={handleBoardcloseClick} className="close-button" style={{paddingLeft:'12px'}}>X</button>
                 </div>
               </div>
-  
               <div style={{ height: "1vh" }}></div>
-  
               <div className="yellow-box" style={{ width: "65vw", height: "57vh", borderRadius: "10px", overflow: "hidden", overflowY: "auto" }}>
                 <div>
-                  <img src={picturesky} style={{ width: "30vw", height: "30vh" }} />
+                  <img src={selectedItem.image} style={{ width: "30vw", height: "30vh" }} />
                   <div style={{ height: "1vh" }}></div>
                 </div>
                 <div>
@@ -367,7 +375,6 @@ function DailyContent({ selectedOption, handleChange }) {
         }
       });
       if (response.status === 200) {
-        
         setdailyboardview(response.data);
         console.log("일상 게시판 가져오기 성공", response.data);
       }
@@ -442,7 +449,7 @@ function DailyContent({ selectedOption, handleChange }) {
             </div>
             <div style={{ height: "1vh" }}></div>
             <div className="yellow-box" style={{ width: "65vw", height: "57vh", borderRadius: "10px", overflow: "hidden",  overflowY: "auto"  }}>  <div>
-         <img src={picturesky} style={{ width: "30vw", height: "30vh" }} />
+         <img src={selectedItem.image} style={{ width: "30vw", height: "30vh" }} />
          <div style={{ height: "1vh" }}></div></div><div>
         <p style={{ marginLeft:'10px', fontSize:'22px', display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
           {selectedItem.username}
@@ -577,7 +584,7 @@ function FoodAllContent({ selectedOption, handleChange }) {
         <div className='white-box-top'>
           <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
             <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>맛집</p>
-            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>{`${foodAllboardView.length} 개의 글`}</p>
+            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>{`${foodAllboardView.length}  개의 글`}</p>
             <div style={{ width: "50vw" }}></div>
             <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
               <option value="latest">최신순</option>
@@ -604,7 +611,7 @@ function FoodAllContent({ selectedOption, handleChange }) {
                 outline: "none",
                 fontFamily: "HJ"
               }}>
-                <img src={picturebasic} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%', objectFit: "cover" }} />
+                <img src={item.image} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%', objectFit: "cover" }} />
                 <p style={{ fontSize: "15px", color: "#8A8A8A", display: "flex", width: "13vh", alignItems: "center", justifyContent: "center" }}>{item.username}</p>
               </button>
               <div style={{ width: "3vw" }}></div>
@@ -640,7 +647,7 @@ function FoodAllContent({ selectedOption, handleChange }) {
                 ) : oneboardView ? (
                   <>
                     <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-                      <img src={pictureEE} alt="Profile" style={{ width: '40vh', height: '40vh', marginBottom: "5vh", paddingTop: "2vh" }} />
+                      <img src={oneboardView.image} alt="Profile" style={{ width: '40vh', height: '40vh', marginBottom: "5vh", paddingTop: "2vh" }} />
                     </div>
                     <div style={{ flexDirection: "column", width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
                       <p style={{ fontSize: "40px", textAlign: "start", marginBottom: "1vh" }}>{oneboardView.title}</p>
@@ -747,9 +754,9 @@ function FoodSeoulContent({ selectedOption, handleChange }) {
       <div className='yellow-box-top'>
         <div className='white-box-top'>
           <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
-            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>전체</p>
-            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>{foodSeoulboardView.length} 개의 글</p>
-            <div style={{ width: "45vw" }}></div>
+            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>서울</p>
+            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>{`${foodSeoulboardView.length}  개의 글`}</p>
+            <div style={{ width: "50vw" }}></div>
             <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
               <option value="latest">최신순</option>
               <option value="oldest">오래된 순</option>
@@ -775,7 +782,7 @@ function FoodSeoulContent({ selectedOption, handleChange }) {
                 outline: "none",
                 fontFamily: "HJ"
               }}>
-                <img src={picturebasic} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%', objectFit: "cover" }} />
+                <img src={item.image} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%', objectFit: "cover" }} />
                 <p style={{ fontSize: "15px", color: "#8A8A8A", display: "flex", width: "13vh", alignItems: "center", justifyContent: "center" }}>{item.username}</p>
               </button>
               <div style={{ width: "3vw" }}></div>
@@ -809,7 +816,7 @@ function FoodSeoulContent({ selectedOption, handleChange }) {
             ) : oneboardView ? (
               <>
                 <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-                  <img src={pictureEE} alt="Profile" style={{ width: '40vh', height: '40vh', marginBottom: "5vh", paddingTop: "2vh" }} />
+                  <img src={oneboardView.image} alt="Profile" style={{ width: '40vh', height: '40vh', marginBottom: "5vh", paddingTop: "2vh" }} />
                 </div>
                 <div style={{ flexDirection: "column", width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <p style={{ fontSize: "40px", textAlign: "start", marginBottom: "1vh" }}>{oneboardView.title}</p>
@@ -915,9 +922,9 @@ function FoodGangContent({ selectedOption, handleChange }) {
       <div className='yellow-box-top'>
         <div className='white-box-top'>
           <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
-            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>전체</p>
-            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>{foodGangboardView.length}개의 글</p>
-            <div style={{ width: "45vw" }}></div>
+            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>강릉</p>
+            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>{`${foodGangboardView.length}  개의 글`}</p>
+            <div style={{ width: "50vw" }}></div>
             <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
               <option value="latest">최신순</option>
               <option value="oldest">오래된 순</option>
@@ -943,7 +950,7 @@ function FoodGangContent({ selectedOption, handleChange }) {
                 outline: "none",
                 fontFamily: "HJ"
               }}>
-                <img src={picturebasic} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%', objectFit: "cover" }} />
+                <img src={item.image} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%', objectFit: "cover" }} />
                 <p style={{ fontSize: "15px", color: "#8A8A8A", display: "flex", width: "13vh", alignItems: "center", justifyContent: "center" }}>{item.username}</p>
               </button>
               <div style={{ width: "3vw" }}></div>
@@ -977,7 +984,7 @@ function FoodGangContent({ selectedOption, handleChange }) {
             ) : oneboardView ? (
               <>
                 <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-                  <img src={pictureEE} alt="Profile" style={{ width: '40vh', height: '40vh', marginBottom: "5vh", paddingTop: "2vh" }} />
+                  <img src={oneboardView.image} alt="Profile" style={{ width: '40vh', height: '40vh', marginBottom: "5vh", paddingTop: "2vh" }} />
                 </div>
                 <div style={{ flexDirection: "column", width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <p style={{ fontSize: "40px", textAlign: "start", marginBottom: "1vh" }}>{oneboardView.title}</p>
@@ -1084,9 +1091,9 @@ function FoodDaejeonContent({ selectedOption, handleChange }) {
       <div className='yellow-box-top'>
         <div className='white-box-top'>
           <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
-            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>전체</p>
-            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>{foodDaejeonboardView.length}개의 글</p>
-            <div style={{ width: "45vw" }}></div>
+            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>대전</p>
+            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>{`${foodDaejeonboardView.length}  개의 글`}</p>
+            <div style={{ width: "50vw" }}></div>
             <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
               <option value="latest">최신순</option>
               <option value="oldest">오래된 순</option>
@@ -1112,7 +1119,7 @@ function FoodDaejeonContent({ selectedOption, handleChange }) {
                 outline: "none",
                 fontFamily: "HJ"
               }} >
-                <img src={picturebasic} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%', objectFit: "cover" }} />
+                <img src={item.image} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%', objectFit: "cover" }} />
                 <p style={{ fontSize: "15px", color: "#8A8A8A", display: "flex", width: "13vh", alignItems: "center", justifyContent: "center" }}>{item.username}</p>
               </button>
               <div style={{ width: "3vw" }}></div>
@@ -1146,7 +1153,7 @@ function FoodDaejeonContent({ selectedOption, handleChange }) {
             ) : oneboardView ? (
               <>
                 <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-                  <img src={pictureEE} alt="Profile" style={{ width: '40vh', height: '40vh', marginBottom: "5vh", paddingTop: "2vh" }} />
+                  <img src={oneboardView.image} alt="Profile" style={{ width: '40vh', height: '40vh', marginBottom: "5vh", paddingTop: "2vh" }} />
                 </div>
                 <div style={{ flexDirection: "column", width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <p style={{ fontSize: "40px", textAlign: "start", marginBottom: "1vh" }}>{oneboardView.title}</p>
@@ -1252,9 +1259,9 @@ function FoodDaeguContent({ selectedOption, handleChange }) {
       <div className='yellow-box-top'>
         <div className='white-box-top'>
           <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
-            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>전체</p>
-            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>{foodDaeguboardView.length} 개의 글</p>
-            <div style={{ width: "45vw" }}></div>
+            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>대구</p>
+            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>{`${foodDaeguboardView.length}  개의 글`}</p>
+            <div style={{ width: "50vw" }}></div>
             <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
               <option value="latest">최신순</option>
               <option value="oldest">오래된 순</option>
@@ -1280,7 +1287,7 @@ function FoodDaeguContent({ selectedOption, handleChange }) {
                 outline: "none",
                 fontFamily: "HJ"
               }}>
-                <img src={picturebasic} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%', objectFit: "cover" }} />
+                <img src={item.image} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%', objectFit: "cover" }} />
                 <p style={{ fontSize: "15px", color: "#8A8A8A", display: "flex", width: "13vh", alignItems: "center", justifyContent: "center" }}>{item.username}</p>
               </button>
               <div style={{ width: "3vw" }}></div>
@@ -1315,7 +1322,7 @@ function FoodDaeguContent({ selectedOption, handleChange }) {
             ) : oneboardView ? (
               <>
                 <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-                  <img src={pictureEE} alt="Profile" style={{ width: '40vh', height: '40vh', marginBottom: "5vh", paddingTop: "2vh" }} />
+                  <img src={oneboardView.image} alt="Profile" style={{ width: '40vh', height: '40vh', marginBottom: "5vh", paddingTop: "2vh" }} />
                 </div>
                 <div style={{ flexDirection: "column", width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <p style={{ fontSize: "40px", textAlign: "start", marginBottom: "1vh" }}>{oneboardView.title}</p>
@@ -1421,9 +1428,9 @@ function FoodBusanContent({ selectedOption, handleChange }) {
       <div className='yellow-box-top'>
         <div className='white-box-top'>
           <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
-            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>전체</p>
-            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>{foodBusanboardView.length} 개의 글</p>
-            <div style={{ width: "45vw" }}></div>
+            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>부산</p>
+            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>{`${foodBusanboardView.length}  개의 글`}</p>
+            <div style={{ width: "50vw" }}></div>
             <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
               <option value="latest">최신순</option>
               <option value="oldest">오래된 순</option>
@@ -1449,7 +1456,7 @@ function FoodBusanContent({ selectedOption, handleChange }) {
                 outline: "none",
                 fontFamily: "HJ"
               }}>
-                <img src={picturebasic} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%', objectFit: "cover" }} />
+                <img src={item.image} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%', objectFit: "cover" }} />
                 <p style={{ fontSize: "15px", color: "#8A8A8A", display: "flex", width: "13vh", alignItems: "center", justifyContent: "center" }}>{item.username}</p>
               </button>
               <div style={{ width: "3vw" }}></div>
@@ -1484,7 +1491,7 @@ function FoodBusanContent({ selectedOption, handleChange }) {
             ) : oneboardView ? (
               <>
                 <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-                  <img src={pictureEE} alt="Profile" style={{ width: '40vh', height: '40vh', marginBottom: "5vh", paddingTop: "2vh" }} />
+                  <img src={oneboardView.image} alt="Profile" style={{ width: '40vh', height: '40vh', marginBottom: "5vh", paddingTop: "2vh" }} />
                 </div>
                 <div style={{ flexDirection: "column", width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <p style={{ fontSize: "40px", textAlign: "start", marginBottom: "1vh" }}>{oneboardView.title}</p>
@@ -1590,9 +1597,9 @@ function FoodJejuContent({ selectedOption, handleChange }) {
       <div className='yellow-box-top'>
         <div className='white-box-top'>
           <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
-            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>전체</p>
-            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>{foodJejuboardView.length} 개의 글</p>
-            <div style={{ width: "45vw" }}></div>
+            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>제주</p>
+            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>{`${foodJejuboardView.length}  개의 글`}</p>
+            <div style={{ width: "50vw" }}></div>
             <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
               <option value="latest">최신순</option>
               <option value="oldest">오래된 순</option>
@@ -1618,7 +1625,7 @@ function FoodJejuContent({ selectedOption, handleChange }) {
                 outline: "none",
                 fontFamily: "HJ"
               }}>
-                <img src={picturebasic} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%', objectFit: "cover" }} />
+                <img src={item.image} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%', objectFit: "cover" }} />
                 <p style={{ fontSize: "15px", color: "#8A8A8A", display: "flex", width: "13vh", alignItems: "center", justifyContent: "center" }}>{item.username}</p>
               </button>
               <div style={{ width: "3vw" }}></div>
@@ -1653,7 +1660,7 @@ function FoodJejuContent({ selectedOption, handleChange }) {
             ) : oneboardView ? (
               <>
                 <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-                  <img src={pictureEE} alt="Profile" style={{ width: '40vh', height: '40vh', marginBottom: "5vh", paddingTop: "2vh" }} />
+                  <img src={oneboardView.image} alt="Profile" style={{ width: '40vh', height: '40vh', marginBottom: "5vh", paddingTop: "2vh" }} />
                 </div>
                 <div style={{ flexDirection: "column", width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <p style={{ fontSize: "40px", textAlign: "start", marginBottom: "1vh" }}>{oneboardView.title}</p>
@@ -1762,9 +1769,9 @@ function FoodElseContent({ selectedOption, handleChange }) {
       <div className='yellow-box-top'>
         <div className='white-box-top'>
           <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
-            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>전체</p>
-            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>{foodElseboardView.length} 개의 글</p>
-            <div style={{ width: "45vw" }}></div>
+            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "20px" }}>기타</p>
+            <p style={{ paddingLeft: "1.2vh", paddingTop: "1vh", fontSize: "16px" }}>{`${foodElseboardView.length}  개의 글`}</p>
+            <div style={{ width: "50vw" }}></div>
             <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
               <option value="latest">최신순</option>
               <option value="oldest">오래된 순</option>
@@ -1790,7 +1797,7 @@ function FoodElseContent({ selectedOption, handleChange }) {
                 outline: "none",
                 fontFamily: "HJ"
               }}>
-                <img src={picturebasic} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%', objectFit: "cover" }} />
+                <img src={item.image} alt="Profile" style={{ width: '13vh', height: '13vh', borderRadius: '50%', objectFit: "cover" }} />
                 <p style={{ fontSize: "15px", color: "#8A8A8A", display: "flex", width: "13vh", alignItems: "center", justifyContent: "center" }}>{item.username}</p>
               </button>
               <div style={{ width: "3vw" }}></div>
@@ -1825,7 +1832,7 @@ function FoodElseContent({ selectedOption, handleChange }) {
             ) : oneboardView ? (
               <>
                 <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-                  <img src={pictureEE} alt="Profile" style={{ width: '40vh', height: '40vh', marginBottom: "5vh", paddingTop: "2vh" }} />
+                  <img src={oneboardView.image} alt="Profile" style={{ width: '40vh', height: '40vh', marginBottom: "5vh", paddingTop: "2vh" }} />
                 </div>
                 <div style={{ flexDirection: "column", width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <p style={{ fontSize: "40px", textAlign: "start", marginBottom: "1vh" }}>{oneboardView.title}</p>
