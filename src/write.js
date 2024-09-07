@@ -27,7 +27,7 @@ function Write() {
   const formData = new FormData();
 
   const navigate = useNavigate();
-  
+
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
     setSelectedLocation(null); // 카테고리 변경 시 위치 초기화
@@ -42,9 +42,28 @@ function Write() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setImage(URL.createObjectURL(file));
-      setImageText(file.name);
+
       formData.append('file', file);
+
+      axios({
+        method: 'post',
+        url: `/upload/posting`,
+        data: formData,
+        headers: {
+          'accept': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+          "Content-Type": "multipart/form-data",
+        }
+      })
+        .then((response) => {
+          if (response.status === 200) {
+            setImage(response.data);
+          }
+        });
+
+
+      setImageText(file.name);
+
     }
   };
 
@@ -66,7 +85,7 @@ function Write() {
 
   const handleSubmit = () => {
     const postData = {
-      category, title, contents, date
+      category, title, contents, date, image, location
     };
     axios.post('/board/', postData, {
       headers: {
@@ -83,22 +102,7 @@ function Write() {
           });
 
           const post_id = response.data['id'];
-          
-          axios({
-            method: 'POST',
-            url: `/upload/posting/${post_id}`,
-            data: formData,
-            headers: {
-              'accept': 'application/json',
-              'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
-              "Content-Type": "multipart/form-data",
-            }
-          })
-            .then((response) => {
-              console.log(response.config);
-              console.log(response.data);
-            });
-          navigate(`/notice/${post_id}`);
+          navigate(`/notice/${localStorage.getItem("id")}`);
         }
       })
       .catch((error) => {
@@ -213,7 +217,7 @@ function Write() {
       </div>
       {isPopupVisible && (
         <div className='letter-popup' onClick={handlePopupClose}>
-          <div className='letter-popup-content' onClick={(e) => e.stopPropagation()} style={{padding:"3vh",width: '35vw', height: '30vh' }}>
+          <div className='letter-popup-content' onClick={(e) => e.stopPropagation()} style={{ padding: "3vh", width: '35vw', height: '30vh' }}>
             <p className='trash-popup-message' style={{ paddingTop: '30px', textAlign: "center", alignItems: "center", justifyContent: "center", display: "flex", width: "100%" }}>업로드 하시겠습니까?</p>
             <div style={{ height: '5vh' }}></div>
             <div className='letter-popup-buttons'>

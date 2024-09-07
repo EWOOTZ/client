@@ -80,7 +80,7 @@ function Mypage() {
             formData.append('file', uploadFile);
             axios({
                 method: 'post',
-                url: '/file/upload',
+                url: '/upload/profile',
                 data: formData,
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("access_token")}`,

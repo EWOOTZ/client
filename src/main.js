@@ -261,6 +261,7 @@ function Main() {
                     icon: "success",
                     text: "구독 성공!",
                 });
+                getFollower();
             }
         }).catch((error) => {
             console.log("팔로우 보내기 실패", error.response);
@@ -511,7 +512,7 @@ function Main() {
                             </div>
                             <div style={{ height: "2vh" }}>
                             </div>
-                            <div className='green-box'>
+                            <div className='green-box' style={{ marginBottom: "2vh" }}>
                                 <div className='hang' style={{ paddingRight: "2vh" }}>
                                     <img src={pictureCD} width='40vw' height='20vh' />
                                     <p style={{ fontSize: "15px" }}>{`${singer} - ${musicTitle}`}</p>                                </div>
@@ -522,7 +523,7 @@ function Main() {
                                 </div>
                             </div>
                             {
-                                <div className="youtube-video" style={{ marginTop: "1vh", display: 'flex', alignItems: "center" }}>
+                                <div className="youtube-video" style={{ display: "contents", alignItems: "center", alignContent: "center" }}>
                                     {videoId ? (
                                         <YouTube videoId={videoId} opts={opts} />
                                     ) : (
