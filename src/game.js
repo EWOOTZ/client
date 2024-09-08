@@ -299,9 +299,9 @@ const Game = () => {
                 <div className="popup">
                     
                     <div className="popup-content">
-                    <button onClick={handleClosePopup} className="close-button" style={{paddingLeft:'120px'}}>X</button>
+                    <button onClick={handleClosePopup} className="close-button" style={{width: "15px",paddingRight:'20px'}}>X</button>
                         <div className='hang'>
-                            <img src={pictureApple} style={{ width: '50px', height: '40px', }} alt="life"/>
+                            <img src={pictureApple} style={{ width: '50px', height: '50px', }} alt="life"/>
                             <h1>게임 설명</h1>
                             <img src={pictureApple} style={{ width: '50px', height: '40px', }} alt="life"/>
                         </div>
