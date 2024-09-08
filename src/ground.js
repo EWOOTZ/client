@@ -146,10 +146,22 @@ function Ground() {
         navigate(`/notice/${localStorage.getItem("id")}`);
     };
 
+    useEffect(() => {
+        const handlePopState = (event) => {
+            window.history.pushState(null, null, window.location.pathname); // 현재 URL 유지
+        };
+        window.history.pushState(null, null, window.location.pathname); // 현재 상태를 pushState로 추가
+        window.addEventListener('popstate', handlePopState);
+        return () => {
+            window.removeEventListener('popstate', handlePopState);
+        };
+    }, []);
+
 
     return (
         <div className='backg'>
             <div className='white-line'>
+            <button className="go-ground-gray" style={{ fontSize: "20px" }} onClick={() => navigate(`/main/${localStorage.getItem("username")}`)}>홈피가기</button>
                 <img src={backimage} className='backimage-style' />
                 <img src={letter_case}
                     className='letter-case-style'
