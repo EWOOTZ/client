@@ -176,6 +176,8 @@ function Main() {
                     icon: "success",
                     text: "답변 등록 성공!",
                 });
+
+                window.location.reload();
             }
         }).catch((error) => {
             console.log(error.response);
@@ -678,8 +680,6 @@ function Main() {
                                 marginRight: "-25px",
                                 marginBottom: "-28px"
                             }} />
-
-
                             <div style={{ width: "3vh" }}></div>
 
                             <img src={picturetrash} alt="trash" onClick={handleTrashClick} style={{

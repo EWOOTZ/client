@@ -156,14 +156,27 @@ function Ground() {
             window.removeEventListener('popstate', handlePopState);
         };
     }, []);
-
-
     return (
         <div className='backg'>
             <div className='white-line'>
-            <button className="go-ground-gray" style={{ fontSize: "20px" }} onClick={() => navigate(`/main/${localStorage.getItem("username")}`)}>홈피가기</button>
                 <img src={backimage} className='backimage-style' />
-                <img src={letter_case}
+                <div style={{ position: "relative", height: "100vh" ,width:"100vw"}}>
+    <button 
+        className="go-ground-gray" 
+        style={{ 
+            fontSize: "22px", 
+            color:"white",
+            position: "absolute", 
+            top: "7vh", // 상단에서 10px
+            right: "8vw" // 오른쪽에서 10px
+        }} 
+        onClick={() => navigate(`/main/${localStorage.getItem("username")}`)}
+    >
+        홈피가기
+    </button>
+</div>
+        <img src={letter_case} className='letter-case-style' onClick={handleLetterCaseClick} />
+        <img src={notice} alt="notice" className='notice-style' onClick={handleNoticeClick} />                <img src={letter_case}
                     className='letter-case-style'
                     onClick={handleLetterCaseClick} />
                 <img src={notice} alt="notice" className='notice-style' onClick={handleNoticeClick} />
@@ -189,7 +202,7 @@ function Ground() {
                                 <>
                                     <div className='popup-title' >
                                         <span style={{ color: '#C2E9B5',}}>{wishes[currentWishIndex]?.username}</span>
-                                        <span style={{ color: 'black'}}>  님의 소원</span>
+                                        <span style={{ color: 'black'}}>    님의 소원</span>
                                         <button className="close-button" style={{backgroundColor:"transparent", textAlign:"end"}} onClick={handlePopupClose}>x</button>
                                     </div>
                                     <div className='popup-body'>

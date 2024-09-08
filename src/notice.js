@@ -153,16 +153,11 @@ const getTitle = async () => {
             <input 
               className='input-search' 
               style={{ width: "10vw", fontSize: "15px" }} 
-              type='text' 
-              placeholder='검색' 
-              value={selectTitle}
-              onChange={handleSearchInputChange} // 검색어 변경 핸들러
-            />
-            <div style={{ width: "0.5vw" }}></div>
-            <img 
-              src={notice_search} 
-              alt="notice_search" 
-              style={{ width: "1.7vw", cursor: "pointer" }} 
+              type='text'  placeholder='검색' value={selectTitle} onChange={handleSearchInputChange} onKeyPress={(e) => {
+               if (e.key === 'Enter') {
+                 getTitle();}}}/>
+     <div style={{ width: "0.5vw" }}></div>
+            <img  src={notice_search} alt="notice_search" style={{ width: "1.7vw", cursor: "pointer" }} 
               onClick={getTitle} 
             />
           </div>
@@ -222,7 +217,6 @@ const getTitle = async () => {
     </div>
   );
 }
-
 function SearchTitle({ searchBoardView, selectedOption, handleChange }) {
   const [showPopup, setShowPopup] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -232,12 +226,10 @@ function SearchTitle({ searchBoardView, selectedOption, handleChange }) {
     setSelectedItem(searchboard);
     setShowPopup(true);
   };
-
   const handleBoardcloseClick = () => {
     setShowPopup(false);
     setIsExiting(false);
   };
-
   const sortedBoardView = useMemo(() => {
     const sorted = [...searchBoardView];
     switch (selectedOption) {
@@ -251,15 +243,14 @@ function SearchTitle({ searchBoardView, selectedOption, handleChange }) {
         return sorted;
     }
   }, [searchBoardView, selectedOption]);
-
   return (
     <div className='column-container'>
       <div className='yellow-box-top'>
         <div className='white-box-top'>
           <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
-            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "19px" }}>검색 결과</p>
-            <p style={{ paddingLeft: "4vh", paddingTop: "1vh", fontSize: "16px" }}>{`${sortedBoardView.length} 개의 글`}</p>
-            <div style={{ width: "44vw" }}></div>
+            <p style={{ paddingLeft: "3vh", paddingTop: "0.7vh", fontSize: "19px" }}>검색 결과</p>
+            <p style={{ paddingLeft: "2vh", paddingTop: "0.8vh", fontSize: "16px" }}>{`${sortedBoardView.length} 개의 글`}</p>
+            <div style={{ width: "46vw" }}></div>
             <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
               <option value="latest">최신순</option>
               <option value="oldest">오래된 순</option>
@@ -449,22 +440,14 @@ function DailyContent({ selectedOption, handleChange }) {
             </div>
             <div style={{ height: "1vh" }}></div>
             <div className="yellow-box" style={{ width: "65vw", height: "57vh", borderRadius: "10px", overflow: "hidden",  overflowY: "auto"  }}>  <div>
-         <img src={selectedItem.image} style={{ width: "30vw", height: "30vh" }} />
+         <img src={selectedItem.image} style={{ width: "30vw", height: "35vh", paddingBottom:"15px" }} />
          <div style={{ height: "1vh" }}></div></div><div>
-        <p style={{ marginLeft:'10px', fontSize:'22px', display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
+        <p style={{ paddingBottom:"10px" ,marginLeft:'10px', fontSize:'22px', display: "flex", justifyContent: "center", alignItems: "center", width: "100%", }}>
           {selectedItem.username}
           <img src={notice_love} alt="notice_love" /> </p></div>
          <div style={{ padding:'10px',fontSize:'17px', display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
-          <p>{selectedItem.contents} </p>
- </div>
-</div>
-           </div>
-
-            </div>
-          </div>
-        )}
-      </div>
-      </div>
+          <p>{selectedItem.contents} </p></div></div>
+           </div>    </div> </div>  )}</div></div>
           </div>
           <div style={{ height: "60vh", width: "15vw" }}>
             <div className="hang" style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
