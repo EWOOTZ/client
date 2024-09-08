@@ -117,7 +117,7 @@ const getTitle = async () => {
   const renderCategoryContent = () => {
     switch (selectedCategory) {
       case 'SearchTitle':
-        return <SearchTitle searchBoardView={searchBoardView} selectedOption={selectedOption} handleChange={handleChange} />;
+        return <SearchTitle searchBoardView={searchBoardView} selectedOption={selectedOption} handleChange={handleChange}  getTitle={getTitle} />;
       case 'daily':
         return <DailyContent selectedOption={selectedOption} handleChange={handleChange} />; 
       case 'food':
@@ -217,17 +217,43 @@ const getTitle = async () => {
     </div>
   );
 }
-function SearchTitle({ searchBoardView, selectedOption, handleChange }) {
+
+function SearchTitle({ searchBoardView, selectedOption, handleChange,getTitle }) {
   const [showPopup, setShowPopup] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [isExiting, setIsExiting] = useState(false);
 
-  const handleButtonClick = (searchboard) => {
-    setSelectedItem(searchboard);
-    setShowPopup(true);
+  const getpostBoard = async (id) => {
+    try {
+      const response = await axios.get(`/board/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.status === 200) {
+        setSelectedItem(response.data); 
+        console.log("특정 검색 게시판 가져오기 성공", response.data);
+      }
+    } catch (error) {
+      console.error("특정 검색 게시판 가져오기 실패", error.response);
+      console.error(error);
+    }
   };
+  
+  const handleButtonClick = async(searchboard) => {
+    try {
+      await getpostBoard(searchboard.id);
+            setShowPopup(true);
+    } catch (error) {
+      console.error('특정 검색 게시판 클릭 실패', error);
+    }
+
+  };
+
   const handleBoardcloseClick = () => {
     setShowPopup(false);
+    getTitle();
     setIsExiting(false);
   };
   const sortedBoardView = useMemo(() => {
@@ -243,6 +269,7 @@ function SearchTitle({ searchBoardView, selectedOption, handleChange }) {
         return sorted;
     }
   }, [searchBoardView, selectedOption]);
+
   return (
     <div className='column-container'>
       <div className='yellow-box-top'>
@@ -262,8 +289,8 @@ function SearchTitle({ searchBoardView, selectedOption, handleChange }) {
       <div style={{height:"2vh"}}></div>
       <div className='yellow-box-bottom'>
         <div className='white-box-bottom'>
-          <div style={{ height: "60vh", width: "42vw", paddingLeft: "3px" }}>
-            <p style={{ width: "43vw", height: "3vh", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>글제목</p>          
+          <div style={{ height: "60vh", width: "32vw", paddingLeft: "3px" }}>
+            <p style={{ width: "44vw", height: "3vh", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>글제목</p>          
             <hr style={{ border: "0.2px solid black", width: "100%" }} />
             {sortedBoardView.map((searchboard) => (
               <div key={searchboard.title} style={{ cursor: 'pointer' }}>
@@ -299,6 +326,18 @@ function SearchTitle({ searchBoardView, selectedOption, handleChange }) {
               {sortedBoardView.map((searchboard) => (
                 <div key={searchboard.id}>
                   <p style={{ display: "flex", justifyContent: "center" }}>{searchboard.date}</p>
+                  <hr style={{ border: "0.2px solid gray", width: "100%" }} />
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ height: "60vh", width: "10vw" }}>
+            <p style={{ height: "3vh", width: "10vw", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>조회수</p>
+            <hr style={{ border: "0.2px solid black", width: "100%" }} />
+            <div>
+              {sortedBoardView.map((searchboard) => (
+                <div key={searchboard.id}>
+                  <p style={{ display: "flex", justifyContent: "center" }}>{searchboard.views}</p>
                   <hr style={{ border: "0.2px solid gray", width: "100%" }} />
                 </div>
               ))}
@@ -347,14 +386,42 @@ function DailyContent({ selectedOption, handleChange }) {
   const [selectedItem, setSelectedItem] = useState(null);
   const [isExiting, setIsExiting] = useState(false);
 
-  const handleButtonClick = (dailyboard) => {
-    setSelectedItem(dailyboard);
-    setShowPopup(true);
+  const handleButtonClick = async (dailyboard) => {
+    try {
+      // 게시판 데이터 가져오기
+      await getpostBoard(dailyboard.id);
+      
+      // 상태가 업데이트된 후 팝업을 보여줍니다.
+      setShowPopup(true);
+    } catch (error) {
+      console.error('특정 일상 게시판 클릭 실패', error);
+    }
   };
+  
+  const getpostBoard = async (id) => {
+    try {
+      const response = await axios.get(`/board/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.status === 200) {
+        setSelectedItem(response.data); // 상태 업데이트
+        console.log("특정 일상 게시판 가져오기 성공", response.data);
+      }
+    } catch (error) {
+      console.error("특정 일상 게시판 가져오기 실패", error.response);
+      console.error(error);
+    }
+  };
+  
 
   const handleBoardcloseClick = () => {
+    getDailyBoard();
     setShowPopup(false);
     setIsExiting(false);
+
   };
 
   const getDailyBoard = async () => {
@@ -412,7 +479,7 @@ function DailyContent({ selectedOption, handleChange }) {
       <div style={{ height: "2vh" }}></div>
       <div className='yellow-box-bottom'>
         <div className='white-box-bottom'>
-          <div style={{ height: "60vh", width: "42vw", paddingLeft: "3px" }}>
+          <div style={{ height: "60vh", width: "32vw", paddingLeft: "3px" }}>
             <p style={{ width: "43vw", height: "3vh", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>글제목</p>
             <hr style={{ border: "0.2px solid black", width: "100%" }} />
             <div>
@@ -471,6 +538,18 @@ function DailyContent({ selectedOption, handleChange }) {
               {sortedDailyView.map((dailyboard) => (
                 <div key={dailyboard.id}>
                   <p style={{ display: "flex", justifyContent: "center" }}>{dailyboard.date}</p>
+                  <hr style={{ border: "0.2px solid gray", width: "100%" }} />
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ height: "60vh", width: "10vw" }}>
+            <p style={{ height: "3vh", width: "10vw", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>조회수</p>
+            <hr style={{ border: "0.2px solid black", width: "100%" }} />
+            <div>
+              {sortedDailyView.map((dailyboard) => (
+                <div key={dailyboard.id}>
+                  <p style={{ display: "flex", justifyContent: "center" }}>{dailyboard.views}</p>
                   <hr style={{ border: "0.2px solid gray", width: "100%" }} />
                 </div>
               ))}
