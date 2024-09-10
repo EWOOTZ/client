@@ -24,7 +24,7 @@ function Mypage() {
     const [searchClicked, setSearchClicked] = useState(false);
     const [isSearchEnabled, setIsSearchEnabled] = useState(false);
 
-    const myUrl = `localhost:3000/main/${localStorage.getItem("id")}`;
+    const myUrl = `http://ewootz.site/${localStorage.getItem("id")}`;
 
 
     const opts = {
