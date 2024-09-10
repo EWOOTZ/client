@@ -31,7 +31,7 @@ function formatDate() {
     return `${year % 100}.${month}.${day}  (${dayOfWeek})`;
 }
 
-function Main() {
+function submain() {
     const videoStyle = {
         margin: '10px',
         marginRight: '35px',
@@ -498,7 +498,6 @@ function Main() {
     return (
         <div className='backg'>
             <div className='white-line' style={{ padding: "10px" }}>
-                <button className="go-ground-gray" style={{ fontSize: "23px" }} onClick={() => navigate(`/ground/${localStorage.getItem("username")}`)}>광장가기</button>
                 <div className='hang'>
                     <div>
                         <p className='date-text' style={{ padding: "6px" }}>{formatDate()}</p>
@@ -652,7 +651,7 @@ function Main() {
                                     {followee.map((myfollowee) => (
                                         <div key={myfollowee.id}>
                                             <button style={{ fontSize: "17px" }}>
-                                                <Link to={`/submain/${myfollowee.username}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                                <Link to={`/main/${myfollowee.username}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                                     {myfollowee.fullname}
                                                 </Link>
                                             </button>
@@ -750,4 +749,4 @@ function Main() {
     );
 }
 
-export default Main;
+export default submain;
