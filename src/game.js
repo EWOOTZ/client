@@ -140,8 +140,8 @@ const Game = () => {
     }, []);
 
     useEffect(() => {
-        fetch(process.env.PUBLIC_URL + '/game.txt')
-            .then((response) => {
+        fetch(`${process.env.PUBLIC_URL}/game.txt`)
+                    .then((response) => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
