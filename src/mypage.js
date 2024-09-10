@@ -96,7 +96,7 @@ function Mypage() {
                         alert("오류.");
                     }
                 }
-            );
+                );
         }
     };
 
@@ -228,13 +228,22 @@ function Mypage() {
 
     const handleCopyClipBoard = async (text) => {
         try {
-            await navigator.clipboard.writeText(text);
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+
+            // 클립보드에 복사
+            const successful = document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            if(successful){
             Swal.fire({
                 icon: "success",
                 title: "복사 완료",
                 text: "URL이 복사되었습니다!",
-            });
-        }         catch (err) {
+            });}
+        } catch (err) {
             console.log(err);
         }
     };
