@@ -74,7 +74,7 @@ function Main() {
     const getMypage = async () => {
         try {
             const response = await axios.get(
-                '/users/me',
+                '/api/users/me',
                 {
                     'headers': {
                         'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
@@ -338,7 +338,7 @@ function Main() {
             .then((response) => {
                 console.log(response.status);
                 if (response.status === 200) {
-                    const extractedUsernames = response.data.map(user => user.username);
+                    const extractedUsernames = response.data?.map(user => user.username);
                     setUsernames(extractedUsernames);
                     console.log('유저 검색 결과:', usernames);
                 }
@@ -607,7 +607,7 @@ function Main() {
                             <div className='sky-box' style={{ width: "53vw", height: "43vh", backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.5)), url(${picturesky})`, backgroundSize: "cover" }}>
                                 <div className='sky-box-inner'>
                                     <div className='scroll2' style={{ padding: "1vh", width: "100%", height: "90%" }}>
-                                        {visitView.map((visit) => (
+                                        {visitView && visitView.data?.map((visit) => (
                                             <div key={visit.id} style={{ marginBottom: "2vh" }}>
                                                 <div className='hang'>
                                                     <div style={{ textAlign: "center", alignItems: "center", justifyContent: "center", display: "flex", width: "10vw" }}>
@@ -643,7 +643,7 @@ function Main() {
                             <div style={{ height: "1vh" }}></div>
                             <div style={{ height: "78%" }}>
                                 <div>
-                                    {followee.map((myfollowee) => (
+                                    {followee && followee.data?.map((myfollowee) => (
                                         <div key={myfollowee.id}>
                                             <p style={{ fontSize: "17px" }}>{myfollowee.fullname}</p>
                                             <div style={{ height: "1vh" }}></div>
@@ -659,7 +659,7 @@ function Main() {
                             <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
                             <div style={{ height: "83%", overflowY: "auto" }}>
                                 {rankingList.length > 0 ? (
-                                    rankingList.map((rank, index) => (
+                                    rankingList && rankingList.data?.map((rank, index) => (
                                         <div key={index} style={{ margin: "10px 0" }}>
                                             <p style={{ fontSize: "15px" }}>{rank.fullname} - {rank.score}P</p>
                                         </div>
@@ -717,7 +717,7 @@ function Main() {
                             <div style={{ height: "60%" }}>
                                 <div style={{ height: "2vh" }}></div>
                                 <div>
-                                    {usernames.map((username) => (
+                                    {usernames && usernames.data?.map((username) => (
                                         <div key={username.id}>
                                             <div className='hang'>
                                                 <p style={{ fontSize: "22px", width: "12vw" }}>{username}</p>
