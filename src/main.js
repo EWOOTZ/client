@@ -46,7 +46,7 @@ function Main() {
     };
 
     const MusicFetch = () => {
-        axios.get('/youtube/mymusic_video', {
+        axios.get('/api/youtube/mymusic_video', {
             headers: {
                 'accept': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`
@@ -106,7 +106,7 @@ function Main() {
     };
 
     async function getFollower() {
-        axios.get('/follow/', {
+        axios.get('/api/follow/', {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
                 'Content-Type': 'application/json'
@@ -123,7 +123,7 @@ function Main() {
 
     const getQna = async () => {
         try {
-            const response = await axios.get('/qna/', {
+            const response = await axios.get('/api/qna/', {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
                     'Content-Type': 'application/json'
@@ -150,7 +150,7 @@ function Main() {
 
     function sendQna() {
         axios.put(
-            '/qna/',
+            '/api/qna/',
             {
                 "answer1": a1,
                 "answer2": a2,
@@ -190,7 +190,7 @@ function Main() {
 
     const getVisit = async () => {
         try {
-            const response = await axios.get('/dialog/', {
+            const response = await axios.get('/api/dialog/', {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
                     'Content-Type': 'application/json'
@@ -215,7 +215,7 @@ function Main() {
             return;
         }
         axios.post(
-            '/dialog/',
+            '/api/dialog/',
             {
                 "user_id": localStorage.getItem("ID"),
                 "visitor": visitname,
@@ -243,7 +243,7 @@ function Main() {
 
     function sendFollow(selectedUsername) {
         axios.post(
-            '/follow/',
+            '/api/follow/',
             {
                 "follower": localStorage.getItem("username"),
                 "followee": selectedUsername,
@@ -276,7 +276,7 @@ function Main() {
     }
 
     const fetchRanking = () => {
-        axios.get('/score/', {
+        axios.get('/api/score/', {
             headers: {
                 'accept': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`
@@ -286,7 +286,7 @@ function Main() {
 
                 console.log('모든 game score 서버 응답:', response.data);
 
-                const sortedList = response.data.sort((a, b) => b.score - a.score);
+                const sortedList = response.data
                 setRankingList(sortedList);
                 console.log("랭킹", sortedList);
             }
@@ -328,7 +328,7 @@ function Main() {
 
 
     async function getSearch() {
-        axios.get('/search/?', {
+        axios.get('/api/search/?', {
             params: { search_user },
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
@@ -607,7 +607,7 @@ function Main() {
                             <div className='sky-box' style={{ width: "53vw", height: "43vh", backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.5)), url(${picturesky})`, backgroundSize: "cover" }}>
                                 <div className='sky-box-inner'>
                                     <div className='scroll2' style={{ padding: "1vh", width: "100%", height: "90%" }}>
-                                        {visitView && visitView.data?.map((visit) => (
+                                        {visitView.map((visit) => (
                                             <div key={visit.id} style={{ marginBottom: "2vh" }}>
                                                 <div className='hang'>
                                                     <div style={{ textAlign: "center", alignItems: "center", justifyContent: "center", display: "flex", width: "10vw" }}>
@@ -643,7 +643,7 @@ function Main() {
                             <div style={{ height: "1vh" }}></div>
                             <div style={{ height: "78%" }}>
                                 <div>
-                                    {followee && followee.data?.map((myfollowee) => (
+                                    {followee.map((myfollowee) => (
                                         <div key={myfollowee.id}>
                                             <p style={{ fontSize: "17px" }}>{myfollowee.fullname}</p>
                                             <div style={{ height: "1vh" }}></div>
@@ -659,7 +659,7 @@ function Main() {
                             <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
                             <div style={{ height: "83%", overflowY: "auto" }}>
                                 {rankingList.length > 0 ? (
-                                    rankingList && rankingList.data?.map((rank, index) => (
+                                    rankingList.map((rank, index) => (
                                         <div key={index} style={{ margin: "10px 0" }}>
                                             <p style={{ fontSize: "15px" }}>{rank.fullname} - {rank.score}P</p>
                                         </div>
@@ -717,7 +717,7 @@ function Main() {
                             <div style={{ height: "60%" }}>
                                 <div style={{ height: "2vh" }}></div>
                                 <div>
-                                    {usernames && usernames.data?.map((username) => (
+                                    {usernames.map((username) => (
                                         <div key={username.id}>
                                             <div className='hang'>
                                                 <p style={{ fontSize: "22px", width: "12vw" }}>{username}</p>

@@ -19,7 +19,7 @@ function Ground() {
     const [username, setUsername] = useState('');
 
     const fetchData = () => {
-        axios.get('/users/me', {
+        axios.get('/api/users/me', {
             headers: {
                 'accept': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`
@@ -36,7 +36,7 @@ function Ground() {
     };
 
     const fetchWishes = () => {
-        axios.get('/wish/', {
+        axios.get('/api/wish/', {
             headers: {
                 'accept': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`
@@ -96,7 +96,7 @@ function Ground() {
                 username: username,
                 contents: text
             };
-            axios.post('/wish/', postData, {
+            axios.post('/api/wish/', postData, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
                     'Content-Type': 'application/json'
