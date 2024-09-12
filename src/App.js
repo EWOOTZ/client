@@ -118,8 +118,6 @@ const App= () => {
           <Route path="/game/:id" element={<Game />} />
           <Route path="/notice/:id" element={<Notice />} />
           <Route path="/write/:id" element={<Write/>} />
-
-
         </Routes>
       </BrowserRouter>
     </div>
