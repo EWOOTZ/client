@@ -103,7 +103,7 @@ function Write() {
           });
 
           const post_id = response.data['id'];
-          navigate(`/api/notice/${localStorage.getItem("id")}`);
+          navigate(`/notice/${localStorage.getItem("id")}`);
         }
       })
       .catch((error) => {
