@@ -2,7 +2,7 @@
 import './App.css';
 import { useState } from 'react';
 import pictureHome from './images/Oak Tree.png';
-import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import Ground from './ground';
 import Join from './join';
 import Letter from './Letter';
@@ -21,7 +21,7 @@ const Home = () => {
   const navigate = useNavigate();
   const [id, setId] = useState('');
   const [pw, setPw] = useState('');
-  const [id2, setId2] = useState('');
+  let {id2} = useParams();
   const formData = new FormData();
   formData.append('username', id);
   formData.append('password', pw);
@@ -116,7 +116,7 @@ const App= () => {
           <Route path="/join" element={<Join />} />
           <Route path="/letter/:id" element={<Letter />} />
           <Route path="/main/:id" element={<Main />} />
-          <Route path="/submain/:id2" element={<Submain />} />
+          <Route path="/submain/:username" element={<Submain />} />
           <Route path="/mypage/:id" element={<Mypage />} />
           <Route path="/game/:id" element={<Game />} />
           <Route path="/notice/:id" element={<Notice />} />

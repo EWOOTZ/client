@@ -3,7 +3,7 @@ import './App.css';
 import './Letter.css';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import picturetrash from './assets/trash.png';
 import pictureHome from './images/Oak Tree.png';
 import pictureApple from './images/apple.png';
@@ -46,166 +46,15 @@ function submain() {
         }
     };
 
-    const MusicFetch = () => {
-        axios.get('/youtube/mymusic_video', {
-            headers: {
-                'accept': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem("access_token")}`
-            }
-        })
-            .then((response) => {
-                if (response.status === 200) {
-                    console.log('MusicFetch 서버 응답:', response.data);
-                    if (response.data && response.data.youtube_data && response.data.youtube_data.items && response.data.youtube_data.items.length > 0) {
-                        const videoId = response.data.youtube_data.items[0].id;
-                        localStorage.setItem("singer", response.data.singer);
-                        setSinger(response.data.singer);
-                        localStorage.setItem("musicTitle", response.data.music_title);
-                        setMusicTitle(response.data.music_title);
-                        localStorage.setItem("videoId", videoId);
-                        setVideoId(videoId);
-                    }
-                }
-            })
-            .catch((error) => {
-                console.error('MusicFetch 데이터를 가져오는 중 오류 발생:', error);
-            });
-    };
-
-    const getMypage = async () => {
-        try {
-            const response = await axios.get(
-                '/users/me',
-                {
-                    'headers': {
-                        'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
-                        'Content-Type': 'application/json'
-                    }
-                }
-            );
-            if (response.status === 200) {
-                localStorage.setItem("fullname", response.data.fullname);
-                localStorage.setItem("username", response.data.username);
-                setFullname(response.data.fullname);
-                localStorage.setItem("profile_image", response.data.profile_image);
-                setProfileImg(response.data.profile_image);
-                localStorage.setItem("ID", response.data.id);
-                localStorage.setItem("statusM", response.data.status_message);
-                setStatus(response.data.status_message);
-                localStorage.setItem("music_info", response.data.music_info);
-                console.log(localStorage.getItem("fullname"));
-                console.log(localStorage.getItem("statusM"));
-                console.log(localStorage.getItem("ID"));
-                console.log(localStorage.getItem("profile_image"));
-                console.log(localStorage.getItem("music_info"));
-                console.log("마이페이지 가져오기 성공");
-            }
-        }
-        catch (error) {
-            console.log(error.response);
-        }
-    };
-
-  
-
-    async function getFollower() {
-        axios.get('/follow/', {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
-                'Content-Type': 'application/json'
-            }
-        }).then((response) => {
-            if (response.status === 200) {
-                setFollowee(response.data);
-            }
-        })
-            .catch((error) => {
-                console.error('팔로워 목록 가져오기 실패:', error);
-            });
-    };
-
-    const getQna = async () => {
-        try {
-            const response = await axios.get('/qna/', {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-            if (response.status === 200) {
-                const data = response.data[0];
-                seta1(data.answer1);
-                seta2(data.answer2);
-                seta3(data.answer3);
-                seta4(data.answer4);
-                seta5(data.answer5);
-                seta6(data.answer6);
-                seta7(data.answer7);
-                seta8(data.answer8);
-                seta9(data.answer9);
-                seta10(data.answer10);
-                console.log("질문답 가져오기 성공", response.data);
-            }
-        } catch (error) {
-            console.error("질문답 가져오기 실패", error.response);
-        }
-    };
-
-    function sendQna() {
-        axios.put(
-            '/qna/',
-            {
-                "answer1": a1,
-                "answer2": a2,
-                "answer3": a3,
-                "answer4": a4,
-                "answer5": a5,
-                "answer6": a6,
-                "answer7": a7,
-                "answer8": a8,
-                "answer9": a9,
-                "answer10": a10,
-            },
-            {
-                'headers': {
-                    'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
-                    'Content-Type': 'application/json'
-                }
-            }
-        ).then((response) => {
-            if (response.status === 200) {
-                console.log("qna 성공");
-                Swal.fire({
-                    icon: "success",
-                    text: "답변 등록 성공!",
-                });
-            }
-        }).catch((error) => {
-            console.log(error.response);
-            Swal.fire({
-                icon: "warning",
-                title: "답변 등록 실패.",
-            });
-        });
-    }
-
-    const getVisit = async () => {
-        try {
-            const response = await axios.get('/dialog/', {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-            if (response.status === 200) {
-                setVisitview(response.data);
-                setTimeout(scrollToBottom, 100);
-                console.log("방명록 가져오기 성공", response.data);
-            }
-        } catch (error) {
-            console.error("방명록 가져오기 실패", error.response);
-        }
-    };
+    const [user, setUser] = useState(null);
+    const [dialog, setDialog] = useState([]);
+    const [video, setVideo] = useState([]);
+    const [following, setFollowing] = useState([]);
+    const [qna, setQna] = useState([]);
+    const [gameScores, setGameScores] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [visitContent, setvisitContent] = useState("");
 
     function sendVisit() {
         if (!visitContent || !visitname) {
@@ -216,9 +65,9 @@ function submain() {
             return;
         }
         axios.post(
-            '/dialog/',
+            '/api/dialog/',
             {
-                "user_id": localStorage.getItem("ID"),
+                "user_id": user?.id,
                 "visitor": visitname,
                 "contents": visitContent,
             },
@@ -233,7 +82,7 @@ function submain() {
                 });
                 setVisitname('');
                 setvisitContent('');
-                getVisit();
+                getUsers();
                 scrollToBottom();
                 console.log("방명록 전송 성공");
             }
@@ -242,63 +91,58 @@ function submain() {
         });
     }
 
-    function sendFollow(selectedUsername) {
-        axios.post(
-            '/follow/',
-            {
-                "follower": localStorage.getItem("username"),
-                "followee": selectedUsername,
-            },
-            {
-                'headers': {
-                    'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
-                    'Content-Type': 'application/json'
-                }
-            }
-        ).then((response) => {
-            console.log(`follower : ${localStorage.getItem("username")}`);
-            console.log(`follwee : ${selectedUsername}`);
-            console.log(response.status);
-            if (response.status === 201) {
-                Swal.fire({
-                    icon: "success",
-                    text: "구독 성공!",
-                });
-                getFollower();
-            }
-        }).catch((error) => {
-            console.log("팔로우 보내기 실패", error.response);
-            Swal.fire({
-                icon: "warning",
-                text: "이미 구독을 한 유저 입니다",
-            });
-        });
-
-    }
-
-    const fetchRanking = () => {
-        axios.get('/score/', {
+    async function getUsers() {
+        axios.get('/api/users/redirection', {
+            params: { username },
             headers: {
-                'accept': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem("access_token")}`
-            }
-        }).then(response => {
-            if (response.status === 200) {
-
-                console.log('모든 game score 서버 응답:', response.data);
-
-                const sortedList = response.data.sort((a, b) => b.score - a.score);
-                setRankingList(sortedList);
-                console.log("랭킹", sortedList);
+                'Content-Type': 'application/json'
             }
         })
-            .catch(error => {
-                console.error('산성비 랭킹을 가져오는 중 오류 발생:', error);
+            .then((response) => {
+                console.log(response.status);
+                console.log(response.data);
+                if (response.status === 200) {
+
+                    const { user, dialog, following, qna, game_scores, video } = response.data;
+                    const videoData = JSON.parse(video.body);
+
+                    // youtube_data가 존재하는지 확인하고, items 배열의 길이를 확인합니다.
+                    if (videoData.youtube_data && videoData.youtube_data.items.length > 0) {
+                        const videoId = videoData.youtube_data.items[0].id;
+            
+
+                        setVideoId(videoId);
+                        
+                        // 필요한 경우 videoId를 상태로 설정하거나 다른 작업 수행
+                        // setVideoId(videoId); // 예시
+                    }
+
+                    const { singer, music_title } = videoData;
+                    console.log('Singer:', singer);
+                    console.log('Music Title:', music_title);
+                    setSinger(singer);
+                    setMusicTitle(music_title);
+                    
+                    setUser(user);
+                    setDialog(dialog);
+                    setFollowing(following);
+                    setQna(qna);
+                    setGameScores(game_scores);
+                    console.log(user);
+                    console.log(dialog);
+                    console.log(following);
+                    console.log(qna);
+                    console.log(game_scores);
+                    console.log(video);
+                
+            }})
+            .catch((error) => {
+                console.error('서치 목록 가져오기 실패:', error);
             });
     };
 
-    const [rankingList, setRankingList] = useState([]);
 
+    const [rankingList, setRankingList] = useState([]);
     const [followee, setFollowee] = useState([]);
     const [isExiting, setIsExiting] = useState(false);
     const [isFlwListExiting, setIsFlwListExiting] = useState(false);
@@ -308,10 +152,11 @@ function submain() {
     const [status, setStatus] = useState("");
     const [fullname, setFullname] = useState("");
     const [visitname, setVisitname] = useState("");
-    const [visitContent, setvisitContent] = useState("");
     const [profile_image, setProfileImg] = useState("");
     const [visitView, setVisitview] = useState([]);
-    const [usernames, setUsernames] = useState([]); // 상태 추가    
+    const [usernames, setUsernames] = useState([]); // 상태 추가   
+    const [userdatas, setUserdatas] = useState([]); // 상태 추가    
+ 
     const [a1, seta1] = useState('');
     const [a2, seta2] = useState('');
     const [a3, seta3] = useState('');
@@ -326,28 +171,9 @@ function submain() {
     const [singer, setSinger] = useState('');
     const [musicTitle, setMusicTitle] = useState('');
     const [videoId, setVideoId] = useState(null);
+    const {username} = useParams();
 
 
-    async function getSearch() {
-        axios.get('/search/?', {
-            params: { search_user },
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
-                'Content-Type': 'application/json'
-            }
-        })
-            .then((response) => {
-                console.log(response.status);
-                if (response.status === 200) {
-                    const extractedUsernames = response.data.map(user => user.username);
-                    setUsernames(extractedUsernames);
-                    console.log('유저 검색 결과:', usernames);
-                }
-            })
-            .catch((error) => {
-                console.error('서치 목록 가져오기 실패:', error);
-            });
-    };
 
     const scrollToBottom = () => {
         const element = document.querySelector('.scroll2');
@@ -430,17 +256,6 @@ function submain() {
         sendVisit();
     };
 
-    useEffect(() => {
-        const handlePopState = (event) => {
-            window.history.pushState(null, null, window.location.pathname); // 현재 URL 유지
-        };
-        window.history.pushState(null, null, window.location.pathname); // 현재 상태를 pushState로 추가
-        window.addEventListener('popstate', handlePopState);
-        return () => {
-            window.removeEventListener('popstate', handlePopState);
-        };
-    }, []);
-
     const handleTrashClick = () => {
         setText("");
         setShowPopup(true);
@@ -467,12 +282,7 @@ function submain() {
     };
 
     useEffect(() => {
-        getMypage();
-        getQna();
-        getVisit();
-        getFollower();
-        MusicFetch();
-        fetchRanking();
+        getUsers();
     }, []);
 
 
@@ -486,7 +296,7 @@ function submain() {
         }
     }, [visitContent]);
 
-    let title = `${fullname || localStorage.getItem("fullname")}`;
+    let title = `${user?.fullname}`;
     let title2 = '의 마이홈피';
     const navigate = useNavigate();
 
@@ -502,20 +312,20 @@ function submain() {
                     <div>
                         <p className='date-text' style={{ padding: "6px" }}>{formatDate()}</p>
                         <div className='main-white-box'>
-                            {profile_image ? (
-                                <img src={profile_image} alt="Profile" style={{ width: '100px', height: '100px' }} />
+                            {user?.profile_image ? (
+                                <img src={user?.profile_image} alt="Profile" style={{ width: '100px', height: '100px' }} />
                             ) : (
                                 <img src={picturebasic} alt="Default" style={{ width: '100px', height: '100px' }} />
                             )}
                             <div style={{ height: "2vh" }}></div>
                             <p style={{ paddingLeft: "1vh", fontSize: "20px" }}>
-                                {fullname}
+                            {user?.fullname}
                             </p>
                             <div style={{ height: "1vh" }}></div>
                             <div className='black-line'>
                                 <p style={{ fontSize: "15px" }}>한줄 소개</p>
                                 <div style={{ height: "1vh" }}></div>
-                                <p style={{ fontSize: "18px" }}>{status}</p>
+                                <p style={{ fontSize: "18px" }}>{user?.status_message}</p>
                             </div>
                             <div style={{ height: "2vh" }}>
                             </div>
@@ -538,11 +348,6 @@ function submain() {
                                     )}
                                 </div>
                             }
-                            <div className='hang' style={{ height: "5vh", display: "flex", alignItems: "flex-end", justifyContent: "flex-end" }}>
-                                <button className="login-gray" style={{ fontSize: "15px" }} onClick={() => navigate(`/mypage/${localStorage.getItem("username")}`)}>마이페이지</button>
-                                <div style={{ width: "4vh" }}></div>
-                                <button className="login-gray" style={{ fontSize: "15px" }} onClick={() => navigate('/')}>로그아웃</button>
-                            </div>
                         </div>
                     </div>
                     <div>
@@ -556,63 +361,62 @@ function submain() {
                         </div>
                         <div className='main-gray-box'>
                             <div className='yellow-box-scroll' style={{ width: "53vw", height: "27vh", paddingLeft: "5vh" }}>
-                                <p style={{ fontSize: "10px", color: "black", textAlign: "right", width: "100%" }}>답변 칸을 클릭해 입력하고 ENTER를 누르면 저장돼요!</p>
                                 <p className='title-text' style={{ color: "black", fontSize: "22px" }}>Q. 인생 영화 or 인생 책 한 가지</p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }} type='text' value={a1} onChange={savea1} onKeyDown={handleEnterKey}></input>
+                                    <p className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }} >{qna[0]?.answer1}</p>
                                 </div>
                                 <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "22px" }}>Q. 갖고 싶은 초능력은? </p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }} type='text' value={a2} onChange={savea2} onKeyDown={handleEnterKey}></input>
+                                    <p className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }}>{qna[0]?.answer2}</p>
                                 </div>
                                 <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "22px" }}>Q. 과거로 돌아갈 수 있다면 언제로?
                                 </p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }} type='text' value={a3} onChange={savea3} onKeyDown={handleEnterKey}></input>
+                                    <p className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }} >{qna[0]?.answer3}</p>
                                 </div>
                                 <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "22px" }}>Q. 기억에 남는 여행지는? </p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }} type='text' value={a4} onChange={savea4} onKeyDown={handleEnterKey}></input>
+                                    <p className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }}  >{qna[0]?.answer4}</p>
                                 </div>
                                 <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "22px" }}>Q. 죽기전에 먹고싶은 음식은? </p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }} type='text' value={a5} onChange={savea5} onKeyDown={handleEnterKey}></input>
+                                    <p className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }} >{qna[0]?.answer5}</p>
                                 </div>
                                 <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "22px" }}>Q. 핸드폰 빼고 외출할 때 하나만 챙긴다면? </p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }} type='text' value={a6} onChange={savea6} onKeyDown={handleEnterKey}></input>
+                                    <p className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }} >{qna[0]?.answer6}</p>
                                 </div>
                                 <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "22px" }}>Q. 내 버킷리스트 속 1번 </p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }} type='text' value={a7} onChange={savea7} onKeyDown={handleEnterKey}></input>
+                                    <p className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }}  >{qna[0]?.answer7}</p>
                                 </div>
                                 <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "22px" }}>Q. 무생물과 대화하기 vs 모든 생물과 대화하기  </p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }} type='text' value={a8} onChange={savea8} onKeyDown={handleEnterKey}></input>
+                                    <p className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }} >{qna[0]?.answer8}</p>
                                 </div>
                                 <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "22px" }}>Q. 못씻기 vs 못먹기 </p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }} type='text' value={a9} onChange={savea9} onKeyDown={handleEnterKey}></input>
+                                    <p className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }}  >{qna[0]?.answer9}</p>
                                 </div>
                                 <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "22px" }}>Q. 주말을 해적과 함께 보내기 vs 주말을 닌자와 함께 보내기</p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }} type='text' value={a10} onChange={savea10} onKeyDown={handleEnterKey}></input>
+                                    <p className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }} >{qna[0]?.answer10}</p>
                                 </div>                            </div>
                             <div style={{ height: "13px" }}></div>
                             <div className='sky-box' style={{ width: "53vw", height: "43vh", backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.5)), url(${picturesky})`, backgroundSize: "cover" }}>
                                 <div className='sky-box-inner'>
                                     <div className='scroll2' style={{ padding: "1vh", width: "100%", height: "90%" }}>
-                                        {visitView.map((visit) => (
+                                        {dialog.map((visit) => (
                                             <div key={visit.id} style={{ marginBottom: "2vh" }}>
                                                 <div className='hang'>
                                                     <div style={{ textAlign: "center", alignItems: "center", justifyContent: "center", display: "flex", width: "10vw" }}>
@@ -638,22 +442,20 @@ function submain() {
                     </div>
                     <div>
                         <div style={{ height: "5vh" }}></div>
-                        <div className='main-transparent-box' style={{ height: "35vh" }}>
+                        <div className='main-transparent-box' style={{ height: "45vh" }}>
                             <div className='hang' style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                                 <p style={{ paddingTop: "10px", fontSize: "20px" }}>내 이웃들</p>
-                                <div style={{ width: "0.5vw" }}></div>
-                                <img src={picturePlus} width='15vw' height='15vh' onClick={handleFollowListClick} style={{ paddingTop: "10px" }} />
                             </div>
                             <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
                             <div style={{ height: "1vh" }}></div>
                             <div style={{ height: "78%" }}>
                                 <div>
-                                    {followee.map((myfollowee) => (
+                                    {following.map((myfollowee) => (
                                         <div key={myfollowee.id}>
                                             <button style={{ fontSize: "17px" }}>
-                                                <Link to={`/main/${myfollowee.username}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                               
                                                     {myfollowee.fullname}
-                                                </Link>
+                                                
                                             </button>
                                             <div style={{ height: "1vh" }}></div>
                                         </div>
@@ -662,13 +464,12 @@ function submain() {
                             </div>
                         </div>
                         <div style={{ height: "1vh" }}></div>
-                        <div className='main-transparent-box' style={{ height: "25vh" }}>
-
+                        <div className='main-transparent-box' style={{ height: "30vh" }}>
                             <p style={{ paddingTop: "10px", fontSize: "20px" }}>산성비 랭킹</p>
                             <span style={{ display: "block", width: "75%", height: "1px", backgroundColor: "#D8DED5", margin: "5px auto 0 auto" }}></span>
                             <div style={{ height: "83%", overflowY: "auto" }}>
-                                {rankingList.length > 0 ? (
-                                    rankingList.map((rank, index) => (
+                                {gameScores.length > 0 ? (
+                                    gameScores.map((rank, index) => (
                                         <div key={index} style={{ margin: "10px 0" }}>
                                             <p style={{ fontSize: "15px" }}>{rank.fullname} - {rank.score}P</p>
                                         </div>
@@ -679,71 +480,11 @@ function submain() {
                             </div>
 
                         </div>
-                        <div className='hang'>
-
-                            <img src={joyconImg} alt="trash" onClick={() => navigate(`/game/${localStorage.getItem("id")}`)} style={{
-                                cursor: 'pointer',
-                                width: "8vw",
-                                height: "18vh",
-                                marginLeft: "-30px",
-                                marginRight: "-25px",
-                                marginBottom: "-28px"
-                            }} />
-
-
-                            <div style={{ width: "3vh" }}></div>
-
-                            <img src={picturetrash} alt="trash" onClick={handleTrashClick} style={{
-                                cursor: 'pointer',
-                                width: "4.5vw",
-                                height: "8vh",
-                            }} />
-
-                        </div>
+                        
                     </div>
                 </div>
-                <div className={`shadow ${showPopup ? 'active' : ''}`} style={{ display: showPopup ? 'block' : 'none' }}></div>
-                {showPopup && (
-                    <div className={`letter-popup ${isExiting ? 'exiting' : ''}`}>
-                        <div className="letter-popup-content">
-                            <div className='hangs'>
-                                <img src={picturetrash} width='50vw' height='50vh' alt="trash" onClick={handleTrashClick} />
-                                <p className='trash-popup-message' > 감정 쓰레기통에 감정을 버려보세요!</p>
-                            </div>
-                            <textarea className="trash-popup-textarea" value={text} onChange={handleChange} placeholder="감정을 적어보세요.." />
-                            <button className='trash-button' onClick={handleDiscard} >버리기!</button>
-                        </div>
-                    </div>
-                )}
-                <div className={`shadow ${showFlwListPopup ? 'active' : ''}`} style={{ display: showFlwListPopup ? 'block' : 'none' }}></div>
-                {showFlwListPopup && (
-                    <div className={`letter-popup ${isFlwListExiting ? 'exiting' : ''}`}>
-                        <div className='follow-popup-content' style={{ backgroundColor: "#C2E9B5", width: "40vw", padding: "20px" }}>
-                            <div className='hang'>
-                                <img src={pictureApple} style={{ width: '50px', height: '40px', }} />
-                                <p style={{ fontSize: "25px" }}>이웃 검색</p>
-                            </div>
-                            <div style={{ height: "5vh" }}></div>
-                            <input className='input-name' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "20px", height: "10vh", width: "30vw" }} type='text' value={search_user} onChange={saveSearchuser} onKeyDown={handleEnterKey2}></input>
-                            <div style={{ height: "60%" }}>
-                                <div style={{ height: "2vh" }}></div>
-                                <div>
-                                    {usernames.map((username) => (
-                                        <div key={username.id}>
-                                            <div className='hang'>
-                                                <p style={{ fontSize: "22px", width: "12vw" }}>{username}</p>
-                                                <hr style={{ width: "15vw", borderStyle: "dashed" }}></hr>
-                                                <button className="login-gray" style={{ fontSize: "15px", width: "10vw" }} onClick={() => sendFollow(username)}>구독</button>
-                                            </div>
-                                            <div style={{ height: "2vh" }}></div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                            <button className="login-gray" style={{ fontSize: "22px", display: "flex", alignItems: "flex-end", justifyContent: "flex-end", width: "100%", height: "100%" }} onClick={handleFollowListDiscard}>나가기</button>
-                        </div>
-                    </div>
-                )}
+               
+                
             </div>
         </div>
     );
