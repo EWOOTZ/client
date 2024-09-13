@@ -228,6 +228,11 @@ function submain() {
         setSearchUser(event.target.value);
         console.log(event.target.value);
     };
+    const handleClick = (username) => {
+       
+        console.log("navigate following's page");
+        navigate(`/submain/${username}`);
+    };
 
     const handleEnterKey = (event) => {
         if (event.key === 'Enter') {
@@ -284,7 +289,7 @@ function submain() {
 
     useEffect(() => {
         getUsers();
-    }, []);
+    }, [username]);
 
 
     useEffect(() => {
@@ -452,12 +457,12 @@ function submain() {
                             <div style={{ height: "78%" }}>
                                 <div>
                                     {following.map((myfollowee) => (
-                                        <div key={myfollowee.id}>
-                                            <button style={{ fontSize: "17px" }}>
+                                        <div key={myfollowee.id} onClick={() => handleClick(myfollowee.username)}>
+                                            <p style={{ fontSize: "17px", cursor: "pointer" }}>
                                                
                                                     {myfollowee.fullname}
                                                 
-                                            </button>
+                                            </p>
                                             <div style={{ height: "1vh" }}></div>
                                         </div>
                                     ))}
