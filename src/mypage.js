@@ -24,7 +24,7 @@ function Mypage() {
     const [searchClicked, setSearchClicked] = useState(false);
     const [isSearchEnabled, setIsSearchEnabled] = useState(false);
 
-    const myUrl = `http://ewootz.site/main/${localStorage.getItem("id")}`;
+    const myUrl = `http://ewootz.site/submain/${localStorage.getItem("id")}`;
 
 
     const opts = {
@@ -311,7 +311,7 @@ function Mypage() {
             <div className={`shadow ${showPopup ? 'active' : ''}`} style={{ display: showPopup ? 'block' : 'none' }}></div>
             {showPopup && (
                 <div className={`letter-popup  ${isExiting ? 'exiting' : ''}`}>
-                    <div className="music-popup-content" >
+                    <div className="music-popup-content" style={{height:'75vh'}}>
                         <button className='close-button' style={{ paddingRight: 5 }} onClick={handlePopupClose}>×</button>
                         <div style={{ height: "1.5vh" }}></div>
                         <p style={{ fontSize: "11px", color: "black", textAlign: "right", width: "100%" }}>가수와 제목을 모두 채워주세요!!</p>
