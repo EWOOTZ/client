@@ -294,7 +294,7 @@
   padding: 10px;
   border: none;
   border-radius: 5px;
-  max-height: 290px;
+  max-height: 50vh;
   overflow-y: auto;
 }
 
