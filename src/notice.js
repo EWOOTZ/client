@@ -34,7 +34,7 @@ function Notice() {
 
 const getTitle = async () => {
   try {
-    const response = await axios.get(`/board/search/${selectTitle}`, {
+    const response = await axios.get(`/api/board/search/${selectTitle}`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
         'Content-Type': 'application/json'
@@ -63,7 +63,7 @@ const getTitle = async () => {
   const getMypage = async () => {
     try {
       const response = await axios.get(
-        '/users/me',
+        '/api/users/me',
         {
           'headers': {
             'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
@@ -117,7 +117,7 @@ const getTitle = async () => {
   const renderCategoryContent = () => {
     switch (selectedCategory) {
       case 'SearchTitle':
-        return <SearchTitle searchBoardView={searchBoardView} selectedOption={selectedOption} handleChange={handleChange} />;
+        return <SearchTitle searchBoardView={searchBoardView} selectedOption={selectedOption} handleChange={handleChange}  getTitle={getTitle} />;
       case 'daily':
         return <DailyContent selectedOption={selectedOption} handleChange={handleChange} />; 
       case 'food':
@@ -153,16 +153,11 @@ const getTitle = async () => {
             <input 
               className='input-search' 
               style={{ width: "10vw", fontSize: "15px" }} 
-              type='text' 
-              placeholder='검색' 
-              value={selectTitle}
-              onChange={handleSearchInputChange} // 검색어 변경 핸들러
-            />
-            <div style={{ width: "0.5vw" }}></div>
-            <img 
-              src={notice_search} 
-              alt="notice_search" 
-              style={{ width: "1.7vw", cursor: "pointer" }} 
+              type='text'  placeholder='검색' value={selectTitle} onChange={handleSearchInputChange} onKeyPress={(e) => {
+               if (e.key === 'Enter') {
+                 getTitle();}}}/>
+     <div style={{ width: "0.5vw" }}></div>
+            <img  src={notice_search} alt="notice_search" style={{ width: "1.7vw", cursor: "pointer" }} 
               onClick={getTitle} 
             />
           </div>
@@ -223,21 +218,44 @@ const getTitle = async () => {
   );
 }
 
-function SearchTitle({ searchBoardView, selectedOption, handleChange }) {
+function SearchTitle({ searchBoardView, selectedOption, handleChange,getTitle }) {
   const [showPopup, setShowPopup] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [isExiting, setIsExiting] = useState(false);
 
-  const handleButtonClick = (searchboard) => {
-    setSelectedItem(searchboard);
-    setShowPopup(true);
+  const getpostBoard = async (id) => {
+    try {
+      const response = await axios.get(`/api/board/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.status === 200) {
+        setSelectedItem(response.data); 
+        console.log("특정 검색 게시판 가져오기 성공", response.data);
+      }
+    } catch (error) {
+      console.error("특정 검색 게시판 가져오기 실패", error.response);
+      console.error(error);
+    }
+  };
+  
+  const handleButtonClick = async(searchboard) => {
+    try {
+      await getpostBoard(searchboard.id);
+            setShowPopup(true);
+    } catch (error) {
+      console.error('특정 검색 게시판 클릭 실패', error);
+    }
+
   };
 
   const handleBoardcloseClick = () => {
     setShowPopup(false);
+    getTitle();
     setIsExiting(false);
   };
-
   const sortedBoardView = useMemo(() => {
     const sorted = [...searchBoardView];
     switch (selectedOption) {
@@ -257,9 +275,9 @@ function SearchTitle({ searchBoardView, selectedOption, handleChange }) {
       <div className='yellow-box-top'>
         <div className='white-box-top'>
           <div className="hang" style={{ display: "flex", justifyContent: "start", alignItems: "start", width: "100%" }}>
-            <p style={{ paddingLeft: "3vh", paddingTop: "0.6vh", fontSize: "19px" }}>검색 결과</p>
-            <p style={{ paddingLeft: "4vh", paddingTop: "1vh", fontSize: "16px" }}>{`${sortedBoardView.length} 개의 글`}</p>
-            <div style={{ width: "44vw" }}></div>
+            <p style={{ paddingLeft: "3vh", paddingTop: "0.7vh", fontSize: "19px" }}>검색 결과</p>
+            <p style={{ paddingLeft: "2vh", paddingTop: "0.8vh", fontSize: "16px" }}>{`${sortedBoardView.length} 개의 글`}</p>
+            <div style={{ width: "46vw" }}></div>
             <select value={selectedOption} onChange={handleChange} className="custom-select" style={{ fontFamily: "HJ", padding: "1vh", fontSize: "14px" }}>
               <option value="latest">최신순</option>
               <option value="oldest">오래된 순</option>
@@ -271,8 +289,8 @@ function SearchTitle({ searchBoardView, selectedOption, handleChange }) {
       <div style={{height:"2vh"}}></div>
       <div className='yellow-box-bottom'>
         <div className='white-box-bottom'>
-          <div style={{ height: "60vh", width: "42vw", paddingLeft: "3px" }}>
-            <p style={{ width: "43vw", height: "3vh", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>글제목</p>          
+          <div style={{ height: "60vh", width: "32vw", paddingLeft: "3px" }}>
+            <p style={{ width: "44vw", height: "3vh", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>글제목</p>          
             <hr style={{ border: "0.2px solid black", width: "100%" }} />
             {sortedBoardView.map((searchboard) => (
               <div key={searchboard.title} style={{ cursor: 'pointer' }}>
@@ -308,6 +326,18 @@ function SearchTitle({ searchBoardView, selectedOption, handleChange }) {
               {sortedBoardView.map((searchboard) => (
                 <div key={searchboard.id}>
                   <p style={{ display: "flex", justifyContent: "center" }}>{searchboard.date}</p>
+                  <hr style={{ border: "0.2px solid gray", width: "100%" }} />
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ height: "60vh", width: "10vw" }}>
+            <p style={{ height: "3vh", width: "10vw", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>조회수</p>
+            <hr style={{ border: "0.2px solid black", width: "100%" }} />
+            <div>
+              {sortedBoardView.map((searchboard) => (
+                <div key={searchboard.id}>
+                  <p style={{ display: "flex", justifyContent: "center" }}>{searchboard.views}</p>
                   <hr style={{ border: "0.2px solid gray", width: "100%" }} />
                 </div>
               ))}
@@ -356,19 +386,47 @@ function DailyContent({ selectedOption, handleChange }) {
   const [selectedItem, setSelectedItem] = useState(null);
   const [isExiting, setIsExiting] = useState(false);
 
-  const handleButtonClick = (dailyboard) => {
-    setSelectedItem(dailyboard);
-    setShowPopup(true);
+  const handleButtonClick = async (dailyboard) => {
+    try {
+      // 게시판 데이터 가져오기
+      await getpostBoard(dailyboard.id);
+      
+      // 상태가 업데이트된 후 팝업을 보여줍니다.
+      setShowPopup(true);
+    } catch (error) {
+      console.error('특정 일상 게시판 클릭 실패', error);
+    }
   };
+  
+  const getpostBoard = async (id) => {
+    try {
+      const response = await axios.get(`/api/board/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.status === 200) {
+        setSelectedItem(response.data); // 상태 업데이트
+        console.log("특정 일상 게시판 가져오기 성공", response.data);
+      }
+    } catch (error) {
+      console.error("특정 일상 게시판 가져오기 실패", error.response);
+      console.error(error);
+    }
+  };
+  
 
   const handleBoardcloseClick = () => {
+    getDailyBoard();
     setShowPopup(false);
     setIsExiting(false);
+
   };
 
   const getDailyBoard = async () => {
     try {
-      const response = await axios.get('/board/category/%EC%9D%BC%EC%83%81', {
+      const response = await axios.get('/api/board/category/%EC%9D%BC%EC%83%81', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -421,7 +479,7 @@ function DailyContent({ selectedOption, handleChange }) {
       <div style={{ height: "2vh" }}></div>
       <div className='yellow-box-bottom'>
         <div className='white-box-bottom'>
-          <div style={{ height: "60vh", width: "42vw", paddingLeft: "3px" }}>
+          <div style={{ height: "60vh", width: "32vw", paddingLeft: "3px" }}>
             <p style={{ width: "43vw", height: "3vh", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>글제목</p>
             <hr style={{ border: "0.2px solid black", width: "100%" }} />
             <div>
@@ -449,22 +507,14 @@ function DailyContent({ selectedOption, handleChange }) {
             </div>
             <div style={{ height: "1vh" }}></div>
             <div className="yellow-box" style={{ width: "65vw", height: "57vh", borderRadius: "10px", overflow: "hidden",  overflowY: "auto"  }}>  <div>
-         <img src={selectedItem.image} style={{ width: "30vw", height: "30vh" }} />
+         <img src={selectedItem.image} style={{ width: "30vw", height: "35vh", paddingBottom:"15px" }} />
          <div style={{ height: "1vh" }}></div></div><div>
-        <p style={{ marginLeft:'10px', fontSize:'22px', display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
+        <p style={{ paddingBottom:"10px" ,marginLeft:'10px', fontSize:'22px', display: "flex", justifyContent: "center", alignItems: "center", width: "100%", }}>
           {selectedItem.username}
           <img src={notice_love} alt="notice_love" /> </p></div>
          <div style={{ padding:'10px',fontSize:'17px', display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
-          <p>{selectedItem.contents} </p>
- </div>
-</div>
-           </div>
-
-            </div>
-          </div>
-        )}
-      </div>
-      </div>
+          <p>{selectedItem.contents} </p></div></div>
+           </div>    </div> </div>  )}</div></div>
           </div>
           <div style={{ height: "60vh", width: "15vw" }}>
             <div className="hang" style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
@@ -493,6 +543,18 @@ function DailyContent({ selectedOption, handleChange }) {
               ))}
             </div>
           </div>
+          <div style={{ height: "60vh", width: "10vw" }}>
+            <p style={{ height: "3vh", width: "10vw", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>조회수</p>
+            <hr style={{ border: "0.2px solid black", width: "100%" }} />
+            <div>
+              {sortedDailyView.map((dailyboard) => (
+                <div key={dailyboard.id}>
+                  <p style={{ display: "flex", justifyContent: "center" }}>{dailyboard.views}</p>
+                  <hr style={{ border: "0.2px solid gray", width: "100%" }} />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -510,7 +572,7 @@ function FoodAllContent({ selectedOption, handleChange }) {
   const getpostBoard = async (id) => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`/board/${id}`, {
+      const response = await axios.get(`/api/board/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -544,7 +606,7 @@ function FoodAllContent({ selectedOption, handleChange }) {
 
   const getBoard = async () => {
     try {
-      const response = await axios.get('/board/category/%EB%A7%9B%EC%A7%91', {
+      const response = await axios.get('/api/board/category/%EB%A7%9B%EC%A7%91', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -681,7 +743,7 @@ function FoodSeoulContent({ selectedOption, handleChange }) {
   const getpostBoard = async (id) => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`/board/${id}`, {
+      const response = await axios.get(`/api/board/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -715,7 +777,7 @@ function FoodSeoulContent({ selectedOption, handleChange }) {
 
   const getBoard = async () => {
     try {
-      const response = await axios.get('/board/location/%EC%84%9C%EC%9A%B8', {
+      const response = await axios.get('/api/board/location/%EC%84%9C%EC%9A%B8', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -849,7 +911,7 @@ function FoodGangContent({ selectedOption, handleChange }) {
   const getpostBoard = async (id) => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`/board/${id}`, {
+      const response = await axios.get(`/api/board/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -883,7 +945,7 @@ function FoodGangContent({ selectedOption, handleChange }) {
 
   const getBoard = async () => {
     try {
-      const response = await axios.get('/board/location/%EA%B0%95%EB%A6%89', {
+      const response = await axios.get('/api/board/location/%EA%B0%95%EB%A6%89', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -1017,7 +1079,7 @@ function FoodDaejeonContent({ selectedOption, handleChange }) {
   const getpostBoard = async (id) => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`/board/${id}`, {
+      const response = await axios.get(`/api/board/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -1051,7 +1113,7 @@ function FoodDaejeonContent({ selectedOption, handleChange }) {
 
   const getBoard = async () => {
     try {
-      const response = await axios.get('/board/location/%EB%8C%80%EC%A0%84', {
+      const response = await axios.get('/api/board/location/%EB%8C%80%EC%A0%84', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -1186,7 +1248,7 @@ function FoodDaeguContent({ selectedOption, handleChange }) {
   const getpostBoard = async (id) => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`/board/${id}`, {
+      const response = await axios.get(`/api/board/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -1220,7 +1282,7 @@ function FoodDaeguContent({ selectedOption, handleChange }) {
 
   const getBoard = async () => {
     try {
-      const response = await axios.get('/board/location/%EB%8C%80%EA%B5%AC', {
+      const response = await axios.get('/api/board/location/%EB%8C%80%EA%B5%AC', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -1355,7 +1417,7 @@ function FoodBusanContent({ selectedOption, handleChange }) {
   const getpostBoard = async (id) => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`/board/${id}`, {
+      const response = await axios.get(`/api/board/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -1389,7 +1451,7 @@ function FoodBusanContent({ selectedOption, handleChange }) {
 
   const getBoard = async () => {
     try {
-      const response = await axios.get('/board/location/%EB%B6%80%EC%82%B0', {
+      const response = await axios.get('/api/board/location/%EB%B6%80%EC%82%B0', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -1524,7 +1586,7 @@ function FoodJejuContent({ selectedOption, handleChange }) {
   const getpostBoard = async (id) => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`/board/${id}`, {
+      const response = await axios.get(`/api/board/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -1558,7 +1620,7 @@ function FoodJejuContent({ selectedOption, handleChange }) {
 
   const getBoard = async () => {
     try {
-      const response = await axios.get('/board/location/%EC%A0%9C%EC%A3%BC', {
+      const response = await axios.get('/api/board/location/%EC%A0%9C%EC%A3%BC', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -1693,7 +1755,7 @@ function FoodElseContent({ selectedOption, handleChange }) {
   const getpostBoard = async (id) => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`/board/${id}`, {
+      const response = await axios.get(`/api/board/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -1727,7 +1789,7 @@ function FoodElseContent({ selectedOption, handleChange }) {
 
   const getBoard = async () => {
     try {
-      const response = await axios.get('/board/location/%EA%B8%B0%ED%83%80', {
+      const response = await axios.get('/api/board/location/%EA%B8%B0%ED%83%80', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'

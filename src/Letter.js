@@ -38,7 +38,7 @@ function Letter() {
       title, recipient, sender, content,
       date: startDate.toISOString().split('T')[0]
     };
-    axios.post('/mailbox/', postData, {
+    axios.post('/api/mailbox/', postData, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
         'Content-Type': 'application/json'

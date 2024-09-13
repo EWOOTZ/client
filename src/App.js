@@ -39,7 +39,7 @@ const Home = () => {
   function Login() {
     axios({
       method: 'post',
-      url: '/auth/token',
+      url: '/api/auth/token',
       data: formData,
       headers: { "Content-Type": 'application/x-www-form-urlencoded', }
     },

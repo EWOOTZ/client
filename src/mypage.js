@@ -24,7 +24,7 @@ function Mypage() {
     const [searchClicked, setSearchClicked] = useState(false);
     const [isSearchEnabled, setIsSearchEnabled] = useState(false);
 
-    const myUrl = `http://ewootz.site/${localStorage.getItem("id")}`;
+    const myUrl = `http://ewootz.site/main/${localStorage.getItem("id")}`;
 
 
     const opts = {
@@ -80,7 +80,7 @@ function Mypage() {
             formData.append('file', uploadFile);
             axios({
                 method: 'post',
-                url: '/upload/profile',
+                url: '/api/upload/profile',
                 data: formData,
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
@@ -101,7 +101,7 @@ function Mypage() {
     };
 
     async function fetchData() {
-        axios.get('/youtube/search?search=', {
+        axios.get('/api/youtube/search?search=', {
             params: { search },
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
@@ -141,7 +141,7 @@ function Mypage() {
             music_title: title, // saveTitle에서 설정된 값
             music_info: videoId // result.id.videoId
         };
-        axios.put('/youtube/mymusic', postData, {
+        axios.put('/api/youtube/mymusic', postData, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
                 'Content-Type': 'application/json',
@@ -158,7 +158,7 @@ function Mypage() {
 
     function sendMypage() {
         axios.put(
-            '/users/update',
+            '/api/users/update',
             { "fullname": fullname, "status_message": intro, "music_info": '' },
             {
                 'headers': {
@@ -178,7 +178,7 @@ function Mypage() {
 
     function getMypage() {
         axios.get(
-            '/users/me',
+            '/api/users/me',
             {
                 'headers': {
                     'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
@@ -198,7 +198,7 @@ function Mypage() {
     }
 
     const MusicFetch = () => {
-        axios.get('/youtube/mymusic_video', {
+        axios.get('/api/youtube/mymusic_video', {
             headers: {
                 'accept': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`

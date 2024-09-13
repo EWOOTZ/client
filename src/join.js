@@ -46,7 +46,7 @@ function Join() {
 
   function idCheck() {
     axios.post(
-      `/users/duplicate?username=${id}`,
+      `/api/users/duplicate?username=${id}`,
       {
         'headers': { 'Content-Type': 'application/json' }
       }
@@ -81,7 +81,7 @@ function Join() {
     });
     } else {
       axios.post(
-        '/users/signup',
+        '/api/users/signup',
         { "username": id, "password": pw, "fullname": name },
         {
           'headers': { 'Content-Type': 'application/json' }

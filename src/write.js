@@ -48,7 +48,7 @@ function Write() {
 
       axios({
         method: 'post',
-        url: `/upload/posting`,
+        url: `/api/upload/posting`,
         data: formData,
         headers: {
           'accept': 'application/json',
@@ -88,7 +88,7 @@ function Write() {
     const postData = {
       category, title, contents, date, image, location
     };
-    axios.post('/board/', postData, {
+    axios.post('/api/board/', postData, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
         'Content-Type': 'application/json'
