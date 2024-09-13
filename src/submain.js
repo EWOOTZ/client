@@ -92,56 +92,57 @@ function submain() {
     }
 
     async function getUsers() {
-        axios.get('/api/users/redirection', {
-            params: { username },
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then((response) => {
-                console.log(response.status);
-                console.log(response.data);
-                if (response.status === 200) {
-
-                    const { user, dialog, following, qna, game_scores, video } = response.data;
-                    const videoData = JSON.parse(video.body);
-
-                    // youtube_data가 존재하는지 확인하고, items 배열의 길이를 확인합니다.
-                    if (videoData.youtube_data && videoData.youtube_data.items.length > 0) {
-                        const videoId = videoData.youtube_data.items[0].id;
-            
-
-                        setVideoId(videoId);
-                        
-                        // 필요한 경우 videoId를 상태로 설정하거나 다른 작업 수행
-                        // setVideoId(videoId); // 예시
-                    }
-
-                    const { singer, music_title } = videoData;
-                    console.log('Singer:', singer);
-                    console.log('Music Title:', music_title);
-                    setSinger(singer);
-                    setMusicTitle(music_title);
-                    
-                    setUser(user);
-                    setDialog(dialog);
-                    setFollowing(following);
-                    setQna(qna);
-                    setGameScores(game_scores);
-                    console.log(user);
-                    console.log(dialog);
-                    console.log(following);
-                    console.log(qna);
-                    console.log(game_scores);
-                    console.log(video);
-                
-            }})
-            .catch((error) => {
-                console.error('서치 목록 가져오기 실패:', error);
+        try {
+            const response = await axios.get('/api/users/redirection', {
+                params: { username },
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
-    };
+    
+            console.log(response.status);
+            console.log(response.data);
+    
+            if (response.status === 200) {
+                const { user, dialog, following, qna, game_scores, video } = response.data;
+    
+                // video와 video.body가 정의되었는지 확인
+                let videoData = {};
+                if (video && video.body && video.body.trim()) {
+                    videoData = JSON.parse(video.body);
+                }
+    
+                // youtube_data가 존재하는지 확인하고, items 배열의 길이를 확인합니다.
+                if (videoData.youtube_data && videoData.youtube_data.items && videoData.youtube_data.items.length > 0) {
+                    const videoId = videoData.youtube_data.items[0].id;
+                    setVideoId(videoId);
+                }
 
-
+                const singer = videoData.singer || 'Unknown';
+            const music_title = videoData.music_title || 'Unknown';
+    
+                console.log('Singer:', singer);
+                console.log('Music Title:', music_title);
+                setSinger(singer);
+                setMusicTitle(music_title);
+                
+                setUser(user);
+                setDialog(dialog);
+                setFollowing(following);
+                setQna(qna);
+                setGameScores(game_scores);
+                console.log(user);
+                console.log(dialog);
+                console.log(following);
+                console.log(qna);
+                console.log(game_scores);
+                console.log(video);
+            }
+        } catch (error) {
+            console.error('서치 목록 가져오기 실패:', error);
+        }
+    }
+    
     const [rankingList, setRankingList] = useState([]);
     const [followee, setFollowee] = useState([]);
     const [isExiting, setIsExiting] = useState(false);
