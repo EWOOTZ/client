@@ -563,7 +563,7 @@ function Main() {
                             <p className='title-text' style={{ color: "#00CAC0", paddingLeft: "15px", paddingBottom: "5px" }}>{title}</p>
                             <p className='title-text' style={{ color: "#8A8A8A", paddingLeft: "15px", paddingBottom: "5px" }}>{title2}</p>
                             <div style={{ width: "10px" }}></div>
-                            <button src={pictureHome} width='30vw' height='30vh' style={{ color: "white" }} onClick={() => navigate(`/submain/${localStorage.getItem("username")}`)}></button>
+                            <img src={pictureHome} width='30vw' height='30vh' style={{ color: "white" }} />
                             <img src={pictureHome} width='30vw' height='30vh' style={{ color: "white" }} />
                             <img src={pictureHome} width='30vw' height='30vh' style={{ color: "white" }} />
                         </div>
