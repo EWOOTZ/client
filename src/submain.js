@@ -15,7 +15,7 @@ import picturePause from './images/Pause.png';
 import picturePlus from './images/plus.png';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { useNavigate,BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import React, { useRef } from 'react';
 import YouTube from 'react-youtube';
 import joyconImg from './assets/joycon.png';
@@ -31,7 +31,7 @@ function formatDate() {
     return `${year % 100}.${month}.${day}  (${dayOfWeek})`;
 }
 
-function Main() {
+function submain() {
     const videoStyle = {
         margin: '10px',
         marginRight: '35px',
@@ -47,7 +47,7 @@ function Main() {
     };
 
     const MusicFetch = () => {
-        axios.get('/api/youtube/mymusic_video', {
+        axios.get('/youtube/mymusic_video', {
             headers: {
                 'accept': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`
@@ -75,7 +75,7 @@ function Main() {
     const getMypage = async () => {
         try {
             const response = await axios.get(
-                '/api/users/me',
+                '/users/me',
                 {
                     'headers': {
                         'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
@@ -109,7 +109,7 @@ function Main() {
   
 
     async function getFollower() {
-        axios.get('/api/follow/', {
+        axios.get('/follow/', {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
                 'Content-Type': 'application/json'
@@ -117,7 +117,6 @@ function Main() {
         }).then((response) => {
             if (response.status === 200) {
                 setFollowee(response.data);
-                console.log(response.data);
             }
         })
             .catch((error) => {
@@ -127,7 +126,7 @@ function Main() {
 
     const getQna = async () => {
         try {
-            const response = await axios.get('/api/qna/', {
+            const response = await axios.get('/qna/', {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
                     'Content-Type': 'application/json'
@@ -154,7 +153,7 @@ function Main() {
 
     function sendQna() {
         axios.put(
-            '/api/qna/',
+            '/qna/',
             {
                 "answer1": a1,
                 "answer2": a2,
@@ -180,8 +179,6 @@ function Main() {
                     icon: "success",
                     text: "답변 등록 성공!",
                 });
-
-                window.location.reload();
             }
         }).catch((error) => {
             console.log(error.response);
@@ -194,7 +191,7 @@ function Main() {
 
     const getVisit = async () => {
         try {
-            const response = await axios.get('/api/dialog/', {
+            const response = await axios.get('/dialog/', {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
                     'Content-Type': 'application/json'
@@ -219,7 +216,7 @@ function Main() {
             return;
         }
         axios.post(
-            '/api/dialog/',
+            '/dialog/',
             {
                 "user_id": localStorage.getItem("ID"),
                 "visitor": visitname,
@@ -247,7 +244,7 @@ function Main() {
 
     function sendFollow(selectedUsername) {
         axios.post(
-            '/api/follow/',
+            '/follow/',
             {
                 "follower": localStorage.getItem("username"),
                 "followee": selectedUsername,
@@ -280,7 +277,7 @@ function Main() {
     }
 
     const fetchRanking = () => {
-        axios.get('/api/score/', {
+        axios.get('/score/', {
             headers: {
                 'accept': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`
@@ -290,7 +287,7 @@ function Main() {
 
                 console.log('모든 game score 서버 응답:', response.data);
 
-                const sortedList = response.data
+                const sortedList = response.data.sort((a, b) => b.score - a.score);
                 setRankingList(sortedList);
                 console.log("랭킹", sortedList);
             }
@@ -332,7 +329,7 @@ function Main() {
 
 
     async function getSearch() {
-        axios.get('/api/search/?', {
+        axios.get('/search/?', {
             params: { search_user },
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
@@ -342,7 +339,7 @@ function Main() {
             .then((response) => {
                 console.log(response.status);
                 if (response.status === 200) {
-                    const extractedUsernames = response.data?.map(user => user.username);
+                    const extractedUsernames = response.data.map(user => user.username);
                     setUsernames(extractedUsernames);
                     console.log('유저 검색 결과:', usernames);
                 }
@@ -469,13 +466,6 @@ function Main() {
         setText(event.target.value);
     };
 
-    const handleClick = (username) => {
-        console.log("navigate following's page");
-        const url = `ewootz.site/main/${username}`;
-        navigate(`${url}?${new Date().getTime()}`);
-    };
- 
-
     useEffect(() => {
         getMypage();
         getQna();
@@ -508,7 +498,6 @@ function Main() {
     return (
         <div className='backg'>
             <div className='white-line' style={{ padding: "10px" }}>
-                <button className="go-ground-gray" style={{ fontSize: "23px" }} onClick={() => navigate(`/ground/${localStorage.getItem("username")}`)}>광장가기</button>
                 <div className='hang'>
                     <div>
                         <p className='date-text' style={{ padding: "6px" }}>{formatDate()}</p>
@@ -660,14 +649,15 @@ function Main() {
                             <div style={{ height: "78%" }}>
                                 <div>
                                     {followee.map((myfollowee) => (
-
-                                        <div key={myfollowee.id} onClick={() => handleClick(myfollowee.username)}>
-                                            <p style={{ fontSize: "17px", cursor: "pointer" }}>{myfollowee.fullname}</p>
-
+                                        <div key={myfollowee.id}>
+                                            <button style={{ fontSize: "17px" }}>
+                                                <Link to={`/main/${myfollowee.username}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                                    {myfollowee.fullname}
+                                                </Link>
+                                            </button>
                                             <div style={{ height: "1vh" }}></div>
                                         </div>
                                     ))}
-
                                 </div>
                             </div>
                         </div>
@@ -699,6 +689,8 @@ function Main() {
                                 marginRight: "-25px",
                                 marginBottom: "-28px"
                             }} />
+
+
                             <div style={{ width: "3vh" }}></div>
 
                             <img src={picturetrash} alt="trash" onClick={handleTrashClick} style={{
@@ -757,4 +749,4 @@ function Main() {
     );
 }
 
-export default Main;
+export default submain;

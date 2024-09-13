@@ -13,6 +13,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import Write from './write';
 import Notice from './notice';
+import Submain from './submain';
 
 const Home = () => {
   let title = '<당신>의\n';
@@ -20,6 +21,7 @@ const Home = () => {
   const navigate = useNavigate();
   const [id, setId] = useState('');
   const [pw, setPw] = useState('');
+  const [id2, setId2] = useState('');
   const formData = new FormData();
   formData.append('username', id);
   formData.append('password', pw);
@@ -114,6 +116,7 @@ const App= () => {
           <Route path="/join" element={<Join />} />
           <Route path="/letter/:id" element={<Letter />} />
           <Route path="/main/:id" element={<Main />} />
+          <Route path="/submain/:id2" element={<Submain />} />
           <Route path="/mypage/:id" element={<Mypage />} />
           <Route path="/game/:id" element={<Game />} />
           <Route path="/notice/:id" element={<Notice />} />
