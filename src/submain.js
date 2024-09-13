@@ -314,6 +314,8 @@ function submain() {
     return (
         <div className='backg'>
             <div className='white-line' style={{ padding: "10px" }}>
+            <button className="go-ground-gray" style={{ fontSize: "23px" }} onClick={() => navigate(`/main/${localStorage.getItem("username")}`)}>내꺼가기</button>
+
                 <div className='hang'>
                     <div>
                         <p className='date-text' style={{ padding: "6px" }}>{formatDate()}</p>
