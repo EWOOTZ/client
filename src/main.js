@@ -3,7 +3,7 @@ import './App.css';
 import './Letter.css';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import picturetrash from './assets/trash.png';
 import pictureHome from './images/Oak Tree.png';
 import pictureApple from './images/apple.png';
@@ -15,7 +15,7 @@ import picturePause from './images/Pause.png';
 import picturePlus from './images/plus.png';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { useNavigate,BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useNavigate, BrowserRouter, Routes, Route } from 'react-router-dom';
 import React, { useRef } from 'react';
 import YouTube from 'react-youtube';
 import joyconImg from './assets/joycon.png';
@@ -106,7 +106,7 @@ function Main() {
         }
     };
 
-  
+
 
     async function getFollower() {
         axios.get('/api/follow/', {
@@ -330,6 +330,7 @@ function Main() {
     const [musicTitle, setMusicTitle] = useState('');
     const [videoId, setVideoId] = useState(null);
 
+    const { username } = useParams();
 
     async function getSearch() {
         axios.get('/api/search/?', {
@@ -431,6 +432,7 @@ function Main() {
     };
     const specificFunction3 = () => {
         sendVisit();
+        
     };
 
     useEffect(() => {
@@ -470,11 +472,11 @@ function Main() {
     };
 
     const handleClick = (username) => {
+       
         console.log("navigate following's page");
-        const url = `ewootz.site/main/${username}`;
-        navigate(`${url}?${new Date().getTime()}`);
+        navigate(`/submain/${username}`);
     };
- 
+
 
     useEffect(() => {
         getMypage();
@@ -503,7 +505,7 @@ function Main() {
     useEffect(() => {
         // navigate를 통해 페이지 이동
         // 예를 들어 URL이 특정 조건을 만족할 때 페이지 이동
-      }, [ navigate]);
+    }, [navigate]);
 
     return (
         <div className='backg'>
@@ -561,7 +563,7 @@ function Main() {
                             <p className='title-text' style={{ color: "#00CAC0", paddingLeft: "15px", paddingBottom: "5px" }}>{title}</p>
                             <p className='title-text' style={{ color: "#8A8A8A", paddingLeft: "15px", paddingBottom: "5px" }}>{title2}</p>
                             <div style={{ width: "10px" }}></div>
-                            <img src={pictureHome} width='30vw' height='30vh' style={{ color: "white" }} />
+                            <button src={pictureHome} width='30vw' height='30vh' style={{ color: "white" }} onClick={() => navigate(`/submain/${localStorage.getItem("username")}`)}></button>
                             <img src={pictureHome} width='30vw' height='30vh' style={{ color: "white" }} />
                             <img src={pictureHome} width='30vw' height='30vh' style={{ color: "white" }} />
                         </div>
