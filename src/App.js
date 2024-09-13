@@ -2,7 +2,7 @@
 import './App.css';
 import { useState } from 'react';
 import pictureHome from './images/Oak Tree.png';
-import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import Ground from './ground';
 import Join from './join';
 import Letter from './Letter';
@@ -13,6 +13,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import Write from './write';
 import Notice from './notice';
+import Submain from './submain';
 
 const Home = () => {
   let title = '<당신>의\n';
@@ -20,6 +21,7 @@ const Home = () => {
   const navigate = useNavigate();
   const [id, setId] = useState('');
   const [pw, setPw] = useState('');
+  let {id2} = useParams();
   const formData = new FormData();
   formData.append('username', id);
   formData.append('password', pw);
@@ -37,7 +39,7 @@ const Home = () => {
   function Login() {
     axios({
       method: 'post',
-      url: '/auth/token',
+      url: '/api/auth/token',
       data: formData,
       headers: { "Content-Type": 'application/x-www-form-urlencoded', }
     },
@@ -114,12 +116,11 @@ const App= () => {
           <Route path="/join" element={<Join />} />
           <Route path="/letter/:id" element={<Letter />} />
           <Route path="/main/:id" element={<Main />} />
+          <Route path="/submain/:username" element={<Submain />} />
           <Route path="/mypage/:id" element={<Mypage />} />
           <Route path="/game/:id" element={<Game />} />
           <Route path="/notice/:id" element={<Notice />} />
           <Route path="/write/:id" element={<Write/>} />
-
-
         </Routes>
       </BrowserRouter>
     </div>

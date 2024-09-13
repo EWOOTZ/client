@@ -24,7 +24,7 @@ function Mypage() {
     const [searchClicked, setSearchClicked] = useState(false);
     const [isSearchEnabled, setIsSearchEnabled] = useState(false);
 
-    const myUrl = `http://ewootz.site/${localStorage.getItem("id")}`;
+    const myUrl = `http://ewootz.site/submain/${localStorage.getItem("id")}`;
 
 
     const opts = {
@@ -80,7 +80,7 @@ function Mypage() {
             formData.append('file', uploadFile);
             axios({
                 method: 'post',
-                url: '/upload/profile',
+                url: '/api/upload/profile',
                 data: formData,
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
@@ -96,12 +96,12 @@ function Mypage() {
                         alert("오류.");
                     }
                 }
-            );
+                );
         }
     };
 
     async function fetchData() {
-        axios.get('/youtube/search?search=', {
+        axios.get('/api/youtube/search?search=', {
             params: { search },
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
@@ -141,7 +141,7 @@ function Mypage() {
             music_title: title, // saveTitle에서 설정된 값
             music_info: videoId // result.id.videoId
         };
-        axios.put('/youtube/mymusic', postData, {
+        axios.put('/api/youtube/mymusic', postData, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
                 'Content-Type': 'application/json',
@@ -158,7 +158,7 @@ function Mypage() {
 
     function sendMypage() {
         axios.put(
-            '/users/update',
+            '/api/users/update',
             { "fullname": fullname, "status_message": intro, "music_info": '' },
             {
                 'headers': {
@@ -178,7 +178,7 @@ function Mypage() {
 
     function getMypage() {
         axios.get(
-            '/users/me',
+            '/api/users/me',
             {
                 'headers': {
                     'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
@@ -198,7 +198,7 @@ function Mypage() {
     }
 
     const MusicFetch = () => {
-        axios.get('/youtube/mymusic_video', {
+        axios.get('/api/youtube/mymusic_video', {
             headers: {
                 'accept': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`
@@ -228,13 +228,22 @@ function Mypage() {
 
     const handleCopyClipBoard = async (text) => {
         try {
-            await navigator.clipboard.writeText(text);
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+
+            // 클립보드에 복사
+            const successful = document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            if(successful){
             Swal.fire({
                 icon: "success",
                 title: "복사 완료",
                 text: "URL이 복사되었습니다!",
-            });
-        }         catch (err) {
+            });}
+        } catch (err) {
             console.log(err);
         }
     };
@@ -302,7 +311,7 @@ function Mypage() {
             <div className={`shadow ${showPopup ? 'active' : ''}`} style={{ display: showPopup ? 'block' : 'none' }}></div>
             {showPopup && (
                 <div className={`letter-popup  ${isExiting ? 'exiting' : ''}`}>
-                    <div className="music-popup-content" >
+                    <div className="music-popup-content" style={{height:'75vh'}}>
                         <button className='close-button' style={{ paddingRight: 5 }} onClick={handlePopupClose}>×</button>
                         <div style={{ height: "1.5vh" }}></div>
                         <p style={{ fontSize: "11px", color: "black", textAlign: "right", width: "100%" }}>가수와 제목을 모두 채워주세요!!</p>

@@ -3,6 +3,7 @@ import './App.css';
 import './Letter.css';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import picturetrash from './assets/trash.png';
 import pictureHome from './images/Oak Tree.png';
 import pictureApple from './images/apple.png';
@@ -14,7 +15,7 @@ import picturePause from './images/Pause.png';
 import picturePlus from './images/plus.png';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, BrowserRouter, Routes, Route } from 'react-router-dom';
 import React, { useRef } from 'react';
 import YouTube from 'react-youtube';
 import joyconImg from './assets/joycon.png';
@@ -46,7 +47,7 @@ function Main() {
     };
 
     const MusicFetch = () => {
-        axios.get('/youtube/mymusic_video', {
+        axios.get('/api/youtube/mymusic_video', {
             headers: {
                 'accept': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`
@@ -74,7 +75,7 @@ function Main() {
     const getMypage = async () => {
         try {
             const response = await axios.get(
-                '/users/me',
+                '/api/users/me',
                 {
                     'headers': {
                         'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
@@ -105,8 +106,10 @@ function Main() {
         }
     };
 
+
+
     async function getFollower() {
-        axios.get('/follow/', {
+        axios.get('/api/follow/', {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
                 'Content-Type': 'application/json'
@@ -114,6 +117,7 @@ function Main() {
         }).then((response) => {
             if (response.status === 200) {
                 setFollowee(response.data);
+                console.log(response.data);
             }
         })
             .catch((error) => {
@@ -123,7 +127,7 @@ function Main() {
 
     const getQna = async () => {
         try {
-            const response = await axios.get('/qna/', {
+            const response = await axios.get('/api/qna/', {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
                     'Content-Type': 'application/json'
@@ -150,7 +154,7 @@ function Main() {
 
     function sendQna() {
         axios.put(
-            '/qna/',
+            '/api/qna/',
             {
                 "answer1": a1,
                 "answer2": a2,
@@ -190,7 +194,7 @@ function Main() {
 
     const getVisit = async () => {
         try {
-            const response = await axios.get('/dialog/', {
+            const response = await axios.get('/api/dialog/', {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
                     'Content-Type': 'application/json'
@@ -215,7 +219,7 @@ function Main() {
             return;
         }
         axios.post(
-            '/dialog/',
+            '/api/dialog/',
             {
                 "user_id": localStorage.getItem("ID"),
                 "visitor": visitname,
@@ -243,7 +247,7 @@ function Main() {
 
     function sendFollow(selectedUsername) {
         axios.post(
-            '/follow/',
+            '/api/follow/',
             {
                 "follower": localStorage.getItem("username"),
                 "followee": selectedUsername,
@@ -276,7 +280,7 @@ function Main() {
     }
 
     const fetchRanking = () => {
-        axios.get('/score/', {
+        axios.get('/api/score/', {
             headers: {
                 'accept': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`
@@ -286,7 +290,7 @@ function Main() {
 
                 console.log('모든 game score 서버 응답:', response.data);
 
-                const sortedList = response.data.sort((a, b) => b.score - a.score);
+                const sortedList = response.data
                 setRankingList(sortedList);
                 console.log("랭킹", sortedList);
             }
@@ -326,9 +330,10 @@ function Main() {
     const [musicTitle, setMusicTitle] = useState('');
     const [videoId, setVideoId] = useState(null);
 
+    const { username } = useParams();
 
     async function getSearch() {
-        axios.get('/search/?', {
+        axios.get('/api/search/?', {
             params: { search_user },
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
@@ -338,7 +343,7 @@ function Main() {
             .then((response) => {
                 console.log(response.status);
                 if (response.status === 200) {
-                    const extractedUsernames = response.data.map(user => user.username);
+                    const extractedUsernames = response.data?.map(user => user.username);
                     setUsernames(extractedUsernames);
                     console.log('유저 검색 결과:', usernames);
                 }
@@ -427,6 +432,7 @@ function Main() {
     };
     const specificFunction3 = () => {
         sendVisit();
+        
     };
 
     useEffect(() => {
@@ -465,6 +471,13 @@ function Main() {
         setText(event.target.value);
     };
 
+    const handleClick = (username) => {
+       
+        console.log("navigate following's page");
+        navigate(`/submain/${username}`);
+    };
+
+
     useEffect(() => {
         getMypage();
         getQna();
@@ -488,6 +501,11 @@ function Main() {
     let title = `${fullname || localStorage.getItem("fullname")}`;
     let title2 = '의 마이홈피';
     const navigate = useNavigate();
+
+    useEffect(() => {
+        // navigate를 통해 페이지 이동
+        // 예를 들어 URL이 특정 조건을 만족할 때 페이지 이동
+    }, [navigate]);
 
     return (
         <div className='backg'>
@@ -545,7 +563,7 @@ function Main() {
                             <p className='title-text' style={{ color: "#00CAC0", paddingLeft: "15px", paddingBottom: "5px" }}>{title}</p>
                             <p className='title-text' style={{ color: "#8A8A8A", paddingLeft: "15px", paddingBottom: "5px" }}>{title2}</p>
                             <div style={{ width: "10px" }}></div>
-                            <img src={pictureHome} width='30vw' height='30vh' style={{ color: "white" }} />
+                            <button src={pictureHome} width='30vw' height='30vh' style={{ color: "white" }} onClick={() => navigate(`/submain/${localStorage.getItem("username")}`)}></button>
                             <img src={pictureHome} width='30vw' height='30vh' style={{ color: "white" }} />
                             <img src={pictureHome} width='30vw' height='30vh' style={{ color: "white" }} />
                         </div>
@@ -555,53 +573,53 @@ function Main() {
                                 <p className='title-text' style={{ color: "black", fontSize: "22px" }}>Q. 인생 영화 or 인생 책 한 가지</p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width:"50vw" }} type='text' value={a1} onChange={savea1} onKeyDown={handleEnterKey}></input>
+                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }} type='text' value={a1} onChange={savea1} onKeyDown={handleEnterKey}></input>
                                 </div>
                                 <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "22px" }}>Q. 갖고 싶은 초능력은? </p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width:"50vw" }} type='text' value={a2} onChange={savea2} onKeyDown={handleEnterKey}></input>
+                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }} type='text' value={a2} onChange={savea2} onKeyDown={handleEnterKey}></input>
                                 </div>
                                 <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "22px" }}>Q. 과거로 돌아갈 수 있다면 언제로?
                                 </p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width:"50vw" }} type='text' value={a3} onChange={savea3} onKeyDown={handleEnterKey}></input>
+                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }} type='text' value={a3} onChange={savea3} onKeyDown={handleEnterKey}></input>
                                 </div>
                                 <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "22px" }}>Q. 기억에 남는 여행지는? </p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width:"50vw" }} type='text' value={a4} onChange={savea4} onKeyDown={handleEnterKey}></input>
+                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }} type='text' value={a4} onChange={savea4} onKeyDown={handleEnterKey}></input>
                                 </div>
                                 <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "22px" }}>Q. 죽기전에 먹고싶은 음식은? </p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width:"50vw" }} type='text' value={a5} onChange={savea5} onKeyDown={handleEnterKey}></input>
+                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }} type='text' value={a5} onChange={savea5} onKeyDown={handleEnterKey}></input>
                                 </div>
                                 <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "22px" }}>Q. 핸드폰 빼고 외출할 때 하나만 챙긴다면? </p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width:"50vw" }} type='text' value={a6} onChange={savea6} onKeyDown={handleEnterKey}></input>
+                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }} type='text' value={a6} onChange={savea6} onKeyDown={handleEnterKey}></input>
                                 </div>
                                 <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "22px" }}>Q. 내 버킷리스트 속 1번 </p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width:"50vw" }} type='text' value={a7} onChange={savea7} onKeyDown={handleEnterKey}></input>
+                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }} type='text' value={a7} onChange={savea7} onKeyDown={handleEnterKey}></input>
                                 </div>
                                 <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "22px" }}>Q. 무생물과 대화하기 vs 모든 생물과 대화하기  </p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width:"50vw" }} type='text' value={a8} onChange={savea8} onKeyDown={handleEnterKey}></input>
+                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }} type='text' value={a8} onChange={savea8} onKeyDown={handleEnterKey}></input>
                                 </div>
                                 <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "22px" }}>Q. 못씻기 vs 못먹기 </p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width:"50vw" }} type='text' value={a9} onChange={savea9} onKeyDown={handleEnterKey}></input>
+                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }} type='text' value={a9} onChange={savea9} onKeyDown={handleEnterKey}></input>
                                 </div>
                                 <p className='title-text' style={{ color: "black", marginTop: "12px", fontSize: "22px" }}>Q. 주말을 해적과 함께 보내기 vs 주말을 닌자와 함께 보내기</p>
                                 <div className='hang'>
                                     <p className='title-text' style={{ color: "black", marginTop: "7px", fontSize: "22px" }}>A: </p>
-                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width:"50vw" }} type='text' value={a10} onChange={savea10} onKeyDown={handleEnterKey}></input>
+                                    <input className='input-5' style={{ color: "black", marginTop: "7px", marginLeft: "1vh", fontSize: "22px", width: "50vw" }} type='text' value={a10} onChange={savea10} onKeyDown={handleEnterKey}></input>
                                 </div>                            </div>
                             <div style={{ height: "13px" }}></div>
                             <div className='sky-box' style={{ width: "53vw", height: "43vh", backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.5)), url(${picturesky})`, backgroundSize: "cover" }}>
@@ -644,11 +662,14 @@ function Main() {
                             <div style={{ height: "78%" }}>
                                 <div>
                                     {followee.map((myfollowee) => (
-                                        <div key={myfollowee.id}>
-                                            <p style={{ fontSize: "17px" }}>{myfollowee.fullname}</p>
+
+                                        <div key={myfollowee.id} onClick={() => handleClick(myfollowee.username)}>
+                                            <p style={{ fontSize: "17px", cursor: "pointer" }}>{myfollowee.fullname}</p>
+
                                             <div style={{ height: "1vh" }}></div>
                                         </div>
                                     ))}
+
                                 </div>
                             </div>
                         </div>

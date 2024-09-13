@@ -34,7 +34,7 @@ function Notice() {
 
 const getTitle = async () => {
   try {
-    const response = await axios.get(`/board/search/${selectTitle}`, {
+    const response = await axios.get(`/api/board/search/${selectTitle}`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
         'Content-Type': 'application/json'
@@ -63,7 +63,7 @@ const getTitle = async () => {
   const getMypage = async () => {
     try {
       const response = await axios.get(
-        '/users/me',
+        '/api/users/me',
         {
           'headers': {
             'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
@@ -225,7 +225,7 @@ function SearchTitle({ searchBoardView, selectedOption, handleChange,getTitle })
 
   const getpostBoard = async (id) => {
     try {
-      const response = await axios.get(`/board/${id}`, {
+      const response = await axios.get(`/api/board/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -400,7 +400,7 @@ function DailyContent({ selectedOption, handleChange }) {
   
   const getpostBoard = async (id) => {
     try {
-      const response = await axios.get(`/board/${id}`, {
+      const response = await axios.get(`/api/board/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -426,7 +426,7 @@ function DailyContent({ selectedOption, handleChange }) {
 
   const getDailyBoard = async () => {
     try {
-      const response = await axios.get('/board/category/%EC%9D%BC%EC%83%81', {
+      const response = await axios.get('/api/board/category/%EC%9D%BC%EC%83%81', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -572,7 +572,7 @@ function FoodAllContent({ selectedOption, handleChange }) {
   const getpostBoard = async (id) => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`/board/${id}`, {
+      const response = await axios.get(`/api/board/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -606,7 +606,7 @@ function FoodAllContent({ selectedOption, handleChange }) {
 
   const getBoard = async () => {
     try {
-      const response = await axios.get('/board/category/%EB%A7%9B%EC%A7%91', {
+      const response = await axios.get('/api/board/category/%EB%A7%9B%EC%A7%91', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -743,7 +743,7 @@ function FoodSeoulContent({ selectedOption, handleChange }) {
   const getpostBoard = async (id) => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`/board/${id}`, {
+      const response = await axios.get(`/api/board/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -777,7 +777,7 @@ function FoodSeoulContent({ selectedOption, handleChange }) {
 
   const getBoard = async () => {
     try {
-      const response = await axios.get('/board/location/%EC%84%9C%EC%9A%B8', {
+      const response = await axios.get('/api/board/location/%EC%84%9C%EC%9A%B8', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -911,7 +911,7 @@ function FoodGangContent({ selectedOption, handleChange }) {
   const getpostBoard = async (id) => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`/board/${id}`, {
+      const response = await axios.get(`/api/board/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -945,7 +945,7 @@ function FoodGangContent({ selectedOption, handleChange }) {
 
   const getBoard = async () => {
     try {
-      const response = await axios.get('/board/location/%EA%B0%95%EB%A6%89', {
+      const response = await axios.get('/api/board/location/%EA%B0%95%EB%A6%89', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -1079,7 +1079,7 @@ function FoodDaejeonContent({ selectedOption, handleChange }) {
   const getpostBoard = async (id) => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`/board/${id}`, {
+      const response = await axios.get(`/api/board/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -1113,7 +1113,7 @@ function FoodDaejeonContent({ selectedOption, handleChange }) {
 
   const getBoard = async () => {
     try {
-      const response = await axios.get('/board/location/%EB%8C%80%EC%A0%84', {
+      const response = await axios.get('/api/board/location/%EB%8C%80%EC%A0%84', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -1248,7 +1248,7 @@ function FoodDaeguContent({ selectedOption, handleChange }) {
   const getpostBoard = async (id) => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`/board/${id}`, {
+      const response = await axios.get(`/api/board/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -1282,7 +1282,7 @@ function FoodDaeguContent({ selectedOption, handleChange }) {
 
   const getBoard = async () => {
     try {
-      const response = await axios.get('/board/location/%EB%8C%80%EA%B5%AC', {
+      const response = await axios.get('/api/board/location/%EB%8C%80%EA%B5%AC', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -1417,7 +1417,7 @@ function FoodBusanContent({ selectedOption, handleChange }) {
   const getpostBoard = async (id) => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`/board/${id}`, {
+      const response = await axios.get(`/api/board/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -1451,7 +1451,7 @@ function FoodBusanContent({ selectedOption, handleChange }) {
 
   const getBoard = async () => {
     try {
-      const response = await axios.get('/board/location/%EB%B6%80%EC%82%B0', {
+      const response = await axios.get('/api/board/location/%EB%B6%80%EC%82%B0', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -1586,7 +1586,7 @@ function FoodJejuContent({ selectedOption, handleChange }) {
   const getpostBoard = async (id) => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`/board/${id}`, {
+      const response = await axios.get(`/api/board/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -1620,7 +1620,7 @@ function FoodJejuContent({ selectedOption, handleChange }) {
 
   const getBoard = async () => {
     try {
-      const response = await axios.get('/board/location/%EC%A0%9C%EC%A3%BC', {
+      const response = await axios.get('/api/board/location/%EC%A0%9C%EC%A3%BC', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -1755,7 +1755,7 @@ function FoodElseContent({ selectedOption, handleChange }) {
   const getpostBoard = async (id) => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`/board/${id}`, {
+      const response = await axios.get(`/api/board/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'
@@ -1789,7 +1789,7 @@ function FoodElseContent({ selectedOption, handleChange }) {
 
   const getBoard = async () => {
     try {
-      const response = await axios.get('/board/location/%EA%B8%B0%ED%83%80', {
+      const response = await axios.get('/api/board/location/%EA%B8%B0%ED%83%80', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'application/json'

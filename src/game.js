@@ -59,7 +59,7 @@ const Game = () => {
     };
 
     const fetchName = () => {
-        axios.get('/users/me', {
+        axios.get('/api/users/me', {
             headers: {
                 'accept': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`
@@ -77,7 +77,7 @@ const Game = () => {
     };
 
     const fetchData = () => {
-        axios.get('/score/', {
+        axios.get('/api/score/', {
             headers: {
                 'accept': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`
@@ -94,7 +94,7 @@ const Game = () => {
     };
 
     const fetchScore = () => {
-        axios.get('/score/me', {
+        axios.get('/api/score/me', {
             headers: {
                 'accept': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem("access_token")}`
@@ -115,7 +115,7 @@ const Game = () => {
 
     function sendGame() {
         axios.put(
-            '/score/',
+            '/api/score/',
             { "username": username, "score": score },
             {
                 'headers': {
